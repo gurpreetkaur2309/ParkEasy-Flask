@@ -63,7 +63,11 @@ def add_data():
             print("not valid")
             flash('Mobile number not valid', 'error')
             return redirect(url_for('owner.add_data'))
-
+        
+        if len(contact) > 12:
+            flash('Contact connot be more than 12 numbers')
+            return redirect(url_for('owner.add_data'))
+        
         update_query = '''
             UPDATE owner
             SET Name=%s, contact=%s, address=%s
@@ -78,9 +82,9 @@ def add_data():
     availableSlots = cursor.fetchone()
     return render_template('add/owner.html', availableSlots=availableSlots)
 
-@owner.route('/owner/add/<int:VehicleID>')
+@owner.route('/payment/add/<int:VehicleID>')
 @login_required
-def Owner(VehicleID):
+def Payment(OwnerID):
     return render_template('add/payment.html', VehicleID=OwnerID)
 
 @owner.route('/owner/edit/<int:OwnerID>', methods=['GET','POST'])

@@ -169,7 +169,6 @@ payment_count = cursor.fetchone()
 @auth.route('/dashboard')
 def dashboard():
     if 'role' in session:
-        print(session['role'])
         return render_template('dashboard.html',
                                slots_count = slots_count[0],
                                vehicle_count = vehicle_count[0],

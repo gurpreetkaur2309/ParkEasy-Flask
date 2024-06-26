@@ -30,7 +30,7 @@ def display():
     NullID = cursor.fetchone()
 
 
-    return render_template('view/payment.html', data=data, NullID=NullID    )
+    return render_template('view/payment.html', data=data, NullID=NullID)
 
 @payment.route('/payment/add', methods = ['GET','POST'])
 @login_required
@@ -39,18 +39,72 @@ def add_data():
         PaymentID = session.get('VehicleID')
         print(PaymentID)
         TotalPrice = request.form['TotalPrice']
-        Mode = request.form['Mode']
-        print(request.form)
+        mode = request.form['mode']
+        
+        try:
+
+            fetch_query = '''
+                SELECT v.VehicleType, b.TimeFrom, b.TimeTo, p.TotalPrice, p.mode
+                FROM payment p
+                JOIN bookingslot b on p.PaymentID = b.BSlotID
+                JOIN vehicle v on p.PaymentID = b.BSlotID
+                WHERE p.PaymentID=%s;
+            '''
+            cursor.execute(fetch_query)
+            db.commit()
+            data = cursor.fetchone()
+            if data is None:
+                flash('No data found','error')
+                return redirect(url_for('payment.add_data'))
+
+            VehicleType = data[0]
+            print(VehicleType)
+            TimeFrom = data[1]
+            TimeTo = data[2]
+            duration = (TimeTo - TimeFrom).total_seconds()/3600
+            print(duration, VehicleType, TimeTo, TimeFrom)
+
+            
+
+            if VehicleType in ['sedan','SUV','Hatchback', 'Coupe']:
+                rate = 13
+
+            elif VehicleType == '2-Wheeler':
+                rate = 8
+
+            elif VehicleType == 'Heavy-Vehicle':
+                rate = 15
+
+            elif VehicleType == 'Luxury-Vehicle':
+                rate=18
+
+            Price = rate*duration
+            return render_template('add/payment.html',Price=Price, VehicleType=VehicleType)
+
+        except mysql.connector.Error as e:
+            print(e)
+            db.rollback()
+            flash('Error processing your payment','error')            
+            return redirect(url_for('payment.add_data'))
+
+
         update_query = '''
             UPDATE payment
-            SET TotalPrice=%s, Mode=%s
+            SET TotalPrice=%s, mode=%s 
             WHERE PaymentID=%s
+
         '''
-        cursor.execute(update_query, (TotalPrice, Mode, PaymentID,))
+        cursor.execute(update_query, (TotalPrice, mode, PaymentID,))
         db.commit()
-        flash('Data added successfully')
-        return redirect(url_for('bookingslot.display'))
+
     return render_template('add/payment.html')
+
+
+
+
+
+
+
 
 @payment.route('/payment/edit/<int:PaymentID>', methods = ['GET','POST'])
 @login_required

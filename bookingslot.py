@@ -52,6 +52,7 @@ def clearExpiredBookings():
         SET TimeFrom = NULL, TimeTo = NULL 
         WHERE date = %s AND TimeTo < %s
         '''
+
         cursor.execute(update_query, (current_date, current_time))
         db.commit()
 
@@ -71,17 +72,27 @@ def add_data():
         date = request.form['date']
         TimeFrom = request.form['TimeFrom']
         duration = request.form['duration']
-        if not (BSlotID or date or TimeFrom or duration):
+        if not all ((BSlotID or date or TimeFrom or duration)):
             flash('All fields are required')
 
+        try:
+            durationStr = int(duration)
+        except ValueError as ve:
+            flash('duration must be a valid number', 'error')
+            return redirect(url_for('bookingslot.add_data'))
+
+        TimeFormat = '%H:%M'
+        timeFrom_dt = datetime.strptime(TimeFrom, TimeFormat)
+        timeTo_dt = timeFrom_dt + timedelta(hours=durationStr)
+        TimeTo = timeTo_dt.strftime(TimeFormat)
 
         try:
             update_query = '''
                 UPDATE bookingslot
-                SET date=%s, duration=%s, TimeFrom=%s 
+                SET date=%s, duration=%s, TimeFrom=%s, TimeTo=%s 
                 WHERE BSlotID=%s
             '''
-            cursor.execute(update_query, (date,  duration, TimeFrom, BSlotID,))
+            cursor.execute(update_query, (date,  duration, TimeFrom, TimeTo, BSlotID,))
             db.commit()
             # return render_template('add/owner.html', VehicleID=BSlotID)
         except  mysql.connector.Error as e:
@@ -94,7 +105,7 @@ def add_data():
     return render_template('add/bookingslot.html')
 
 
-@booking.route('/bookingslot/add/<int:id>')
+@booking.route('/bookingslot/add/<int:BSlotID>')
 @login_required
 def owner(BSlotID):
     return render_template('add/owner.html', VehicleID=BSlotID)
