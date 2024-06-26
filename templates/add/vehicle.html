@@ -15,6 +15,7 @@
 {#        <br><br>#}
 {##}
         {% for slot in availableSlots %}
+            <label class="CAlign" for="Slot">Slot(Auto generated)</label><br>
             <input class="CAlign" type="number" id="VehicleID" name="VehicleID" placeholder="Enter Vehicle ID" value="{{ slot }}" required maxlength="20" readonly>
         {% endfor %}
         {#            <select  class="CAlign" id="VehicleID" name="VehicleID" class="form-control" value="{{ VehicleID }}" disabled>#}
@@ -23,8 +24,8 @@
 {#                {% endfor %}#}
 {#            </select>#}
         <br><br>
-
-        <select class="CAlign" id="VehicleType" name="VehicleType"  placeholder="VehicleType">
+        <label class="CAlign" for="Vehicle Type">Vehicle Type</label><br>
+        <select style="height: 30px;" class="CAlign" id="VehicleType" name="VehicleType"  placeholder="VehicleType">
             <option value="SUV">SUV</option>
             <option value="Sedan">Sedan</option>
             <option value="Hatchback">Hatchback</option>
@@ -40,6 +41,7 @@
 {#        <label for="VehicleName">Vehicle Name</label>#}
 
 {#        <label for="VehicleNumber">Vehicle Number</label>#}
+        <label class="CAlign" for="Reg. No">Reg. No</label><br>
         <input class="CAlign" type="text" id="VehicleNumber" name="VehicleNumber"placeholder="Reg. Number" required maxlength="10">
         <br><br>
 {#        <input id="CAlignID" type="submit" value="submit">#}

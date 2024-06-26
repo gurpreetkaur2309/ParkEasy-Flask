@@ -40,13 +40,13 @@ def add_data():
         print(PaymentID)
         TotalPrice = request.form['TotalPrice']
         Mode = request.form['Mode']
-
         print(request.form)
         update_query = '''
             UPDATE payment
             SET TotalPrice=%s, Mode=%s
             WHERE PaymentID=%s
         '''
+        cursor.execute(update_query, (TotalPrice, Mode, PaymentID,))
         db.commit()
         flash('Data added successfully')
         return redirect(url_for('bookingslot.display'))
@@ -106,22 +106,7 @@ def delete_data(PaymentID):
 
 
 def Generate_Receipt(PaymentID):
-    # update_query = '''
-    #     UPDATE payment p
-    #     JOIN bookingslot b ON p.PaymentID = b.BSlotID
-    #     JOIN vehicle v ON v.VehicleID = b.BSlotID
-    #     SET v.VehicleType=Null, v.VehicleNumber=Null, p.TotalPrice=Null, p.ReferenceNo=Null,
-    #     WHERE b.TimeFrom is Null and b.TimeTo is Null
-    # '''
-    #
-    # try:
-    #     cursor.execute(update_query, ())
-    #     db.commit()
-    #     return redirect(url_for('payment.display'))
-    # except mysql.connector.Error as e:
-    #     db.rollback()
-    #     print(e)
-    #     flash('Error updating data to null', 'error')
+
 
     Null_query = '''
         SELECT v.VehicleType, v.VehicleNumber, p.TotalPrice

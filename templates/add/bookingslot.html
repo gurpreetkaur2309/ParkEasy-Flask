@@ -2,10 +2,10 @@
 {% block title %}Add booking slot{% endblock %}
 {% block stylesheet %} {% endblock %}
 {% block content %}
-<h1>Add Your Booking Slot</h1>
+<h1 style="margin-top: 20px;">Add booking time and date</h1>
 
 <form method="POST" action="{{ url_for('bookingslot.add_data') }}">
-    <label class="CAlign" for="Slot">Slot</label><br>
+{#    <label class="CAlign" for="Slot">Slot</label><br>#}
     <input class="CAlign" id="VehicleID" name="VehicleID" type="hidden" value="{{ VehicleID }}" readonly>
     <br><br>
 
@@ -13,11 +13,11 @@
     <input class="CAlign" type="date" id="date" name="date">
     <br><br>
 
-    <label class="CAlign" for="TimeFrom">TimeFrom</label>
+    <label class="CAlign" for="TimeFrom">From</label>
     <input class="CAlign" id="TimeFrom" name="TimeFrom" type="time">
     <br><br>
 
-    <label class="CAlign" for="duration">Duration</label><br>
+    <br><label class="CAlign" for="duration">Duration</label><br>
     <select class="CAlign" id="duration" name="duration" onchange="toggleCustomTimeTo()">
         <option value="1">1 hour</option>
         <option value="2">2 hours</option>
