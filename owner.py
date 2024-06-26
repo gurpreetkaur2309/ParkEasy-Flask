@@ -48,7 +48,7 @@ def add_data():
     # SharedID = session.get('SharedID')
     if request.method == 'POST':
         print("In try")
-        OwnerID = session.get('BSlotID')
+        OwnerID = session.get('VehicleID')
         print("OwnerID: ", OwnerID)
         Name = request.form['Name']
         contact = request.form['contact']
@@ -73,10 +73,15 @@ def add_data():
         db.commit()
         #flash('Data added successfully')
         # return redirect(url_for('payment.add_data'))
-        return render_template('add/payment.html', VehicleID=OwnerID)
+        return redirect(url_for('payment.add_data', VehicleID=OwnerID))
     cursor.execute('SELECT OwnerID FROM owner WHERE Name is Null and contact is Null and address is Null')
     availableSlots = cursor.fetchone()
     return render_template('add/owner.html', availableSlots=availableSlots)
+
+@owner.route('/owner/add/<int:VehicleID>')
+@login_required
+def Owner(VehicleID):
+    return render_template('add/payment.html', VehicleID=OwnerID)
 
 @owner.route('/owner/edit/<int:OwnerID>', methods=['GET','POST'])
 @login_required

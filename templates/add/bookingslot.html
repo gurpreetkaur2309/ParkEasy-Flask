@@ -6,13 +6,16 @@
 
 <form method="POST" action="{{ url_for('bookingslot.add_data') }}">
     <label class="CAlign" for="Slot">Slot</label><br>
-    <input class="CAlign" id="VehicleID" name="VehicleID" type="number" value="{{ VehicleID }}" readonly>
+    <input class="CAlign" id="VehicleID" name="VehicleID" type="hidden" value="{{ VehicleID }}" readonly>
     <br><br>
 
     <label class="CAlign" for="date">Date</label><br>
-    <input class="CAlign" type="datetime-local" id="date" name="date">
+    <input class="CAlign" type="date" id="date" name="date">
     <br><br>
 
+    <label class="CAlign" for="TimeFrom">TimeFrom</label>
+    <input class="CAlign" id="TimeFrom" name="TimeFrom" type="time">
+    <br><br>
 
     <label class="CAlign" for="duration">Duration</label><br>
     <select class="CAlign" id="duration" name="duration" onchange="toggleCustomTimeTo()">
@@ -24,6 +27,8 @@
         <option value="8">8 hours</option>
         <option value="custom">custom</option>
     </select>
+    <br><br>
+
 
     {% if duration == 'custom' %}
         <label class="CAlign" for="To">To</label><br>

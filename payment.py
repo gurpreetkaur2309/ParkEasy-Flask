@@ -36,7 +36,7 @@ def display():
 @login_required
 def add_data():
     if request.method == 'POST':
-        PaymentID = session.get('OwnerID')
+        PaymentID = session.get('VehicleID')
         print(PaymentID)
         TotalPrice = request.form['TotalPrice']
         Mode = request.form['Mode']
@@ -50,10 +50,7 @@ def add_data():
         db.commit()
         flash('Data added successfully')
         return redirect(url_for('bookingslot.display'))
-    cursor.execute('SELECT PaymentID FROM payment WHERE TotalPrice is Null and Mode is Null')
-    db.commit()
-    availableSlots = cursor.fetchone()
-    return render_template('add/payment.html', availableSlots=availableSlots)
+    return render_template('add/payment.html')
 
 @payment.route('/payment/edit/<int:PaymentID>', methods = ['GET','POST'])
 @login_required

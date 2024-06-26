@@ -6,7 +6,7 @@
 <form id="commonFormID" method="POST"  action="{{ url_for('payment.add_data') }}">
     <div class="CAligndiv">
 {#        <label for="PaymentID">PaymentID</label>#}
-        <input class="CAlign" type="number" id="VehicleID" name="VehicleID" value="{{ VehicleID }}" >
+        <input class="CAlign" type="hidden" id="VehicleID" name="VehicleID" value="{{ VehicleID }}" >
         <br><br>
 {#        <label for="TotalPrice">Amount</label>#}
         <input class="CAlign" type="number" id="TotalPrice" name="TotalPrice" placeholder="Amount" required maxlength="5"
@@ -24,8 +24,8 @@
         <br><br>
 
 {#        <label for="ReferenceNo">Reference No.</label>#}
-        <input class="CAlign" type="text" id="ReferenceNo" name="ReferenceNo" placeholder="Reference No." required maxlength="25">
-        <br><br>
+{#        <input class="CAlign" type="text" id="ReferenceNo" name="ReferenceNo" placeholder="Reference No." required maxlength="25">#}
+{#        <br><br>#}
 
 {#        <input id="CAlignID" type="submit" value="Add data">#}
         <button id="CAlignID" type="submit" class="btn btn-primary">Submit</button>

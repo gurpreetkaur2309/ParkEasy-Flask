@@ -68,27 +68,38 @@ def clearExpiredBookings():
 def add_data():
     if request.method == 'POST':
         BSlotID = session.get('VehicleID')
+        print('BSlotID: ', BSlotID)
         # print(BSlotID)
-        date = request.form.get('date')
-        duration = request.form.get('duration')
+        date = request.form['date']
+        TimeFrom = request.form['TimeFrom']
+        duration = request.form['duration']
+        if not (BSlotID or date or TimeFrom or duration):
+            flash('All fields are required')
+
 
         try:
             update_query = '''
                 UPDATE bookingslot
-                SET date=%s, duration=%s 
+                SET date=%s, duration=%s, TimeFrom=%s 
                 WHERE BSlotID=%s
             '''
-            cursor.execute(update_query, (date,  duration, BSlotID,))
+            cursor.execute(update_query, (date,  duration, TimeFrom, BSlotID,))
             db.commit()
-            return render_template('add/owner.html', VehicleID=BSlotID)
+            # return render_template('add/owner.html', VehicleID=BSlotID)
         except  mysql.connector.Error as e:
             print(e)
             db.rollback()
             flash('Error adding data')
             return render_template('add/bookingslot.html')
-        return render_template('add/owner.html', VehicleID = BSlotID)
+        return redirect(url_for('owner.add_data', VehicleID=BSlotID))
+    BSlotID = session.get('VehicleID')
     return render_template('add/bookingslot.html')
 
+
+@booking.route('/bookingslot/add/<int:id>')
+@login_required
+def owner(BSlotID):
+    return render_template('add/owner.html', VehicleID=BSlotID)
 
 
 
