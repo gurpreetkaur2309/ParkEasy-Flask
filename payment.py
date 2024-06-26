@@ -37,35 +37,41 @@ def display():
 def add_data():
     if request.method == 'POST':
         PaymentID = session.get('VehicleID')
-        print(PaymentID)
-        TotalPrice = request.form['TotalPrice']
+        print('paymentID',PaymentID)
+        # TotalPrice = request.form['TotalPrice']
         mode = request.form['mode']
+
         
         try:
 
             fetch_query = '''
-                SELECT v.VehicleType, b.TimeFrom, b.TimeTo, p.TotalPrice, p.mode
-                FROM payment p
+                SELECT v.VehicleType, b.TimeFrom, b.TimeTo, b.duration, p.TotalPrice, p.mode
+                FROM payment p   
+                JOIN vehicle v on p.PaymentID = v.VehicleID
                 JOIN bookingslot b on p.PaymentID = b.BSlotID
-                JOIN vehicle v on p.PaymentID = b.BSlotID
-                WHERE p.PaymentID=%s;
+                WHERE p.PaymentID=%s
             '''
-            cursor.execute(fetch_query)
+            cursor.execute(fetch_query, (PaymentID,))
             db.commit()
             data = cursor.fetchone()
+            print("data: ",data)
             if data is None:
                 flash('No data found','error')
                 return redirect(url_for('payment.add_data'))
 
             VehicleType = data[0]
-            print(VehicleType)
+            print('VehicleType',VehicleType)
             TimeFrom = data[1]
+            print(TimeFrom, 'TimeFRom')
             TimeTo = data[2]
+            print(TimeTo, 'TimeTo')
+
+
             duration = (TimeTo - TimeFrom).total_seconds()/3600
-            print(duration, VehicleType, TimeTo, TimeFrom)
 
-            
 
+            rate=0
+            print('if ke upar')
             if VehicleType in ['sedan','SUV','Hatchback', 'Coupe']:
                 rate = 13
 
@@ -77,8 +83,34 @@ def add_data():
 
             elif VehicleType == 'Luxury-Vehicle':
                 rate=18
-
+            
+            # elif VehicleType == 'Van/Minivan':
+            #     rate=12
+            else:
+                rate = 0
+            print('if ke niche')
             Price = rate*duration
+            print('price',Price)
+            if not Price:
+                print('To nikal na')
+                flash('Unable to find price','error')
+
+            update_query = '''
+                UPDATE payment
+                SET mode=%s 
+                WHERE PaymentID=%s
+
+            '''
+            try:
+                cursor.execute(update_query, (mode, PaymentID,))
+                db.commit()
+                return redirect(url_for('bookingslot.display'))
+            except mysql.connector.Error as e:
+                print(e)
+                db.rollback()
+                flash('Error updating data', 'error')
+                return redirect(url_for('payment.add_data'))
+
             return render_template('add/payment.html',Price=Price, VehicleType=VehicleType)
 
         except mysql.connector.Error as e:
@@ -88,14 +120,7 @@ def add_data():
             return redirect(url_for('payment.add_data'))
 
 
-        update_query = '''
-            UPDATE payment
-            SET TotalPrice=%s, mode=%s 
-            WHERE PaymentID=%s
-
-        '''
-        cursor.execute(update_query, (TotalPrice, mode, PaymentID,))
-        db.commit()
+        
 
     return render_template('add/payment.html')
 

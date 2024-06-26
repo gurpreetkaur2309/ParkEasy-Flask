@@ -4,12 +4,20 @@
 {% block content %}
 <h1>Add payment details</h1>
 <form id="commonFormID" method="POST"  action="{{ url_for('payment.add_data') }}">
+        <div class="flash message">
+                {% for message in get_flashed_messages() %}
+                <div class="alert alert-success">{{ msg }}</div>
+                {% endfor %}
+        </div>
+
     <div class="CAligndiv">
-<!-- {#        <label for="PaymentID">PaymentID</label>#} -->
-        <input class="CAlign" type="hidden" id="VehicleID" name="VehicleID" value="{{ VehicleID }}" >
+        <!-- <label for="PaymentID">PaymentID</label>#} --> 
+         <input class="CAlign" type="hidden" id="VehicleID" name="VehicleID" value="{{ VehicleID }}" > 
+
+        <p><strong class="CAlign">Price: Rs{{Price}}</strong></p>
         <br><br>
 <!-- {#        <label for="TotalPrice">Amount</label>#} -->
-        <input class="CAlign" type="number" id="TotalPrice" name="TotalPrice" value="{{ Price }}">
+        <!-- <input class="CAlign" type="number" id="TotalPrice" name="TotalPrice" value="{{ Price }}"> -->
         <br><br>
 <!-- {#        <label for="Mode">Mode of Payment</label>#} -->
 <!-- {#        <input class="CAlign" type="text" id="mode" name="mode" placeholder="Mode of Payment" required maxlength="10">#} -->
@@ -21,9 +29,7 @@
         </select>
         <br><br>
 
-        <p>TotalPrice: $ {{ Price }}</p>
-
-        <p>Vehicle: {{VehicleType}}</p>
+    
 <!-- 
 {#        <label for="ReferenceNo">Reference No.</label>#}
 {#        <input class="CAlign" type="text" id="ReferenceNo" name="ReferenceNo" placeholder="Reference No." required maxlength="25">#}
@@ -33,12 +39,7 @@
         <button id="CAlignID" type="submit" class="btn btn-primary">Submit</button>
     </div>
 
-    <div class="flash message">
-        {% for message in get_flashed_messages() %}
-        <div class="flash-message success danger">{{ msg }}</div>
-        {% endfor %}
-    </div>
-</form>
+    </form>
 {% endblock %}
 
 
