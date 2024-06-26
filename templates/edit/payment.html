@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}Update payment{% endblock %}
+{% block stylesheet %}{% endblock %}
+{% block content %}
+<h1>Update payment details</h1>
+<form method="POST" href="{{ url_for('payment.edit_data', PaymentID=data[0]) }}">
+    <div class="CAligndiv">
+{#        <label for="TotalPrice">Amount</label>#}
+        <input class="CAlign" type="number" id="TotalPrice" name="TotalPrice" value="{{ data[1] }}" onkeypress="if(this.value.length==4) return false">
+        <br><br>
+
+{#        <label for="Mode">Mode of Payment</label>#}
+        <input class="CAlign" type="text"id="Mode" name="Mode" value="{{data[2]}}" required maxlength="10">
+        <br><br>
+
+{#        <label for="ReferenceNo">ReferenceNo</label>#}
+        <input class="CAlign" type="text" id="ReferenceNo" name="ReferenceNo" value="{{ data[3] }}" required maxlength="25">
+        <br><br>
+        <button class="btn btn-primary" id="EditAlignID" type="submit" value="update">Update</button>
+
+    </div>
+    <div class="flash message">
+        {% for msg in get_flashed_messages() %}
+        <div>{{ msg }}</div>
+        {% endfor %}
+    </div>
+</form>
+    <div class="Backlink"><a class="backlink" href="/payment">Back to payments</a></div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{%  extends 'layout.html' %}
+{% block title %}Vehicle Details{% endblock %}
+{% block stylesheet %} {% endblock %}
+{% block content %}
+
+    <h1>Vehicle Details</h1>
+    <div class="flash-messages">
+        {% for messages in get_flashed_messages() %}
+        <div class="flash-message success danger">{{ msg }}</div>
+        {% endfor %}
+    </div>
+
+    <table>
+        <thead>
+            <tr class="tabledata">
+
+                <th>Slot</th>
+                <th>Vehicle Type</th>
+                <th>Registration No.</th>
+                <th>Operations</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr class="tabledata">
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+{#               <td>{{ row[5] }}</td>#}
+
+                <td>
+                    <a class="edit-link" href="{{ url_for('vehicle.edit_data', VehicleID=row[0]) }}">Edit</a>
+{#                    <a class="delete-link" href="{{ url_for('<vehicle></vehicle>.delete_data', VehicleID=row[0]) }}">Delete</a>#}
+                </td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{#    <div class="pagination" style="display: flex; justify-content: center">#}
+{#        {% if page > 1 %}#}
+{#            <a style="margin-right: 50px" href="{{ url_for('vehicle.display', page = page - 1) }}"><button class="btn btn-primary"  style="margin:10px; type="submit">Previous</button> <i class="bi bi-skip-backward-fill"></i></a>#}
+{#        {% endif %}#}
+{#        {% if has_next %}#}
+{#            <a href="{{ url_for('vehicle.display', page = page + 1) }}"><button style="margin:10px;" type="submit" class="btn btn-primary">Next</button> <i class="bi bi-skip-forward=fill"></i></a>#}
+{#        {% endif %}#}
+{##}
+{#    </div>#}
+
+
+    <div class="pagination" style="display: flex; justify-content: center">
+        {% if page > 1 %}
+            <a href="{{ url_for('vehicle.display', page=page-1) }}">
+                <button class="btn btn-primary" style="margin:10px;">Previous</button>
+            </a>
+        {% endif %}
+        {% if has_next %}
+            <a href="{{ url_for('vehicle.display', page=page+1) }}">
+                <button class="btn btn-primary" style="margin:10px;">Next</button>
+            </a>
+        {% endif %}
+    </div>
+
+    <div style="text-align: center">
+{#        <a class="add link" href="{{ url_for('vehicle.add_data') }}">Add data</a>#}
+
+    </div>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+

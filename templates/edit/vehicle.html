@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block title %}Edit Vehicle Details{% endblock %}
+{% block stylesheet %} {% endblock %}
+{% block content %}
+<h1>Update Vehicle Details</h1>
+<form method="POST" href="{{ url_for('vehicle.edit_data', VehicleID = data[0]) }}">
+
+    <div class="CAligndiv">
+{#        <label for="VehicleType">Vehicle Type</label>#}
+{#        <input class="CAlign" type="text" id="VehicleType" name="VehicleType" value="{{ data[1] }}" placeholder="Vehicle Type">#}
+        <select class="CAlign" id="VehicleType" name="VehicleType" placeholder="VehicleType" value="{{ data[1] }}">
+            <option value="SUV">SUV</option>
+            <option value="Sedan">Sedan</option>
+            <option value="Hatchback">Hatchback</option>
+            <option value="2-Wheeler">2-Wheeler</option>
+            <option value="Heavy-Vehicle">Heavy-Vehicle</option>
+        </select>
+        <br><br>
+{#        <label for="VehicleCompany">Vehicle Company</label>#}
+
+
+{#        <label for="VehicleCompany">Vehicle Company</label>#}
+        <input class="CAlign" type="text" id="VehicleCompany" name="VehicleCompany" value="{{ data[2] }}" placeholder="Vehicle Company" required maxlength="20">
+        <br><br>
+
+{#        <label for="VehicleName">Vehicle Name</label>#}
+        <input class="CAlign" type="text" id="VehicleName" name="VehicleName" value="{{ data[3] }}" placeholder="Vehicle Name" required maxlength="20">
+        <br><br>
+
+{#        <label for="VehicleNumber">VehicleNumber</label>#}
+        <input class="CAlign" type="text" id="VehicleNumber" name="VehicleNumber" value="{{ data[4] }}" placeholder="Vehicle Number" required maxlength="10">
+        <br><br>
+        <button class="btn btn-primary" id="EditAlignID" type="submit" value="update">Update</button>
+
+    </div>
+    <div for="flash messages">
+        {% for message in get_flashed_messages() %}
+        <div class="flash-message success danger">{{ msg }}</div>
+        {% endfor %}
+    </div>
+</form>
+    <div class="Backlink"><a class="backlink" href="/slots"><i class="bi bi-box-arrow-left"></i>&nbsp;Back to Vehicles</a></div>
+
+{% endblock %}

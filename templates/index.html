@@ -1,0 +1,96 @@
+{% extends 'layout.html' %}
+{% block content %}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <title>EasyPark</title>
+
+</head>
+<body>
+    <div class="text-center">
+        <h3>ParkEasy</h3>
+        <h3>Your parking solutions in seconds</h3>
+    </div>
+    <div class="text-center">
+        <img style="width:60%; height:60%; margin-top:40px;" class="rounded" src="static/ParkEasy.jpeg"></div>
+    <div class="text-center">
+{#       <br> <p class="h3">Hurry up! Login now to continue booking your slot now.</p>#}
+{#        {% if session['username'] %}#}
+{#            <a href="/register"><button type="submit" class="btn btn-primary">Register</button> </a><br>#}
+{#            <a href="/login"><button style="margin: 20px;" type="submit" class="btn btn-primary">Login</button></a>#}
+{#        {% endif %}#}
+    <div class="container m-5 p-5">
+        <h3>Key Features</h3>
+
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            <div class="col">
+                <div class="card border-0">
+                    <img src="data:image/png;base64,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" class="card-img-top" alt="..." style="height:150px">
+                    <div class="card-body">
+                        <h5 class="card-title">Very Affordable</h5>
+                        <p class="card-text">EasyPark provides very cheap rates for every type of parking including Sedan, Suv, Hatchback, Pickup Trucks, 2-Wheelers and Heavy Vehicles.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card border-0">
+                    <img src="data:image/png;base64,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" style="height:150px" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Flexible slots</h5>
+                        <p class="card-text">You can schedule your timings as per your convenience on the basis of daily, weekly or monthly usage. Your slot will be alloted to someone else when not in use.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card border-0">
+                    <img src="https://www.shutterstock.com/image-vector/smart-car-remote-sensing-sensor-260nw-2342993739.jpg" style="height:162px" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Space Detecting Sensors</h5>
+                        <p class="card-text">Our parking is equipped with intelligent sensors which detect whether the space is empty or not in case of human error that makes us more reliable.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card border-0">
+                    <img src="https://www.shutterstock.com/image-vector/smartphone-comparison-girl-young-lady-260nw-1538113835.jpg" style="height:163px" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Compare confidently</h5>
+                        <p class="card-text">We have a wide range of parking slot types which provides user the flexibility to browse through different types and location of slots as per their usability and convinience.</p>
+                    </div>
+                </div>
+            </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+{#    Footer ststy #}
+{#    <footer id="footer">#}
+{#        <div class="container">#}
+{#            <div class="row">#}
+{#                <div class="col">#}
+{#                    <h3>About us</h3>#}
+{#                    <p>Address: EasyPark, Professor Colony, Patel Nagar, Opposite INOX Sapna Sangeeta, Near Apna Sweets, Indore(452001)</p>#}
+{#                    <p>Contact: 8085712830</p>#}
+{#                    <p>Email us at: EasyParkSolution@hotmail.com</p>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </footer>#}
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pugzvbkm6xf6gxjenlmugrjxvbnuzt9qbbavblwcsogabyfzo0t0to5eqruptly" crossorigin="anonymous"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+</body>
+</html>
+{% endblock %}

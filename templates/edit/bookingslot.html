@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}Update Bookingslot{% endblock %}
+{% block stylesheet %}{% endblock %}
+{% block content %}
+<h1>Update Bookingslot</h1>
+<form method="POST" href="{{ url_for('bookingslot.edit_data', BSlotID=data[0]) }}">
+{#    <label for="Date">Date</label>#}
+
+
+    <br><br>
+    <input class="CAlign" type="date" id="Date" name="Date" value="{{ data[1] }}" placeholder="Date" required max="31/12/3000" maxlength="4">
+    <br><br>
+
+{#    <label for="TimeFrom">From</label>#}
+    <input class="CAlign" type="time" id="TimeFrom" name="TimeFrom" value="{{ data[2] }}" >
+    <br><br>
+
+{#    <label for="TimeTo">To</label>#}
+    <input class="CAlign" type="time" id="TimeTo" name="TimeTo" value="{{ data[3] }}">
+    <br><br>
+    <button class="btn btn-primary" id="EditAlignID" type="submit" value="update">Update</button>
+{#    <input type="submit" value="Update data">#}
+    <div class="flash messages">
+        {% for msg in get_flashed_messages() %}
+        <div>{{ msg }}</div>
+        {% endfor %}
+    </div>
+</form>
+<a class="backlink" href="/bookingslot">Back to booking slots</a>
+{% endblock %}

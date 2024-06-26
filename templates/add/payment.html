@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block title %}Add payment{% endblock %}
+{% block stylesheet %}{% endblock %}
+{% block content %}
+<h1>Add payment details</h1>
+<form id="commonFormID" method="POST"  action="{{ url_for('payment.add_data') }}">
+    <div class="CAligndiv">
+{#        <label for="PaymentID">PaymentID</label>#}
+        <input class="CAlign" type="number" id="VehicleID" name="VehicleID" value="{{ VehicleID }}" >
+        <br><br>
+{#        <label for="TotalPrice">Amount</label>#}
+        <input class="CAlign" type="number" id="TotalPrice" name="TotalPrice" placeholder="Amount" required maxlength="5"
+        onkeypress="if(this.value.length==5) return false">
+        <br><br>
+
+{#        <label for="Mode">Mode of Payment</label>#}
+{#        <input class="CAlign" type="text" id="Mode" name="Mode" placeholder="Mode of Payment" required maxlength="10">#}
+        <select id="Mode" name="Mode" class="CAlign">
+            <option value="UPI">UPI</option>
+            <option value="Cash">Cash</option>
+            <option value="Card">Card</option>
+            <option value="Net-Banking">Net-Banking</option>
+        </select>
+        <br><br>
+
+{#        <label for="ReferenceNo">Reference No.</label>#}
+        <input class="CAlign" type="text" id="ReferenceNo" name="ReferenceNo" placeholder="Reference No." required maxlength="25">
+        <br><br>
+
+{#        <input id="CAlignID" type="submit" value="Add data">#}
+        <button id="CAlignID" type="submit" class="btn btn-primary">Submit</button>
+    </div>
+
+    <div class="flash message">
+        {% for message in get_flashed_messages() %}
+        <div class="flash-message success danger">{{ msg }}</div>
+        {% endfor %}
+    </div>
+</form>
+{% endblock %}
+
+

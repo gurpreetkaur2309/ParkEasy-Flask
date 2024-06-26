@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block title %}Update slot{% endblock %}
+{% block stylesheet %} {% endblock %}
+{% block content %}
+<h1>Update slot details</h1>
+<form method="POST" href="{{ url_for('Slots.edit_data', SlotID = data[0]) }}">
+    <div class="CAligndiv">
+{#        <label for="space">Space</label>#}
+{#        <input class="CAlign" type="text" id="space" name="space" value="{{data[1]}}" placeholder="Space" >#}
+        <select id="space" name="space" class="CAlign" style="margin-left: 600px; width: 250px; ">
+            <option value="Car/Jeep">Car/Jeep</option>
+            <option value="2-Wheeler">2-Wheeler</option>
+            <option value="Heavy-Vehicle">Heavy-Vehicle</option>
+            <option value="Luxury-Vehicle">Luxury-Vehicle</option>
+            <option value="Heavy-Vehicle">Heavy-Vehicle</option>
+        </select>
+        <br><br>
+
+{#        <label for="price">Price</label>#}
+        <input class="CAlign" type="number" id="price" name="price" value="{{data[2]}}" placeholder="Price" required maxlength="3" onkeypress="if(this.value.length==3) return false">
+        <br><br>
+        <a id="RButton"><button class="btn btn-primary" id="EditAlignID" type="submit" value="update">Update</button></a>
+
+    </div>
+
+    <div class="flash messages">
+        {% for msg in get_flashed_messages() %}
+        <div class="flash-message success danger">{{ msg }}</div>
+        {% endfor %}
+    </div>
+</form>
+    <div class="Backlink" style="margin-left: 0px;"><a class="backlink go-back-button" href="/slots" ><i class="bi bi-box-arrow-left"></i>&nbsp;Back to Slots</a></div>
+
+{% endblock %}
+

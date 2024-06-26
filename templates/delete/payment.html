@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}Delete payment{% endblock %}
+{% block stylesheet %}{% endblock %}
+{% block content %}
+<h1>Delete following data</h1>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flash messages">
+    {% for message in get_flashed_messages() %}
+    <div class="flash message {{ category }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+<form method="POST" href="{{ url_for('payment.delete_data', PaymentID=data[0]) }}">
+    <div style="margin-top: 50px">
+        <p style="margin-left: 38%">Are you sure you want to delete the folloeing data?</p>
+        <p style="margin-left: 45%">TotalPrice: {{ data[1] }}</p>
+        <p style="margin-left: 45.5%">Mode: {{ data[2] }}</p>
+        <p style="margin-left: 39%">ReferenceNo: {{ data[3] }}</p>
+        <button style="margin-left: 47%" type="submit" class="btn btn-primary">Delete</button>
+        </div>
+</form>
+<a style="margin-left: 45%; margin-top:10%" class="backlink" href="/payment">Back to payments</a>
+{% endblock %}

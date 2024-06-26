@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{{url_for('static','style.css')}}">
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width initial-scale=1.0">
+
+{% endblock %}
+{% block content %}
+
+
+    <h1 style="text-align:center">Dashboard</h1>
+    <div class="content">
+        <br><br>
+        <div class="flash message">
+            {% for msg in get_flashed_messages() %}
+            <div>{{ msg }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row row-cols-1 row-cols-md-4 g-4 ms-6" style="margin-left:150px;">
+        <div class="col m-4">
+            <div class="card bg-light">
+                <div class="card-header">Owner</div>
+                <div class="card-body">
+                    <p class="card-text">No. of owners: {{ owner_count }}</p>
+                    <a class="btn btn-primary" href="{{ url_for('owner.display') }}">View Owners</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col m-4">
+            <div class="card bg-light" style="width:350px;">
+                <div class="card-header">Slots Booked</div>
+                <div class="card-body">
+                    <p class="card-text">No. of slots booked: {{ bookingslot_count }}</p>
+                    <a class="btn btn-primary" href="{{ url_for('bookingslot.display') }}">View Slots</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col m-4">
+            <div class="card bg-light" style="width:350px;">
+                <div class="card-header">Vehicles</div>
+                <div class="card-body">
+                    <p class="card-text">No. of vehicles: {{ vehicle_count }}</p>
+                    <a class="btn btn-primary" href="{{ url_for('vehicle.display') }}">View Vehicles</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row row-cols-1 row-cols-md-4 g-4 ms-6" style="margin-left:150px;">
+
+        <div class="col m-4">
+            <div class="card bg-light" style="width:350px;">
+                <div class="card-header">Payment</div>
+                <div class="card-body">
+                    <p class="card-text">No. of payments: {{ payment_count }}</p>
+                    <a class="btn btn-primary" href="{{ url_for('payment.display') }}">View Payments</a>
+                </div>
+            </div>
+        </div>
+        {% if role == 'admin' %}
+            <div class="col m-4">
+                <div class="card" style="width:350px;">
+                    <div class="card-header">Sensor(Only for admin)</div>
+                    <div class="card-body">
+                        <p class="card-text">No. of sensor: {{ sensor_count }}</p>
+                        <a class="btn btn-primary" href="{{ url_for('sensor.display') }}">View Sensors</a>
+                    </div>
+                </div>
+            </div>
+        <div class="col m-4">
+            <div class="card" style="width:350px;">
+                <div class="card-header">Sensor(Only for admin)</div>
+                <div class="card-body">
+                    <p class="card-text">No. of sensor: {{ sensor_count }}</p>
+                    <a class="btn btn-primary" href="{{ url_for('sensor.display') }}">View Sensors</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    </div>
+
+
+
+    <p style="text-align: center"><a href="/details/add"><button type="submit" class="btn btn-primary">Book Slot</button></a></p>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+

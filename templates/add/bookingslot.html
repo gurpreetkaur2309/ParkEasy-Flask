@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block title %}Add booking slot{% endblock %}
+{% block stylesheet %} {% endblock %}
+{% block content %}
+<h1>Add Your Booking Slot</h1>
+
+<form method="POST" action="{{ url_for('bookingslot.add_data') }}">
+    <label class="CAlign" for="Slot">Slot</label><br>
+    <input class="CAlign" id="VehicleID" name="VehicleID" type="number" value="{{ VehicleID }}" readonly>
+    <br><br>
+
+    <label class="CAlign" for="date">Date</label><br>
+    <input class="CAlign" type="datetime-local" id="date" name="date">
+    <br><br>
+
+
+    <label class="CAlign" for="duration">Duration</label><br>
+    <select class="CAlign" id="duration" name="duration" onchange="toggleCustomTimeTo()">
+        <option value="1">1 hour</option>
+        <option value="2">2 hours</option>
+        <option value="3">3 hours</option>
+        <option value="4">4 hours</option>
+        <option value="6">6 hours</option>
+        <option value="8">8 hours</option>
+        <option value="custom">custom</option>
+    </select>
+
+    {% if duration == 'custom' %}
+        <label class="CAlign" for="To">To</label><br>
+        <input class="CAlign" type="time" id="TimeTo" name="TimeTo">
+        <br><br>
+    {% endif %}
+
+
+        <button style="margin-top: 30px;" id="CAlignID" type="submit" value="submit" class="btn btn-primary">Submit</button>
+
+        </form>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+
+        $(document).ready(function() {
+            $('#date').datepicker();
+        });
+    </script>
+    <div class="flash message">
+        {% for msg in get_flashed_messages() %}
+            <div class="alert alert-danger">{{ msg }}</div>
+        {% endfor %}
+    </div>
+
+
+
+{% endblock %}
+
+
+

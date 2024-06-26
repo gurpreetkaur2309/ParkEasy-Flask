@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}Delete vehicle{% endblock %}
+{% block stylesheet %}{% endblock %}
+{% block content %}
+<h1>Delete Vehicle Details</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" href="{{ url_for('vehicle.delete_data', VehicleID=data[0]) }}">
+        <div style="margin-top: 50px">
+            <p style="margin-left: 37%">Are you sure you want to delete the following Vehicle?</p>
+            <p style="margin-left: 45%">VehicleType: {{ data[1] }}</p>
+            <p style="margin-left: 43%">VehicleCompany: {{ data[2] }}</p>
+            <p style="margin-left: 45%">VehicleName: {{ data[3] }}</p>
+            <p style="margin-left: 43%">VehicleNumber: {{ data[4] }}</p>
+            <button style="margin-left: 50%" type="submit" class="btn btn-primary">Delete</button>
+        </div>
+    </form>
+
+<a style="margin-left: 49%" href="/vehicle">Back to vehicle</a>
+{% endblock %}

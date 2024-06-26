@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- Include any additional styling or scripts here -->
+</head>
+<body>
+<h1 style="margin-left: 150px; margin-top: 10px;">Receipt</h1>
+<div class="flash message">
+    {% for msg in get_flashed_messages() %}
+        <div class="flash-messages success-danger">
+            {{ msg }}
+        </div>
+    {% endfor %}
+</div>
+<div class="CAlign" style="margin-left: 650px; margin-top: 15px; border: 2px solid black; padding:20px; width: 300px; padding-left: 45px">
+    <p><strong>Slot:</strong>{{ ReceiptID }}</p>
+    <p><strong>Vehicle Type: </strong>{{ VehicleType }}</p>
+    <p><strong>Registration Number: </strong>{{ VehicleNumber }}</p>
+    <p><strong>Date:    </strong>{{ date }}</p>
+    <p><strong>Price: </strong>{{ Price }}</p>
+    <p><strong>Mode: </strong>{{ Mode }}</p>
+    <p><strong>TimeFrom: </strong>{{ TimeFrom }}</p>
+    <p><strong>Time To: </strong>{{ TimeTo }}</p>
+
+</div>
+
+<br>
+</body>
+</html>
+{% endblock %}

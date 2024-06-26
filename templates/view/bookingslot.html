@@ -1,0 +1,48 @@
+{%  extends "layout.html" %}
+{% block title %}booking slot{% endblock %}
+{% block stylesheet %} {% endblock %}
+{% block content %}
+<h1>Slots booked</h1>
+<div class="flash message">
+    {% for message in get_flashed_messages() %}
+    <div class="flash-message success danger">{{ msg }}</div>
+    {% endfor %}
+</div>
+<table border="2">
+    <thead>
+    <tr class="tabledata">
+        <th>SlotID</th>
+        <th>Date</th>
+        <th>Owner</th>
+        <th>Reg. No</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Operations</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in data %}
+    <tr class="tabledata">
+
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1] }}</td>
+
+        <td><a class="booking" style="color: black;text-decoration: none" href="{{ url_for('owner.display') }}">{{ row[4] }}</a></td>
+        <td><a class="booking" style="color: black; text-decoration: none" href="{{ url_for('vehicle.display') }}">{{ row[5] }}</a></td>
+
+        <td>{{ row[2] }}</td>
+        <td>{{ row[3] }}</td>
+    <td>
+        <a class="edit-link" href="{{ url_for('bookingslot.edit_data',BSlotID=row[0]) }}">Edit</a>
+{#        <a class="delete-link" href="{{ url_for('bookingslot.delete_data',BSlotID=row[0]) }}">Delete</a>#}
+    </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div style="margin-left: 600px; margin-top: 10px; margin-bottom: 10px; ">
+{#    <a class="add data" href="{{ url_for('bookingslot.add_data') }}">Add link</a>#}
+    <a href="/dashboard"><button type="submit" class="btn btn-primary">Back to Dashboard</button> </a>
+    <a href="{{ url_for('vehicle.add_data') }}"><button type="submit" class="btn btn-primary">Book another slot</button> </a>
+</div>
+{% endblock %}

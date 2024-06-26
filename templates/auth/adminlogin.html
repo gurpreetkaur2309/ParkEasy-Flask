@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block title %}Admin login{% endblock %}
+{% block content %}
+<h1>Admin login</h1>
+    <form method="POST" action="{{ url_for('auth.AdminLoginForm') }}">
+        <div class="flash messages">
+            {% for msg in get_flashed_messages() %}
+            <div class="alert alert-success">{{ msg }}</div>
+            {% endfor %}
+        </div>
+        {% if errors %}
+        <ul>
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+{#    Username#}
+    <label class="CAlign" for="username">username</label>
+    <input class="CAlign" id="username" name="username" type="text" minlength="6" maxlength="25" required>
+    <br><br>
+
+{#    Password #}
+    <label class="CAlign" for="passwors">password</label>
+    <input class="CAlign" id="password" name="password" type="password" minlength="6" maxlength="8" required>
+    <br><br>
+
+    <button id="CAlignID" type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock %}

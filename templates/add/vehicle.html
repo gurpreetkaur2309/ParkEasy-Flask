@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block title %}Add vehicle details{% endblock %}
+{% block stylesheet %} {% endblock %}
+{% block content %}
+<h1>Add vehicle details</h1>
+<form id="commonFormID" method="POST" action="{{ url_for('vehicle.add_data') }}">
+    <div class="flash messages">
+        {% for msg in get_flashed_messages() %}
+         <div class="alert alert-danger">{{ msg }}</div>
+        {% endfor %}
+    </div>
+    <div class="CAligndiv">
+{#        <label for="VehicleID">VehicleID</label>#}
+{#     <input  class="CAlign" type="number" id="VehicleID" name="VehicleID" placeholder="Vehicle ID"required maxlength="20">#}
+{#        <br><br>#}
+{##}
+        {% for slot in availableSlots %}
+            <input class="CAlign" type="number" id="VehicleID" name="VehicleID" placeholder="Enter Vehicle ID" value="{{ slot }}" required maxlength="20" readonly>
+        {% endfor %}
+        {#            <select  class="CAlign" id="VehicleID" name="VehicleID" class="form-control" value="{{ VehicleID }}" disabled>#}
+{#                {% for slot in availableSlots %}#}
+{#                    <option value="{{ slot }}">{{ slot }}</option>#}
+{#                {% endfor %}#}
+{#            </select>#}
+        <br><br>
+
+        <select class="CAlign" id="VehicleType" name="VehicleType"  placeholder="VehicleType">
+            <option value="SUV">SUV</option>
+            <option value="Sedan">Sedan</option>
+            <option value="Hatchback">Hatchback</option>
+            <option value="2-Wheeler">2-Wheeler</option>
+            <option value="Heavy-Vehicle">Heavy-Vehicle</option>
+        </select>
+{#        <input class="CAlign" type="search" list="mylist" placeholder="VehicleType" id="VehicleType" name="VehicleType" required maxlength="15">#}
+
+        <br><br>
+
+{#        <label for="VehicleCompany">Vehicle Company</label>#}
+
+{#        <label for="VehicleName">Vehicle Name</label>#}
+
+{#        <label for="VehicleNumber">Vehicle Number</label>#}
+        <input class="CAlign" type="text" id="VehicleNumber" name="VehicleNumber"placeholder="Reg. Number" required maxlength="10">
+        <br><br>
+{#        <input id="CAlignID" type="submit" value="submit">#}
+        <button type="submit" id="CAlignID" class="btn btn-primary">Submit</button>
+    </div>
+
+</form>
+{% endblock %}

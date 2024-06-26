@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block title %}Add Slots{% endblock %}
+{% block stylesheet %}{% endblock %}
+{% block content %}
+<h1>Add Parking Slots</h1>
+<form method="POST" href="{{ url_for('Slots.add_data') }}">
+    <div class="CAligndiv">
+{#        <label for="SlotID">SlotID</label>#}
+{#        <input class="CAlign" type="number" id="SlotID" name="SlotID" placeholder="SlotID">
+        <br><br>
+
+{#        <label " for="space">Space</label>#}
+        <select id="space" name="space" class="CAlign" style="margin-left: 600px; width: 250px; ">
+            <option value="Car/Jeep">Car/Jeep</option>
+            <option value="2-Wheeler">2-Wheeler</option>
+            <option value="Heavy-Vehicle">Heavy-Vehicle</option>
+            <option value="Luxury-Vehicle">Luxury-Vehicle</option>
+            <option value="Heavy-Vehicle">Heavy-Vehicle</option>
+        </select>
+{#        <input class="CAlign" type="search" list="mylist" id="space" name="space" placeholder="Space">#}
+        <br><br>
+
+{#        <label  for="price">Price</label>#}
+        <input class="CAlign" type="number" id="price" name="price" required min="1" maxlength="3" placeholder="Price" required onkeypress="if(this.value.length==3) return false">
+        <br><br>
+
+{#        <input id="CAlignID" type="submit" value="submit">#}
+{#        <a id="CAlignID"><button type="submit" class="btn btn-primary">Submit</button></a>#}
+        <button id="CAlignID" type="submit" class="btn btn-primary">Submit</button>
+    </div>
+
+    <div class="flash message">
+        {% for message in get_flashed_messages() %}
+        <div class="flash-message success danger">{{ msg }}</div>
+        {% endfor %}
+    </div>
+</form>
+{% endblock %}

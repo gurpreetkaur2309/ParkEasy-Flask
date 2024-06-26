@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+{% block title %}Update Sensor details{% endblock %}
+{% block stylesheet %} {% endblock %}
+{% block content %}
+<h1>Update Sensor data</h1>
+<form method="POST" action="{{ url_for('sensor.edit_data', SensorID=data[0]) }}">
+    <div>
+{#        <label for="isParked">isParked</label>#}
+        <div class="RAlign" ><input type="radio" id="isParked" name="isParked" value="{{ data[1] }}">isParked<br></div>
+        <div class="RAlign"> <input type="radio" id="isParked" name="isParked" value="{{ data[1] }}">NotParked</div>
+
+        <br><br>
+        <a class="RAlignID" ><button class="btn btn-primary" id="EditAlignID" type="submit" value="update">Update</button></a>
+
+    </div>
+
+    <div class="flash messages">
+        {% for msg in get_flashed_messages() %}
+        <div class="flash message success danger">{{ msg }}</div>
+        {% endfor %}
+    </div>
+
+</form>
+<a class="backlink" href="/sensor">Back to Sensors</a>
+{% endblock %}

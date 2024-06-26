@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block title %}Owner{% endblock %}
+{% block stylesheet %} {% endblock %}
+{% block content %}
+    <h1 style="margin-top: 20px; padding-top: 20px">Add owner Details</h1>
+
+    <form id="commonFormID" method="POST" href="{{ url_for('owner.add_data') }}">
+
+    <div class="CAligndiv">
+
+        <input class="CAlign" type="number" id="VehicleID" name="VehicleID" value="{{ VehicleID }}" disabled>
+    <br><br>
+
+{#        <label for="Name"></label>#}
+        <input class="CAlign" id="Name" name="Name" placeholder="Name" required maxlength="30">
+        <br><br>
+
+{#        <label for="contact"></label>#}
+        <input class="CAlign" type="number" id="contact" name="contact" placeholder="Contact" required onkeypress="if(this.value.length==12) return false">
+        <br><br>
+
+{#        <label  for="address"></label>#}
+        <input class="CAlign" type="text" id="address" name="address" placeholder="Address" required maxlength="40">
+        <br><br>
+
+{#        <input id="CAlignID" type="submit" value="Submit">#}
+        <button id="CAlignID" type="submit" class="btn btn-primary">Submit</button>
+    </div>
+        <div class="flash-message">
+            {% for msg in get_flashed_messages() %}
+                <div class="flash-message success danger">{{ msg }}</div>
+            {% endfor %}
+        </div>
+
+</form>
+{% endblock %}

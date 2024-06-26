@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}Delete Sensor{% endblock %}
+{% block stylesheet %}{% endblock %}
+{% block content %}
+<h1>Delete Sensor data</h1>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flash messages">
+    {% for message in get_flashed_messages() %}
+    <div class="flash message {{ category }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<form method="POST" href="{{ url_for('sensor.delete_data', SensorID=data[0]) }}">
+    <div style="margin-top: 50px">
+        <p style="margin-left:400px">Are you sure you want to delete current settings?(Sensors are generally accurate)</p>
+        <p style="margin-left: 680px">isParked: {{ data[1] }}</p>
+        <button style="margin-left: 690px"type="submit" class="btn btn-primary">Delete
+    </div>
+
+</form>
+<a style="margin-left: 46%;" href="/sensor">Back to sensors</a>
+{% endblock %}

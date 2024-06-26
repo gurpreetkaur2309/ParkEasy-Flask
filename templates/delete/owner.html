@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title  %}Delete{% endblock %}
+{% block stylesheet %} {% endblock %}
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash messages">
+            {% for message in get_flashed_messages() %}
+                <div class="flash message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+    <form method="POST" href="{{ url_for('owner.delete_data', OwnerID=data[0]) }}">
+        <div style="margin-top: 50px">
+
+            <p style="margin-left: 37%">Are you sure you want to delete the following data?</p>
+            <p style="margin-left: 45%">Name: {{ data[1] }}</p>
+            <p style="margin-left: 45%">Address: {{ data[2] }}</p>
+            <p style="margin-left: 46%">Contact: {{ data[3] }}</p>
+            <button style="margin-left: 46%" type="submit" class="btn btn-primary">Delete data</button>
+        </div>
+    </form>
+    <a style="margin-left: 43%"class="backlink" href="/bookingslot">Back to booking the slots</a>
+{% endblock %}

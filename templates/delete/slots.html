@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}Delete slot{% endblock %}
+{% block stylesheet %}{% endblock %}
+{% block content %}
+<h1>Delete Slot</h1>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flash messages">
+    {% for message in get_flashed_messages() %}
+    <div class="flash message {{ category }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+<form method="POST" href="{{ url_for('Slots.delete_data', SlotID=data[0]) }}">
+    <div style="margin-top: 50px">
+        <p style="margin-left: 38%">Are you sure you want to delete the following slot?</p>
+        <p style="margin-left: 45%">Space: {{ data[1] }}</p>
+        <p style="margin-left: 46.4%">Price: {{ data[2] }}</p>
+        <button style="margin-left:47%   " type="submit" value="Delete" class="btn btn-primary">Delete</button>
+    </div>
+</form>
+    <a style="margin-left:46%; margin-top: 10px; padding-top:20px" href="/slots">Back to slots</a>
+{% endblock %}
+
+
