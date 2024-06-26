@@ -1,4 +1,4 @@
-This is real time parking website which detects the parking slots using sensors.
+This is real time parking management website implementing CRUD operations.
 The application is built using Flask framework(Python) and Sql database.
 The data is generated using the Faker Module of Python.
 Background Scheduler checks the entry every 5 minutes and set it to null if the timeFrame is expired.
