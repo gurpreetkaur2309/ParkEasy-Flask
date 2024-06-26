@@ -32,96 +32,69 @@ def display():
 
     return render_template('view/payment.html', data=data, NullID=NullID)
 
-@payment.route('/payment/add', methods = ['GET','POST'])
+@payment.route('/payment/add', methods=['GET', 'POST'])
 @login_required
 def add_data():
     if request.method == 'POST':
         PaymentID = session.get('VehicleID')
-        print('paymentID',PaymentID)
-        # TotalPrice = request.form['TotalPrice']
         mode = request.form['mode']
 
-        
         try:
-
             fetch_query = '''
-                SELECT v.VehicleType, b.TimeFrom, b.TimeTo, b.duration, p.TotalPrice, p.mode
+                SELECT v.VehicleType, b.TimeFrom, b.TimeTo
                 FROM payment p   
                 JOIN vehicle v on p.PaymentID = v.VehicleID
                 JOIN bookingslot b on p.PaymentID = b.BSlotID
                 WHERE p.PaymentID=%s
             '''
             cursor.execute(fetch_query, (PaymentID,))
-            db.commit()
             data = cursor.fetchone()
-            print("data: ",data)
+
             if data is None:
-                flash('No data found','error')
+                flash('No data found', 'error')
                 return redirect(url_for('payment.add_data'))
 
             VehicleType = data[0]
-            print('VehicleType',VehicleType)
             TimeFrom = data[1]
-            print(TimeFrom, 'TimeFRom')
             TimeTo = data[2]
-            print(TimeTo, 'TimeTo')
+            duration = (TimeTo - TimeFrom).total_seconds() / 3600
 
-
-            duration = (TimeTo - TimeFrom).total_seconds()/3600
-
-
-            rate=0
-            print('if ke upar')
-            if VehicleType in ['sedan','SUV','Hatchback', 'Coupe']:
+            rate = 0
+            if VehicleType in ['sedan', 'SUV', 'Hatchback', 'Coupe']:
                 rate = 13
-
             elif VehicleType == '2-Wheeler':
                 rate = 8
-
             elif VehicleType == 'Heavy-Vehicle':
                 rate = 15
-
             elif VehicleType == 'Luxury-Vehicle':
-                rate=18
-            
-            # elif VehicleType == 'Van/Minivan':
-            #     rate=12
-            else:
-                rate = 0
-            print('if ke niche')
-            TotalPrice = rate*duration
-            print('price',TotalPrice)
-            if not Price:
-                print('To nikal na')
-                flash('Unable to find price','error')
+                rate = 18
+
+            TotalPrice = rate * duration
 
             update_query = '''
                 UPDATE payment
                 SET mode=%s, TotalPrice=%s
                 WHERE PaymentID=%s
-
             '''
             
             cursor.execute(update_query, (mode, TotalPrice, PaymentID,))
             db.commit()
-            # return redirect(url_for('bookingslot.display'))
 
-            return render_template('add/payment.html',Price=TotalPrice, VehicleType=VehicleType)
+            # Redirect to generate receipt page after successful update
+            return redirect(url_for('payment.Generate_Receipt', PaymentID=PaymentID))
 
         except mysql.connector.Error as e:
             print(e)
             db.rollback()
-            flash('Error processing your payment','error')            
+            flash('Error processing your payment', 'error')
             return redirect(url_for('payment.add_data'))
-
-
-        
 
     return render_template('add/payment.html')
 
 
 
-
+def receipt(PaymentID):
+    return render_template('view/GenerateReceipt.html',PaymentID=PaymentID)
 
 
 
