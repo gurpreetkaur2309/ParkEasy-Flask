@@ -14,10 +14,12 @@
         <!-- <label for="PaymentID">PaymentID</label>#} --> 
          <input class="CAlign" type="hidden" id="VehicleID" name="VehicleID" value="{{ VehicleID }}" > 
 
-        <p><strong class="CAlign">Price: Rs{{Price}}</strong></p>
+         <!-- <input type="text" class="form-control" id="totalPrice" name="totalPrice" value="{{ Price}}" readonly> -->
+            </div>
         <br><br>
 <!-- {#        <label for="TotalPrice">Amount</label>#} -->
-        <!-- <input class="CAlign" type="number" id="TotalPrice" name="TotalPrice" value="{{ Price }}"> -->
+         <input class="CAlign" type="number" id="TotalPrice" name="TotalPrice" value="{{ Price }}" placeholder="TotalPrice">
+         <p>{{TotalPrice}}</p>
         <br><br>
 <!-- {#        <label for="Mode">Mode of Payment</label>#} -->
 <!-- {#        <input class="CAlign" type="text" id="mode" name="mode" placeholder="Mode of Payment" required maxlength="10">#} -->

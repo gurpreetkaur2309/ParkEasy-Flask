@@ -89,29 +89,24 @@ def add_data():
             else:
                 rate = 0
             print('if ke niche')
-            Price = rate*duration
-            print('price',Price)
+            TotalPrice = rate*duration
+            print('price',TotalPrice)
             if not Price:
                 print('To nikal na')
                 flash('Unable to find price','error')
 
             update_query = '''
                 UPDATE payment
-                SET mode=%s 
+                SET mode=%s, TotalPrice=%s
                 WHERE PaymentID=%s
 
             '''
-            try:
-                cursor.execute(update_query, (mode, PaymentID,))
-                db.commit()
-                return redirect(url_for('bookingslot.display'))
-            except mysql.connector.Error as e:
-                print(e)
-                db.rollback()
-                flash('Error updating data', 'error')
-                return redirect(url_for('payment.add_data'))
+            
+            cursor.execute(update_query, (mode, TotalPrice, PaymentID,))
+            db.commit()
+            # return redirect(url_for('bookingslot.display'))
 
-            return render_template('add/payment.html',Price=Price, VehicleType=VehicleType)
+            return render_template('add/payment.html',Price=TotalPrice, VehicleType=VehicleType)
 
         except mysql.connector.Error as e:
             print(e)
