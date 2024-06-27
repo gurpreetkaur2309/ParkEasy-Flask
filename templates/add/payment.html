@@ -16,17 +16,17 @@
         {% endwith %}
     </div>
 
-    <input type="hidden" id="VehicleID" name="VehicleID" value="{{ VehicleID }}">
+    <input class="CAlign" type="hidden" id="VehicleID" name="VehicleID" value="{{ VehicleID }}"><br><br>
 
-    <input type="number" id="TotalPrice" name="TotalPrice" value="{{ Price }}" placeholder="Total Price" readonly>
+    <input class="CAlign" type="number" id="TotalPrice" name="TotalPrice" value="{{ Price }}" placeholder="Total Price" readonly><br><br>
     
-    <select id="mode" name="mode">
+    <select class="CAlign" id="mode" name="mode">
         <option value="UPI">UPI</option>
         <option value="Cash">Cash</option>
         <option value="Card">Card</option>
         <option value="Net-Banking">Net-Banking</option>
     </select>
     
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button id="CAlignID" type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% endblock %}

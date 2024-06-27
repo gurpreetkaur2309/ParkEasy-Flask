@@ -49,7 +49,7 @@ def clearExpiredBookings():
         # Update expired slots, setting TimeFrom and TimeTo to NULL
         update_query = '''
         UPDATE bookingslot 
-        SET TimeFrom = NULL, TimeTo = NULL 
+        SET TimeFrom = '', TimeTo = '' 
         WHERE date = %s AND TimeTo < %s
         '''
 

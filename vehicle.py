@@ -7,11 +7,13 @@ import mysql.connector
 from auth import login_required
 from utils import requires_role
 from flask_paginate import Pagination
-
+from utils import requires_role
 Vehicle = Blueprint('vehicle', __name__)
 
 
 @Vehicle.route('/vehicle')
+@login_required
+@requires_role('admin')
 def display():
     page = request.args.get('page', type=int, default=1)
     per_page = 20
@@ -23,8 +25,8 @@ def display():
     update_query = '''
         UPDATE vehicle v
         JOIN bookingslot b ON v.VehicleID = b.BSlotID
-        SET v.VehicleType = NULL, v.VehicleCompany=NULL, v.VehicleName=NULL, v.VehicleNumber=NULL
-        WHERE b.TimeFrom is NULL and b.TimeTo is NULL
+        SET v.VehicleType = ' ', v.VehicleNumber=' '
+        WHERE b.TimeFrom is '' and b.TimeTo is ''
     '''
     try:
         cursor.execute(update_query)
@@ -41,7 +43,7 @@ def display():
         SELECT v.VehicleID 
         FROM vehicle v
         JOIN bookingslot b on v.VehicleID = b.BSlotID
-        WHERE b.TimeFrom is Null and b.TimeTo is Null;
+        WHERE b.TimeFrom = ' ' and b.TimeTo = ' '
     '''
     cursor.execute(Null_query)
     db.commit()
@@ -88,8 +90,12 @@ def add_data():
             flash('Error adding data', 'error')
             return redirect(url_for('vehicle.add_data'))
         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
-    cursor.execute('SELECT VehicleID FROM vehicle WHERE VehicleType is Null and VehicleNumber is Null')
+
+
+    cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = ' ' and VehicleNumber = ' ' ")
     availableSlots = cursor.fetchone()
+
+
     if not availableSlots:
         flash('No slots found. Please try after sometime', 'error')
         return redirect(url_for('auth.dashboard'))

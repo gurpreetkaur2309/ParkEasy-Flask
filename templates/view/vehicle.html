@@ -18,7 +18,7 @@
                 <th>Vehicle Type</th>
                 <th>Registration No.</th>
                 {% if session['role'] == 'admin' %}
-{#                <th>Operations</th>#}
+                <th>Operations</th>
                 {% endif %}
             </tr>
         </thead>
@@ -28,11 +28,11 @@
                 <td>{{ row[0] }}</td>
                 <td>{{ row[1] }}</td>
                 <td>{{ row[2] }}</td>
-{#               <td>{{ row[5] }}</td>#}
+<!-- {#               <td>{{ row[5] }}</td>#} -->
                 {% if session['role'] == 'admin' %}
                 <td>
                     <a class="edit-link" href="{{ url_for('vehicle.edit_data', VehicleID=row[0]) }}">Edit</a>
-{#                    <a class="delete-link" href="{{ url_for('<vehicle></vehicle>.delete_data', VehicleID=row[0]) }}">Delete</a>#}
+<!-- {#                    <a class="delete-link" href="{{ url_for('<vehicle></vehicle>.delete_data', VehicleID=row[0]) }}">Delete</a>#} -->
                 </td>
                 {% endif %}
 
