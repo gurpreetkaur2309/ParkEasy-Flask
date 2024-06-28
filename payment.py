@@ -29,7 +29,6 @@ def display():
     cursor.execute(Null_query)
     NullID = cursor.fetchone()
 
-
     return render_template('view/payment.html', data=data, NullID=NullID)
 
 @payment.route('/payment/add', methods=['GET', 'POST'])
@@ -57,8 +56,10 @@ def add_data():
             VehicleType = data[0]
             TimeFrom = data[1]
             TimeTo = data[2]
-            duration = (TimeTo - TimeFrom).total_seconds() / 3600
-
+            timeFrom = datetime.strptime(TimeFrom, '%Y-%m-%d %H:%M:%S')  # Adjust format if needed
+            timeTo = datetime.strptime(TimeTo, '%Y-%m-%d %H:%M:%S') 
+            duration = (TimeToStr - TimeFromStr).total_seconds() / 3600
+            print('TimeToStr: ', TimeToStr,'TimeFromStr:', TimeFromStr)
             rate = 0
             if VehicleType in ['sedan', 'SUV', 'Hatchback', 'Coupe']:
                 rate = 13
@@ -70,18 +71,23 @@ def add_data():
                 rate = 18
 
             TotalPrice = rate * duration
+            print(TotalPrice)
 
             update_query = '''
                 UPDATE payment
                 SET mode=%s, TotalPrice=%s
                 WHERE PaymentID=%s
             '''
+
+            if not TotalPrice:
+                flash('No data found','error')
+
             
             cursor.execute(update_query, (mode, TotalPrice, PaymentID,))
             db.commit()
 
             # Redirect to generate receipt page after successful update
-            return redirect(url_for('payment.Generate_Receipt', PaymentID=PaymentID))
+            return render_template('add/payment.html',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID)
 
         except mysql.connector.Error as e:
             print(e)

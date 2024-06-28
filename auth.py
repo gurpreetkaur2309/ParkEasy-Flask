@@ -22,8 +22,14 @@ def ValidUser(username):
 def register():
     print('register function initiated')
     if request.method == 'POST':
-        username = request.form['username']
+        UserID=request.form.get('UserID')
+        session['UserID']=UserID
+        username = request.form.get('username')
         password = request.form['password']
+        name = request.form.get('name')
+        address = request.form.get('address')
+        contact = request.form.get('contact')
+
         if len(password) > 8:
             flash('Password should not be more than 8 letters', 'error')
         elif len(password) < 6:
@@ -46,26 +52,42 @@ def register():
             flash('Username is already taken. Please try a different username', 'error')
             return redirect(url_for('auth.register_form'))
 
-        #Hash the password before storing it into the database
+
+        update_query = '''
+            UPDATE user u 
+            JOIN owner o on u.UserID = o.OwnerID 
+            JOIN bookingslot b on u.UserID = b.BSlotID 
+            SET u.username=%s, u.password=%s, o.Name=%s, o.address=%s, o.contact=%s 
+            WHERE UserID=%s;
+        '''
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
 
-        #insert user into database
-        insert_query = 'INSERT INTO user(username, password) VALUES (%s, %s)'
-        user_data = (username, hashed_password)
+        user_data = (username, hashed_password, name, address, contact)
         print('user data' , user_data)
         try:
             print('Try mai gaya')
-            cursor.execute(insert_query, user_data)
+            cursor.execute(update_query, user_data)
             db.commit()
+
             flash('You are succesfully registered into EasyPark','success')
             return redirect(url_for('auth.login_form'))
         except mysql.connector.Error as e:
+            print('except mai gaya')
             db.rollback()
             print(e)
             flash('Failed to register. Try again', 'error')
+    fetch_query =  ''' 
+        SELECT u.UserID FROM user u 
+        JOIN bookingslot b on u.UserID=b.BSlotID
+        WHERE b.TimeFrom='' and b.TimeTo=''    
+    '''
+    cursor.execute(fetch_query)
+    availableSlots = cursor.fetchone()
+    if not availableSlots:
+        cursor.execute('INSERT INTO user(username, password, role) values(%s,%s,%s)',(username, password, UserID))
+        db.commit()
 
-        return redirect(url_for('auth.register_form'))
-    return render_template('auth/register.html', message = 'Failed to register. Please try again', message_type='error')
+    return render_template('auth/register.html', availableSlots=availableSlots)
 
 ##############################Admin login#############################################
 @auth.route('/adminlogin')

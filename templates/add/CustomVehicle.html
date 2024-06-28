@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}Custom vehicle{% endblock %}
+{% block content %}
+<h1>Add custom vehicle</h1>
+<br><br>
+<form method="POST" action="{{ url_for('vehicle.addCustomVehicle') }}">
+	
+	<div class="flash message">
+		{% for msg in get_flashed_messages() %}
+		<div class="alert alert-danger">{{msg}}</div>
+		{% endfor %}
+	</div>
+	<select class="CAlign" name="slot" id="slots">
+                <option value="all">Slots</option> <!-- The option for selecting all slots -->
+                {% for slot in availableSlots %}
+                    <option value="{{ slot }}">{{ slot[0] }}</option>
+                {% endfor %}
+    </select><br><br>
+
+    <select class="CAlign" name="VehicleType" id="VehicleType">
+    	<option value="0">Vehicle Type</option>
+    	<option value="SUV">SUV</option>
+    	<option value="Sedan">Sedan</option>
+        <option value="Hatchback">Hatchback</option>
+        <option value="2-Wheeler">2-Wheeler</option>
+        <option value="Heavy-Vehicle">Heavy-Vehicle</option>
+    </select>
+    <br><br>
+
+    <input class="CAlign" type="number" id="VehicleNumber" name="VehicleNumber" placeholder="Reg. No" required maxlength="10">
+
+    <button id="CAlignID" type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+{% endblock %}
+
