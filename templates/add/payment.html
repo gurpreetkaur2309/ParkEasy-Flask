@@ -2,7 +2,7 @@
 {% block title %}Add payment{% endblock %}
 {% block stylesheet %}{% endblock %}
 {% block content %}
-<h1>Add payment details</h1>
+<h1>Process the payment;</h1>
 <form id="commonFormID" method="POST" action="{{ url_for('payment.add_data') }}">
     <div class="flash message">
         {% with messages = get_flashed_messages() %}

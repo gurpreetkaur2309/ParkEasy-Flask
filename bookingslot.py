@@ -100,14 +100,14 @@ def add_data():
             db.rollback()
             flash('Error adding data')
             return render_template('add/bookingslot.html')
-        return redirect(url_for('owner.add_data', VehicleID=BSlotID))
+        return redirect(url_for('payment.add_data', VehicleID=BSlotID))
     BSlotID = session.get('VehicleID')
     return render_template('add/bookingslot.html')
 
 
 @booking.route('/bookingslot/add/<int:BSlotID>')
 @login_required
-def owner(BSlotID):
+def payment(BSlotID):
     return render_template('add/owner.html', VehicleID=BSlotID)
 
 

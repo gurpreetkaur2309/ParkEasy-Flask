@@ -94,7 +94,7 @@ def add_data():
 
     cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = ' ' and VehicleNumber = ' ' ")
     availableSlots = cursor.fetchone()
-
+    print(availableSlots)
 
     if not availableSlots:
         flash('No slots found. Please try after sometime', 'error')
@@ -111,11 +111,13 @@ def addCustomVehicle():
         if not VehicleID:
             flash('Cannot continue without vehicleID', 'danger')
             return redirect(url_for('vehicle.add_data'))
+        # VehicleID = int(VehicleID)
+
         session['VehicleID'] = VehicleID
         VehicleType = request.form['VehicleType']
         if VehicleType == '0':
-            flash('Please a valid VehicleType','danger')
-            return redirect(url_for('Vehicle.addCustomVehicle'))
+            flash('Please select a valid VehicleType','danger')
+            return redirect(url_for('vehicle.addCustomVehicle'))
         VehicleNumber = request.form['VehicleNumber']
         if not ValidNumber(VehicleNumber):
             flash('Registration Number is not valid')
@@ -133,11 +135,12 @@ def addCustomVehicle():
             print(e)
             db.rollback()
             flash('Error adding data', 'error')
-            return redirect(url_for('vehicle.add_data'))
+            return redirect(url_for('vehicle.addCustomVehicle'))
         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
     cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = ' ' and VehicleNumber = ' ' ")
     availableSlots = cursor.fetchall()
-
+    availableSlots = [slot[0] for slot in availableSlots]
+    print(availableSlots)
 
     if not availableSlots:
         flash('No slots found. Please try after sometime', 'error')

@@ -40,7 +40,7 @@ def add_data():
 
         try:
             fetch_query = '''
-                SELECT v.VehicleType, b.TimeFrom, b.TimeTo
+                SELECT v.VehicleType, b.TimeFrom, b.TimeTo, b.duration
                 FROM payment p   
                 JOIN vehicle v on p.PaymentID = v.VehicleID
                 JOIN bookingslot b on p.PaymentID = b.BSlotID
@@ -56,10 +56,10 @@ def add_data():
             VehicleType = data[0]
             TimeFrom = data[1]
             TimeTo = data[2]
-            timeFrom = datetime.strptime(TimeFrom, '%Y-%m-%d %H:%M:%S')  # Adjust format if needed
-            timeTo = datetime.strptime(TimeTo, '%Y-%m-%d %H:%M:%S') 
-            duration = (TimeToStr - TimeFromStr).total_seconds() / 3600
-            print('TimeToStr: ', TimeToStr,'TimeFromStr:', TimeFromStr)
+            duration = data[3]
+            Duration = int(duration)
+
+            print('TimeTo: ', TimeTo,'TimeFrom:', TimeFrom)
             rate = 0
             if VehicleType in ['sedan', 'SUV', 'Hatchback', 'Coupe']:
                 rate = 13
@@ -70,7 +70,12 @@ def add_data():
             elif VehicleType == 'Luxury-Vehicle':
                 rate = 18
 
-            TotalPrice = rate * duration
+
+            print(rate)
+            print(duration)
+            TotalPrice = rate * Duration 
+            print(TotalPrice)
+            TotalPrice = float(TotalPrice)
             print(TotalPrice)
 
             update_query = '''
