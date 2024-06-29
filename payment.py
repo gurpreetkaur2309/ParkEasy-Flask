@@ -3,10 +3,12 @@ from db import db, cursor
 import mysql.connector
 from auth import login_required
 from datetime import datetime, time
+from utils import requires_role
 payment = Blueprint('payment', __name__)
 
 @payment.route('/payment')
 @login_required
+@requires_role('admin')
 def display():
     update_query = '''
         UPDATE payment p

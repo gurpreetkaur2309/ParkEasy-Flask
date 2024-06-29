@@ -26,9 +26,9 @@ def register():
         session['UserID']=UserID
         username = request.form.get('username')
         password = request.form['password']
-        name = request.form.get('name')
-        address = request.form.get('address')
-        contact = request.form.get('contact')
+        # name = request.form.get('name')
+        # address = request.form.get('address')
+        # contact = request.form.get('contact')
 
         if len(password) > 8:
             flash('Password should not be more than 8 letters', 'error')
@@ -53,16 +53,21 @@ def register():
             return redirect(url_for('auth.register_form'))
 
 
+        # update_query = '''
+        #     UPDATE user u 
+        #     JOIN owner o on u.UserID = o.OwnerID 
+        #     JOIN bookingslot b on u.UserID = b.BSlotID 
+        #     SET u.username=%s, u.password=%s, o.Name=%s, o.address=%s, o.contact=%s 
+        #     WHERE UserID=%s;
+        # '''
+
         update_query = '''
-            UPDATE user u 
-            JOIN owner o on u.UserID = o.OwnerID 
-            JOIN bookingslot b on u.UserID = b.BSlotID 
-            SET u.username=%s, u.password=%s, o.Name=%s, o.address=%s, o.contact=%s 
-            WHERE UserID=%s;
+            INSERT INTO user(username, password) values(%s, %s)
         '''
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
 
-        user_data = (username, hashed_password, name, address, contact)
+        # user_data = (username, hashed_password, name, address, contact)
+        user_data = (username, hashed_password)
         print('user data' , user_data)
         try:
             print('Try mai gaya')
