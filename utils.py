@@ -1,6 +1,6 @@
 from functools import wraps
 from db import db, cursor
-from flask import  flash, redirect, url_for
+from flask import  flash, redirect, url_for, flash
 from flask import  session as flask_session
 
 def requires_role(roles):
@@ -10,8 +10,9 @@ def requires_role(roles):
             if flask_session.get('role') in roles:
                 return view_func(*args, **kwargs)
             else:
-                return 'Access Denied'
-
+                #flash('You are not authorized to access vehicle details','danger')
+                #return redirect(url_for('auth.dashboard'))
+                return 'access denied'
         return wrapped_view
 
     return decorator

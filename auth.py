@@ -15,7 +15,8 @@ def register_form():
     return render_template('auth/register.html')
 
 def ValidUser(username):
-    pattern = "^[a-zA-Z][a-zA-Z\s'-]*$"
+    # pattern = "^[a-zA-Z][a-zA-Z\s'-]*$"
+    pattern = "^[a-zA-Z0-9_.-]+$"
     return re.match(pattern, username)
 
 @auth.route('/register', methods=['POST'])
@@ -23,12 +24,12 @@ def register():
     print('register function initiated')
     if request.method == 'POST':
         UserID=request.form.get('UserID')
-        session['UserID']=UserID
         username = request.form.get('username')
+        OwnerID = session.get('VehicleID')
         password = request.form['password']
-        # name = request.form.get('name')
-        # address = request.form.get('address')
-        # contact = request.form.get('contact')
+        name = request.form['name']
+        address = request.form['address']
+        contact = request.form['contact']
 
         if len(password) > 8:
             flash('Password should not be more than 8 letters', 'error')
@@ -52,16 +53,26 @@ def register():
             flash('Username is already taken. Please try a different username', 'error')
             return redirect(url_for('auth.register_form'))
 
-
-        # update_query = '''
-        #     UPDATE user u 
-        #     JOIN owner o on u.UserID = o.OwnerID 
-        #     JOIN bookingslot b on u.UserID = b.BSlotID 
-        #     SET u.username=%s, u.password=%s, o.Name=%s, o.address=%s, o.contact=%s 
-        #     WHERE UserID=%s;
-        # '''
-
         update_query = '''
+            UPDATE owner 
+            SET name=%s, address=%s, contact=%s 
+            where OwnerID=%s
+        '''
+        try:
+            print('update wale try mai gaya')
+            cursor.execute(update_query, (name, address, contact, OwnerID))
+            db.commit()
+            availableSlots = cursor.execute("SELECT OwnerID FROM owner WHERE name='' AND address=''")
+            availableSlots = [slot[0] for slot in availableSlots]
+            print(availableSlots)
+            return render_template('auth/register.html',availableSlots=availableSlots)
+
+        except mysql.connector.Error as e:
+            db.rollback()
+            return redirect(url_for('auth.register_form'))
+
+
+        insert_query = '''
             INSERT INTO user(username, password) values(%s, %s)
         '''
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
@@ -71,7 +82,7 @@ def register():
         print('user data' , user_data)
         try:
             print('Try mai gaya')
-            cursor.execute(update_query, user_data)
+            cursor.execute(insert_query, user_data)
             db.commit()
 
             flash('You are succesfully registered into EasyPark','success')
