@@ -53,57 +53,61 @@ def register():
             flash('Username is already taken. Please try a different username', 'error')
             return redirect(url_for('auth.register_form'))
 
-        update_query = '''
-            UPDATE owner 
-            SET name=%s, address=%s, contact=%s 
-            where OwnerID=%s
-        '''
-        try:
-            print('update wale try mai gaya')
-            cursor.execute(update_query, (name, address, contact, OwnerID))
-            db.commit()
-            availableSlots = cursor.execute("SELECT OwnerID FROM owner WHERE name='' AND address=''")
-            availableSlots = [slot[0] for slot in availableSlots]
-            print(availableSlots)
-            return render_template('auth/register.html',availableSlots=availableSlots)
-
-        except mysql.connector.Error as e:
-            db.rollback()
-            return redirect(url_for('auth.register_form'))
-
 
         insert_query = '''
-            INSERT INTO user(username, password) values(%s, %s)
+            INSERT INTO user(username, password, role) VALUES (%s, %s, 'user')
         '''
+
+
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
 
-        # user_data = (username, hashed_password, name, address, contact)
+
         user_data = (username, hashed_password)
-        print('user data' , user_data)
+
         try:
-            print('Try mai gaya')
             cursor.execute(insert_query, user_data)
             db.commit()
-
-            flash('You are succesfully registered into EasyPark','success')
-            return redirect(url_for('auth.login_form'))
+            print('Data added successfully')
         except mysql.connector.Error as e:
-            print('except mai gaya')
             db.rollback()
             print(e)
-            flash('Failed to register. Try again', 'error')
-    fetch_query =  ''' 
-        SELECT u.UserID FROM user u 
-        JOIN bookingslot b on u.UserID=b.BSlotID
-        WHERE b.TimeFrom='' and b.TimeTo=''    
-    '''
-    cursor.execute(fetch_query)
-    availableSlots = cursor.fetchone()
-    if not availableSlots:
-        cursor.execute('INSERT INTO user(username, password, role) values(%s,%s,%s)',(username, password, UserID))
-        db.commit()
+            flash('Error adding user','error')
+            return redirect(url_for('auth.register_form'))
 
+        print(user_data)
+        update_query = '''
+            UPDATE owner o
+            JOIN user u ON o.OwnerID=u.UserID
+            SET o.name=%s, o.address=%s, o.contact=%s, o.UserID=u.UserID
+            WHERE OwnerID=%s
+
+       '''
+        try:
+            print('Try mai gaya')
+            cursor.execute(update_query, (name, address, contact, UserID, OwnerID,))
+            db.commit()
+            print('Data updated successfully')
+        except mysql.connector.Error as e:
+            db.rollback()
+            print(e)
+            flash('Error adding owner')
+            return redirect(url_for('auth.register_form'))
+
+    fetch_query = '''
+        SELECT OwnerID FROM owner WHERE name='', address='', contact='', UserID=Null
+    '''
+    try:
+        cursor.execute(fetch_query)
+        db.commit()
+    except mysql.connector.Error as e:
+        db.rollback()
+        print(e)
+        flash('Error fetching data','error')
+    availableSlots = cursor.fetchall()
+    availableSlots = [slot[0] for slot in availableSlots]
     return render_template('auth/register.html', availableSlots=availableSlots)
+
+
 
 ##############################Admin login#############################################
 @auth.route('/adminlogin')
