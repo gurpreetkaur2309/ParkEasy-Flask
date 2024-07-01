@@ -1,7 +1,5 @@
 from flask import redirect, render_template, url_for, request, session, flash, Blueprint
-#chatgpt
 from flask import current_app, g
-#end
 import mysql.connector
 from db import db, cursor
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -75,15 +73,16 @@ def register():
             return redirect(url_for('auth.register_form'))
 
         print(user_data)
-        update_query = '''
+        try:
+            update_query = '''
             UPDATE owner o
             SET name=%s, address=%s, contact=%s
             WHERE OwnerID=%s
 
        '''
-        try:
+
             print('Update wale Try mai gaya')
-            cursor.execute(update_query, (name, address, contact, OwnerID,))
+            cursor.execute(update_query, (name, address, contact))
             db.commit()
             rows_affected = cursor.rowcount
             if rows_affected == 0:
