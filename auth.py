@@ -67,7 +67,7 @@ def register():
         try:
             cursor.execute(insert_query, user_data)
             db.commit()
-            print('Data added successfully')
+            print('User Data added successfully')
         except mysql.connector.Error as e:
             db.rollback()
             print(e)
@@ -77,15 +77,19 @@ def register():
         print(user_data)
         update_query = '''
             UPDATE owner o
-            JOIN user u ON o.OwnerID=u.UserID
-            SET o.name=%s, o.address=%s, o.contact=%s, o.UserID=u.UserID
+            SET name=%s, address=%s, contact=%s
             WHERE OwnerID=%s
 
        '''
         try:
-            print('Try mai gaya')
-            cursor.execute(update_query, (name, address, contact, UserID, OwnerID,))
+            print('Update wale Try mai gaya')
+            cursor.execute(update_query, (name, address, contact, OwnerID,))
             db.commit()
+            rows_affected = cursor.rowcount
+            if rows_affected == 0:
+                print('No rows were updated.')
+            else:
+                print(f'Rows updated: {rows_affected}')
             print('Data updated successfully')
         except mysql.connector.Error as e:
             db.rollback()
@@ -94,15 +98,12 @@ def register():
             return redirect(url_for('auth.register_form'))
 
     fetch_query = '''
-        SELECT OwnerID FROM owner WHERE name='', address='', contact='', UserID=Null
+        SELECT OwnerID FROM owner WHERE name='', address=''
     '''
-    try:
-        cursor.execute(fetch_query)
-        db.commit()
-    except mysql.connector.Error as e:
-        db.rollback()
-        print(e)
-        flash('Error fetching data','error')
+    
+    cursor.execute(fetch_query, (name, address, OwnerID))
+    db.commit()
+   
     availableSlots = cursor.fetchall()
     availableSlots = [slot[0] for slot in availableSlots]
     return render_template('auth/register.html', availableSlots=availableSlots)
