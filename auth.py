@@ -23,7 +23,9 @@ def register():
     if request.method == 'POST':
         UserID=request.form.get('UserID')
         username = request.form.get('username')
-        OwnerID = session.get('VehicleID')
+        #OwnerID = request.form.get('OwnerID')
+        VehicleID = session.get('VehicleID')
+        OwnerID = session['OwnerID'] 
         password = request.form['password']
         name = request.form['name']
         address = request.form['address']
@@ -73,11 +75,13 @@ def register():
             return redirect(url_for('auth.register_form'))
 
         print(user_data)
+        
         try:
+            print('Update query k upar')
             update_query = '''
-            UPDATE owner o
-            SET name=%s, address=%s, contact=%s
-            WHERE OwnerID=%s
+                UPDATE owner o
+                SET name=%s, address=%s, contact=%s
+                WHERE OwnerID=%s
 
        '''
 
@@ -92,13 +96,16 @@ def register():
             print('Data updated successfully')
         except mysql.connector.Error as e:
             db.rollback()
+            print('update wale except ke andar')
             print(e)
             flash('Error adding owner')
             return redirect(url_for('auth.register_form'))
-
+    print('fetch query ke upar')
     fetch_query = '''
         SELECT OwnerID FROM owner WHERE name='', address=''
     '''
+    print('fetch query ke niche')
+    print(OwnerID)
     
     cursor.execute(fetch_query, (name, address, OwnerID))
     db.commit()

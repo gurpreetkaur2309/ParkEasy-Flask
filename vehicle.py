@@ -155,6 +155,7 @@ def addCustomVehicle():
 
 @Vehicle.route('/vehicle/bookingslot/add/<int:VehicleID>', methods=['GET'])
 @login_required
+
 def bookingslot(VehicleID):
     return render_template('add/bookingslot.html', VehicleID=VehicleID)
 
