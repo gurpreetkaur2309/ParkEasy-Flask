@@ -11,7 +11,8 @@ footer{
 </style>
 {% endblock %}
 {% block content %}
-<h1 style="text-align: center">Owner Details</h1>
+<div class="container"><h1 style="display: flex; justify-content: center;">Owner Details</h1>
+</div>
 <div class="flash-messages">
     {% for message in get_flashed_messages() %}
     <div class="flash-message success danger">{{ msg }}</div>
@@ -52,5 +53,7 @@ footer{
 {#        <a href="{{ url_for('owner.add_data') }}">Add data</a>#}
 
     </div>
+
+    <a style="margin:10px; display:flex; justify-content:center" href="{{ url_for('auth.dashboard') }}"><button  class="btn btn-primary">Back</button></a>
 
 {% endblock %}

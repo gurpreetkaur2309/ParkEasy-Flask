@@ -29,13 +29,11 @@
 
         <a style="text-decoration: none" href="{{ url_for('payment.Generate_Receipt', PaymentID=row[0]) }}">Generate Receipt</a>
 
-        {#        <a class="edit-link" href="{{ url_for('payment.edit_data', PaymentID=row[0]) }}">Edit</a>#}
-{#        <a class="receipt-link" style="text-decoration: none" href="{{ url_for('payment.Generate_Receipt', PaymentID=row[0]) }}">Generate reciept</a>#}
-{#        <a class="delete-link" href="{{ url_for('payment.delete_data', PaymentID=row[0]) }}">Delete</a>#}
+    
     </td>
     </tr>
     {%  endfor %}
     </tbody>
 </table>
-{#    <div style="text-align: center"><a class="Add-link" href="{{ url_for('payment.add_data') }}">Add data</a></div>#}
+<a id="CAlignID" href="{{ url_for('auth.dashboard') }}"><button class="btn btn-primary" type="submit">Back</button></a>
 {% endblock %}

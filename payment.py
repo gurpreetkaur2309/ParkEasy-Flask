@@ -91,7 +91,7 @@ def add_data():
                 flash('No data found','error')
 
             
-            cursor.execute(update_query, (mode,PaymentID,))
+            cursor.execute(update_query, (mode, PaymentID,))
             db.commit()
 
             # Redirect to generate receipt page after successful update
@@ -102,6 +102,8 @@ def add_data():
             db.rollback()
             flash('Error processing your payment', 'error')
             return redirect(url_for('payment.add_data'))
+    
+
 
     return render_template('add/payment.html')
 

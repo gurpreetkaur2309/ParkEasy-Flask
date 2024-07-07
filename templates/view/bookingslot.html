@@ -11,7 +11,7 @@
 <table border="2">
     <thead>
     <tr class="tabledata">
-        <th>SlotID</th>
+        <!-- <th>SlotID</th> -->
         <th>Slot</th>
         <th>Date</th>
         <th>Owner</th>
@@ -26,7 +26,7 @@
     {% for row in data %}
     <tr class="tabledata">
 
-        <td>{{ row[0] }}</td>
+        <!-- <td>{{ row[0] }}</td> -->
         <td>{{ row[1] }}</td>
 
         <td>{{ row[2] }}</td>
@@ -34,9 +34,9 @@
         <td><a class="booking" style="color: black;text-decoration: none" href="{{ url_for('owner.display') }}">{{ row[5] }}</a></td>
         <td><a class="booking" style="color: black; text-decoration: none" href="{{ url_for('vehicle.display') }}">{{ row[6] }}</a></td>
 
-        <td>{{ row[4] }}</td>
         <td>{{ row[3] }}</td>
-        <td>{{ row[7] }}</td>
+        <td>{{ row[4]  }}</td>
+        <td>{{ row[7] ~ ' hr' }}</td>
     <td>
         <a class="edit-link" href="{{ url_for('bookingslot.edit_data',BSlotID=row[0]) }}">Edit</a>
 <!-- {#        <a class="delete-link" href="{{ url_for('bookingslot.delete_data',BSlotID=row[0]) }}">Delete</a>#} -->

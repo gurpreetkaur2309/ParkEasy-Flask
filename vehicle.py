@@ -1,6 +1,5 @@
 import re
 from flask import redirect, render_template, session, url_for, Blueprint, flash, request
-
 import bookingslot
 from db import db, cursor
 import mysql.connector
@@ -38,7 +37,7 @@ def display():
     cursor.execute('SELECT VehicleID, VehicleType, VehicleNumber FROM vehicle limit %s offset %s;', (per_page, offset))
     data = cursor.fetchall()
     db.commit()
-    # data = cursor.fetchall()
+
     Null_query = '''
         SELECT v.VehicleID 
         FROM vehicle v
@@ -64,6 +63,7 @@ def ValidNumber(VehicleNumber):
 @Vehicle.route('/vehicle/add', methods=['POST','GET'])
 @login_required
 def add_data():
+    print('In try after')
     if request.method == 'POST':
         VehicleID = request.form['VehicleID']
         if not VehicleID:
@@ -92,7 +92,7 @@ def add_data():
         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
 
 
-    cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = ' ' and VehicleNumber = ' ' ")
+    cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
     availableSlots = cursor.fetchone()
     print(availableSlots)
 
@@ -146,16 +146,12 @@ def addCustomVehicle():
         flash('No slots found. Please try after sometime', 'error')
         return redirect(url_for('auth.dashboard'))
 
-
-
     return render_template('add/CustomVehicle.html', availableSlots=availableSlots)
-
-
 
 
 @Vehicle.route('/vehicle/bookingslot/add/<int:VehicleID>', methods=['GET'])
 @login_required
-
+    
 def bookingslot(VehicleID):
     return render_template('add/bookingslot.html', VehicleID=VehicleID)
 

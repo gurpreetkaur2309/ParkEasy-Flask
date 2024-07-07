@@ -23,11 +23,12 @@
         <td>{{ row[1] }}</td>
         <td>
             <a class="edit-link" href="{{ url_for('sensor.edit_data', SensorID=row[0]) }}">Edit</a>
-{#            <a class="delete-link" href="{{ url_for('sensor.delete_data', SensorID=row[0]) }}">Delete</a>#}
+
         </td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
-{#    <div style="text-align: center"><a class="Addlink" href="{{ url_for('sensor.add_data') }}">Add data</a></div>#}
+<a id="CAlignID" href="{{ url_for('auth.dashboard') }}"><button class="btn btn-primary" type="submit">Back</button></a>
+
 {% endblock %}
