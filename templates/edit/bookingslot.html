@@ -4,10 +4,9 @@
 {% block content %}
 <h1>Update Bookingslot</h1>
 <form method="POST" href="{{ url_for('bookingslot.edit_data', BSlotID=data[0]) }}">
-{#    <label for="Date">Date</label>#}
 
 
-    <br><br>
+
     <input class="CAlign" type="date" id="Date" name="Date" value="{{ data[1] }}" placeholder="Date" required max="31/12/3000" maxlength="4">
     <br><br>
 

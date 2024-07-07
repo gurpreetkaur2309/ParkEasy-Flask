@@ -61,6 +61,7 @@ def add_data():
             duration = data[3]
             Duration = int(duration)
 
+
             print('TimeTo: ', TimeTo,'TimeFrom:', TimeFrom)
             rate = 0
             if VehicleType in ['sedan', 'SUV', 'Hatchback', 'Coupe']:
@@ -82,7 +83,7 @@ def add_data():
 
             update_query = '''
                 UPDATE payment
-                SET mode=%s, TotalPrice=%s
+                SET mode=%s
                 WHERE PaymentID=%s
             '''
 
@@ -90,7 +91,7 @@ def add_data():
                 flash('No data found','error')
 
             
-            cursor.execute(update_query, (mode, TotalPrice, PaymentID,))
+            cursor.execute(update_query, (mode,PaymentID,))
             db.commit()
 
             # Redirect to generate receipt page after successful update

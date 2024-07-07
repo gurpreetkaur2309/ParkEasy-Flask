@@ -20,15 +20,16 @@ def formatDate(date):
 @login_required
 def display():
 
-    cursor.execute('''
-    SELECT bookingslot.BSlotID,
-    bookingslot.date,
-    DATE_FORMAT(bookingslot.TimeFrom, '%k:%i') AS TimeFromFormatted,
-    DATE_FORMAT(bookingslot.TimeTo, '%k:%i') AS TimeToFormatted,
-    owner.Name AS OwnerName,
-    vehicle.VehicleNumber FROM bookingslot
-    INNER JOIN Owner ON bookingslot.BSlotID = Owner.OwnerID
-    INNER JOIN Vehicle ON bookingslot.BSlotID = vehicle.VehicleID''')
+    fetch_query = '''
+        SELECT bookingslot.BSlotID, bookingslot.Slot,
+        bookingslot.date,
+        DATE_FORMAT(bookingslot.TimeFrom, '%k:%i') AS TimeFromFormatted,
+        DATE_FORMAT(bookingslot.TimeTo, '%k:%i') AS TimeToFormatted,
+        owner.Name AS OwnerName,
+        vehicle.VehicleNumber,  bookingslot.duration FROM bookingslot
+        INNER JOIN Owner ON bookingslot.BSlotID = owner.OwnerID
+        INNER JOIN vehicle ON bookingslot.BSlotID = vehicle.VehicleID'''
+    cursor.execute(fetch_query)
     db.commit()
     data = cursor.fetchall()
 
@@ -117,21 +118,21 @@ def payment(BSlotID):
 def edit_data(BSlotID):
     if request.method == 'POST':
         date = request.form['Date']
-        day = request.form['day']
+
         TimeFrom = request.form['TimeFrom']
         TimeTo = request.form['TimeTo']
         try:
             formattedDate = datetime.strptime(date, '%Y-%m-%d').strftime('%a, %d %b')
             update_query = '''UPDATE bookingslot
-                              SET date=%s, day=%s, TimeFrom=%s, TimeTo=%s
+                              SET date=%s, TimeFrom=%s, TimeTo=%s
                               WHERE BSlotID=%s'''
-            cursor.execute(update_query, (date, day, TimeFrom, TimeTo, BSlotID,))
+            cursor.execute(update_query, (date,TimeFrom, TimeTo, BSlotID,))
             db.commit()
             return redirect(url_for('bookingslot.display'))
         except mysql.connector.Error as e:
             db.rollback()
 
-    fetch_query = 'SELECT BSlotID, slot, date, TimeFrom, TimeTo, duration FROM bookingslot WHERE BSlotID=%s'
+    fetch_query = 'SELECT BSlotID, slot, date, TimeFrom, TimeTo FROM bookingslot WHERE BSlotID=%s'
     cursor.execute(fetch_query, (BSlotID,))
     db.commit()
     data = cursor.fetchone()
@@ -139,7 +140,7 @@ def edit_data(BSlotID):
         flash('Data not found')
         return redirect(url_for('bookingslot.display'))
     data = list(data)
-    data[1] = datetime.strptime(data[1], '%Y-%m-%d').strftime('%a, %d %b')
+    # data[1] = datetime.strptime(data[1], '%Y-%m-%d').strftime('%a, %d %b')
     return render_template('edit/bookingslot.html', data=data)
 
 @booking.route('/bookingslot/delete/<int:BSlotID>', methods=['GET', 'POST'])
