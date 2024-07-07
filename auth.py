@@ -21,11 +21,7 @@ def ValidUser(username):
 def register():
     print('register function initiated')
     if request.method == 'POST':
-        UserID=request.form.get('UserID')
-        username = request.form.get('username')
-        #OwnerID = request.form.get('OwnerID')
-        VehicleID = session.get('VehicleID')
-        OwnerID = session['OwnerID'] 
+        username = request.form['username']
         password = request.form['password']
         name = request.form['name']
         address = request.form['address']
@@ -54,65 +50,40 @@ def register():
             return redirect(url_for('auth.register_form'))
 
 
-        insert_query = '''
-            INSERT INTO user(username, password, role) VALUES (%s, %s, 'user')
-        '''
-
-
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-
-
-        user_data = (username, hashed_password)
-
+        print('insert_query executed')
         try:
+
+            hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+            insert_query = '''
+                INSERT INTO user(username, password, role) VALUES (%s, %s, 'user')
+            '''
+            user_data = (username, hashed_password)
             cursor.execute(insert_query, user_data)
             db.commit()
-            print('User Data added successfully')
+            print('insert query wale try mai gaya')
         except mysql.connector.Error as e:
+            print('insert query wale except mai gaya')
             db.rollback()
-            print(e)
-            flash('Error adding user','error')
+            print('Error', e)
+            flash('Error inserting user','error')
             return redirect(url_for('auth.register_form'))
 
-        print(user_data)
-        
         try:
-            print('Update query k upar')
+            print('update wale try mai')
             update_query = '''
-                UPDATE owner o
-                SET name=%s, address=%s, contact=%s
-                WHERE OwnerID=%s
-
-       '''
-
-            print('Update wale Try mai gaya')
+                INSERT INTO owner (name, address, contact) 
+                VALUES(%s, %s, %s)
+            '''
             cursor.execute(update_query, (name, address, contact))
             db.commit()
-            rows_affected = cursor.rowcount
-            if rows_affected == 0:
-                print('No rows were updated.')
-            else:
-                print(f'Rows updated: {rows_affected}')
-            print('Data updated successfully')
+            print('Owner data added successfully')
+            return redirect(url_for('auth.dashboard'))
         except mysql.connector.Error as e:
-            db.rollback()
-            print('update wale except ke andar')
+            print('Update wale except mai')
             print(e)
-            flash('Error adding owner')
-            return redirect(url_for('auth.register_form'))
-    print('fetch query ke upar')
-    fetch_query = '''
-        SELECT OwnerID FROM owner WHERE name='', address=''
-    '''
-    print('fetch query ke niche')
-    print(OwnerID)
-    
-    cursor.execute(fetch_query, (name, address, OwnerID))
-    db.commit()
-   
-    availableSlots = cursor.fetchall()
-    availableSlots = [slot[0] for slot in availableSlots]
-    return render_template('auth/register.html', availableSlots=availableSlots)
+            db.rollback()
+            flash('Error adding owner data','danger')
+    return render_template('auth/register.html')
 
 
 
@@ -129,6 +100,7 @@ def AdminLogin():
         get_user_query = 'SELECT username, password, role FROM Admin WHERE username=%s'
         cursor.execute(get_user_query, (username,))
         userData = cursor.fetchone()
+        print(userData)
 
         if len(password) > 8:
             flash('Password should not be more than 8 letters', 'error')

@@ -37,7 +37,10 @@
                             <a href="/vehicle/add" style="color:blue;" class="nav-link active" aria-current="page">Book Slot</a>
                           </li>
                           <li class="nav-item active">
+                            {% if session['role'] == 'admin' %}
                               <a class="nav-link active" aria-current="page" href="/dashboard">Dashboard</a>
+                            {% endif %}
+                            
                           </li>
                           <li class="nav-item">
                               {% if session['role'] == 'admin' %}
@@ -45,16 +48,26 @@
                               {% endif %}
                           </li>
                           <li class="nav-item">
+                            {% if session['role'] == 'admin' %}
                               <a class="nav-link active" href="{{ url_for('bookingslot.display') }}">Booked-slots</a>
+                            {% endif %}
+                            
                           </li>
                           <li class="nav-item">
+                            {% if session['role'] == 'admin' %}
                               <a class="nav-link active" href="{{ url_for('vehicle.display') }}">Vehicles</a>
+                            {% endif %}
                           </li>
                           <li class="nav-item">
+                            {% if session['role'] == 'admin' %}
                               <a class="nav-link active" href="{{ url_for('owner.display') }}">Owner</a>
+                            {% endif %}
                           </li>
                           <li class="nav-item">
+                            {% if session['role'] == 'admin' %}
                               <a class="nav-link active" href="{{ url_for('payment.display') }}">Payment</a>
+                            {% endif %}
+                            
                           </li>
                           <li class="nav-item">
                               {% if session['role'] == 'admin' %}

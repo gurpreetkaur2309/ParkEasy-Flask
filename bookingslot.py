@@ -131,7 +131,7 @@ def edit_data(BSlotID):
         except mysql.connector.Error as e:
             db.rollback()
 
-    fetch_query = 'SELECT BSlotID, date, day, TimeFrom, TimeTo FROM bookingslot WHERE BSlotID=%s'
+    fetch_query = 'SELECT BSlotID, slot, date, TimeFrom, TimeTo, duration FROM bookingslot WHERE BSlotID=%s'
     cursor.execute(fetch_query, (BSlotID,))
     db.commit()
     data = cursor.fetchone()
