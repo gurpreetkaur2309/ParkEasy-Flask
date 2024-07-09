@@ -37,10 +37,13 @@ def display():
 @login_required
 def add_data():
     if request.method == 'POST':
+        print('request.form ke niche')
         PaymentID = session.get('VehicleID')
+        print('PaymentID', PaymentID)
         mode = request.form['mode']
 
         try:
+            print('fetch query ke upar in try')
             fetch_query = '''
                 SELECT v.VehicleType, b.TimeFrom, b.TimeTo, b.duration
                 FROM payment p   
@@ -50,6 +53,7 @@ def add_data():
             '''
             cursor.execute(fetch_query, (PaymentID,))
             data = cursor.fetchone()
+            print('data is',data)
 
             if data is None:
                 flash('No data found', 'error')
@@ -81,6 +85,8 @@ def add_data():
             TotalPrice = float(TotalPrice)
             print(TotalPrice)
 
+
+            print('Update query ke upar')
             update_query = '''
                 UPDATE payment
                 SET mode=%s
@@ -89,8 +95,7 @@ def add_data():
 
             if not TotalPrice:
                 flash('No data found','error')
-
-            
+                          
             cursor.execute(update_query, (mode, PaymentID,))
             db.commit()
 
@@ -98,11 +103,11 @@ def add_data():
             return render_template('add/payment.html',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID)
 
         except mysql.connector.Error as e:
+            print('except ke andar')
             print(e)
             db.rollback()
             flash('Error processing your payment', 'error')
             return redirect(url_for('payment.add_data'))
-    
 
 
     return render_template('add/payment.html')
@@ -111,8 +116,6 @@ def add_data():
 
 def receipt(PaymentID):
     return render_template('view/GenerateReceipt.html',PaymentID=PaymentID)
-
-
 
 
 @payment.route('/payment/edit/<int:PaymentID>', methods = ['GET','POST'])

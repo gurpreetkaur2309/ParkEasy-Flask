@@ -202,4 +202,38 @@ def dashboard():
         return redirect(url_for('auth.login_form'))
 
 
+@auth.route('/user/dashboard')
+def UserDashboard():
+    if 'role' in session:
+        print('fetch query ke upar')
+        fetch_query = '''
+            SELECT o.name, o.contact, 
+            v.VehicleType, v.VehicleNumber,
+            b.Date, b.TimeFrom, b.TimeTo, b.duration,o.address,
+            b.BSlotID as slot
+            FROM owner o 
+            INNER JOIN vehicle v ON o.OwnerID = v.VehicleID
+            INNER JOIN bookingslot b on o.OwnerID = b.BSlotID
+            WHERE OwnerID=%s;
+
+        '''
+
+        cursor.execute(fetch_query, (OwnerID,))
+        db.commit()
+
+        OwnerName = data[0]
+        OwnerContact = data[1]
+        VehicleType = data[2]
+        VehicleNumber = data[3]
+        Date = data[4]
+        TimeFrom = data[5]
+        TimeTo = data[6]
+        duration = data[7]
+        address = data[8]
+        Slot = data[9]
+
+        print(OwnerName, OwnerContact, VehicleType, VehicleNumber, Date, TimeFrom, TimeTo, duration, address, Slot)
+
+        return render_template('dashboard.html', OwnerName = data[0], OwnerContact=data[1], VehicleType=data[2], VehicleNumber=data[3], Date=data[4], TimeFrom=data[5], TimeTo=data[6], duration=data[7], address=data[8], Slot=data[9], role = session['role'])
+
 

@@ -63,7 +63,7 @@ def ValidNumber(VehicleNumber):
 @Vehicle.route('/vehicle/add', methods=['POST','GET'])
 @login_required
 def add_data():
-    print('In try after')
+
     if request.method == 'POST':
         VehicleID = request.form['VehicleID']
         if not VehicleID:

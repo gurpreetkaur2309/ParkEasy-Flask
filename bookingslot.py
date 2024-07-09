@@ -21,7 +21,7 @@ def formatDate(date):
 def display():
 
     fetch_query = '''
-        SELECT bookingslot.BSlotID, bookingslot.Slot,
+        SELECT bookingslot.BSlotID,
         bookingslot.date,
         DATE_FORMAT(bookingslot.TimeFrom, '%k:%i') AS TimeFromFormatted,
         DATE_FORMAT(bookingslot.TimeTo, '%k:%i') AS TimeToFormatted,

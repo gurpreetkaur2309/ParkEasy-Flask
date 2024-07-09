@@ -19,6 +19,7 @@
             {% endfor %}
         </div>
     </div>
+    {% if session['role'] == 'admin' %}
     <div class="row row-cols-1 row-cols-md-4 g-4 ms-6" style="margin-left:150px;">
         <div class="col m-4">
             <div class="card bg-light">
@@ -61,7 +62,6 @@
                 </div>
             </div>
         </div>
-        {% if role == 'admin' %}
             <div class="col m-4">
                 <div class="card" style="width:350px;">
                     <div class="card-header">Sensor(Only for admin)</div>
@@ -80,13 +80,42 @@
                 </div>
             </div>
         </div>
-    {% endif %}
+
 
     </div>
+       <p style="display: flex; justify-content: center; text-align: center; border: 2px solid grey;"><a href="/vehicle/add"><button type="submit" class="btn btn-primary">Book Slot</button></a></p>
+    {% endif %}
+
+
+    {% if session['role'] == 'user' %}
+<div class="Profile-container" style="display:flex; justify-content: center;">
+
+        <div class="card" style="width: 28rem; height: 400px; border: 2px solid grey;">
+      <div class="card-body">
+        <h5 class="card-title" style="text-align:center;">Profile</h5>
+
+        <p><strong>Name: </strong>{{ OwnerName }}</p>
+        <p><strong>Contact: </strong>{{ OwnerContact }}</p>
+        <p><strong>Vehicle Type: </strong>{{ VehicleType }}</p>
+        <p><strong>Reg. No : </strong>{{ VehicleNumber }}</p>
+        <p><strong>Date: </strong>{{ Date }}</p>
+        <p><strong>From: </strong>{{ TimeFrom }}</p>
+        <p><strong>To: </strong>{{ TimeTo }}</p>
+        <p><strong>Duration: </strong>{{ duration }}</p>
+        <p><strong>Address: </strong>{{ address }}</p>
+        <p><strong>Slot: </strong>{{ Slot }}</p>
+
+
+        
+      </div>
+    </div>
+</div>
+
+    {% endif %}
 
 
 
-    <p style="text-align: center"><a href="/vehicle/add"><button type="submit" class="btn btn-primary">Book Slot</button></a></p>
+    
 
 
 {% endblock %}
