@@ -134,7 +134,10 @@ def login():
             session['username'] = user_data[0]
             session['role'] = 'user'
             # flash('login successful', 'success')
-            return redirect(url_for('auth.dashboard'))
+            if session['role'] == 'admin':
+                return redirect(url_for('auth.dashboard'))
+            else:
+                return redirect(url_for('auth.UserDashboard'))
         else:
             flash('Invalid username or password', 'error')
 
@@ -204,7 +207,8 @@ def dashboard():
 
 @auth.route('/user/dashboard')
 def UserDashboard():
-    if 'role' in session:
+    print('Get request ke upar')
+    if request.method == 'GET':
         print('fetch query ke upar')
         fetch_query = '''
             SELECT o.name, o.contact, 
@@ -214,14 +218,16 @@ def UserDashboard():
             FROM owner o 
             INNER JOIN vehicle v ON o.OwnerID = v.VehicleID
             INNER JOIN bookingslot b on o.OwnerID = b.BSlotID
-            WHERE OwnerID=%s;
+            -- WHERE o.OwnerID=%s;
 
         '''
 
-        cursor.execute(fetch_query, (OwnerID,))
+        cursor.execute(fetch_query)
         db.commit()
+        data = cursor.fetchone()
 
         OwnerName = data[0]
+        print(OwnerName)
         OwnerContact = data[1]
         VehicleType = data[2]
         VehicleNumber = data[3]
@@ -233,7 +239,7 @@ def UserDashboard():
         Slot = data[9]
 
         print(OwnerName, OwnerContact, VehicleType, VehicleNumber, Date, TimeFrom, TimeTo, duration, address, Slot)
-
+    if 'role' in session:
         return render_template('dashboard.html', OwnerName = data[0], OwnerContact=data[1], VehicleType=data[2], VehicleNumber=data[3], Date=data[4], TimeFrom=data[5], TimeTo=data[6], duration=data[7], address=data[8], Slot=data[9], role = session['role'])
 
 
