@@ -137,7 +137,7 @@ def login():
             if session['role'] == 'admin':
                 return redirect(url_for('auth.dashboard'))
             else:
-                return redirect(url_for('auth.UserDashboard'))
+                return redirect(url_for('vehicle.add_data'))
         else:
             flash('Invalid username or password', 'error')
 
