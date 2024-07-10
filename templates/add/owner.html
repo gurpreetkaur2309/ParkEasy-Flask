@@ -5,7 +5,11 @@
     <h1 style="margin-top: 20px; padding-top: 20px">Add owner Details</h1>
 
     <form id="commonFormID" method="POST" href="{{ url_for('owner.add_data') }}">
-
+        <div class="flash-message">
+            {% for msg in get_flashed_messages() %}
+                <div class="alert alert-danger">{{ msg }}</div>
+            {% endfor %}
+        </div>
     <div class="CAligndiv">
 
         <input class="CAlign" type="hidden" id="VehicleID" name="VehicleID" value="{{ VehicleID }}" disabled>
@@ -26,11 +30,7 @@
 {#        <input id="CAlignID" type="submit" value="Submit">#}
         <button id="CAlignID" type="submit" class="btn btn-primary">Submit</button>
     </div>
-        <div class="flash-message">
-            {% for msg in get_flashed_messages() %}
-                <div class="flash-message success danger">{{ msg }}</div>
-            {% endfor %}
-        </div>
+        
 
 </form>
 {% endblock %}

@@ -5,17 +5,15 @@
 <h1>Add Sensor Data</h1>
 <form method="POST" href="{{ url_for('sensor.add_data') }}">
     <div class="CAligndiv">
-{#        <label for="SensorID">Sensor ID</label>#}
+
 {#       <input class="CAlign" type="number" id="SensorID" name="SensorID" placeholder="SensorID">
         <br><br>
 
-{#        <label for="isParked">isParked</label>#}
+
         <div class="RAlign" style="margin-right: 4%"><input  type="radio" value="1" id="isParked" name="isParked"> Parked</div>
         <div class="RAlign" style="margin-right: 2%"><input type="radio" value="0" id="isParked" name="isParked" > Not Parked
         </div><br><br>
 
-{#        <input id="RAlignID" type="submit" value="Add data">#}
-{#        <a id="RAlignID"><button class="btn btn-primary" type="submit">Submit</button> </a>#}
         <button id="CAlignID" class="btn btn-primary" type="submit">Submit</button>
     </div>
 </form>

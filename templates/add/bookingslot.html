@@ -5,7 +5,11 @@
 <h1 style="margin-top: 20px;">Add booking time and date</h1>
 
 <form method="POST" action="{{ url_for('bookingslot.add_data') }}">
-{#    <label class="CAlign" for="Slot">Slot</label><br>#}
+<div class="flash message">
+        {% for msg in get_flashed_messages() %}
+            <div class="alert alert-danger">{{ msg }}</div>
+        {% endfor %}
+</div>
     <input class="CAlign" id="VehicleID" name="VehicleID" type="hidden" value="{{ VehicleID }}" readonly>
     <br><br>
 
@@ -53,11 +57,7 @@
         });
 
     </script>
-    <div class="flash message">
-        {% for msg in get_flashed_messages() %}
-            <div class="alert alert-danger">{{ msg }}</div>
-        {% endfor %}
-    </div>
+    
 
 
 

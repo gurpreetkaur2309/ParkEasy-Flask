@@ -5,7 +5,11 @@
     <form method="POST" action="{{ url_for('auth.AdminLoginForm') }}">
         <div class="flash messages">
             {% for msg in get_flashed_messages() %}
-            <div class="alert alert-success">{{ msg }}</div>
+                {% if error %}
+                    <div class="alert alert-danger">{{ msg }}</div>
+                {% else %}
+                    <div class="alert alert-danger">{{ msg }}</div>
+                {% endif %}
             {% endfor %}
         </div>
         {% if errors %}
