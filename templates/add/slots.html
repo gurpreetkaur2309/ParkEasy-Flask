@@ -31,7 +31,7 @@
 
     <div class="flash message">
         {% for message in get_flashed_messages() %}
-        <div class="flash-message success danger">{{ msg }}</div>
+        <div class="alert alert-danger">{{ msg }}</div>
         {% endfor %}
     </div>
 </form>
