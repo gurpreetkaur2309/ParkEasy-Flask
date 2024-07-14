@@ -70,7 +70,7 @@ def add_data():
             rate = 0
             if VehicleType in ['sedan', 'SUV', 'Hatchback', 'Coupe']:
                 rate = 13
-            elif VehicleType == '2-Wheeler'k:
+            elif VehicleType == '2-Wheeler':
                 rate = 8
             elif VehicleType == 'Heavy-Vehicle':
                 rate = 15
