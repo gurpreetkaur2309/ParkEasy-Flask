@@ -7,19 +7,14 @@ from auth import login_required
 
 booking = Blueprint('bookingslot', __name__)
 
-
-
 def formatDate(date):
     date = datetime.strptime(date, '%Y-%m-%d')
     formattedDate = date.strftime('%a, %d %b')
     return formattedDate
 
-
-
 @booking.route('/bookingslot')
 @login_required
 def display():
-
     fetch_query = '''
         SELECT bookingslot.BSlotID,
         bookingslot.date,
@@ -32,13 +27,9 @@ def display():
     cursor.execute(fetch_query)
     db.commit()
     data = cursor.fetchall()
-
-
-
     Null_query = 'SELECT BSlotID FROM bookingslot WHERE TimeFrom is Null and TimeTo is Null'
     cursor.execute(Null_query)
     NullID = cursor.fetchone()
-
     return render_template('view/bookingslot.html', data=data, NullID=NullID)
 
 
@@ -46,24 +37,17 @@ def clearExpiredBookings():
     try:
         current_date = date.today()
         current_time = datetime.now().time()
-
-        
         update_query = '''
         UPDATE bookingslot 
         SET TimeFrom = '', TimeTo = '' 
         WHERE date = %s AND TimeTo < %s
         '''
-
         cursor.execute(update_query, (current_date, current_time))
         db.commit()
-
         print(f'{cursor.rowcount} expired bookings updated at {datetime.now()}')
     except mysql.connector.Error as e:
         db.rollback()
         print(f'Error updating expired bookings')
-
-
-
 
 @booking.route('/bookingslot/add', methods=['GET', 'POST'])
 @login_required
@@ -74,7 +58,7 @@ def add_data():
         TimeFrom = request.form['TimeFrom']
         duration = request.form['duration']
         if not all ((BSlotID or date or TimeFrom or duration)):
-            flash('All fields are required')
+          flash('All fields are required')
 
         try:
             durationStr = int(duration)
@@ -105,13 +89,10 @@ def add_data():
     BSlotID = session.get('VehicleID')
     return render_template('add/bookingslot.html')
 
-
 @booking.route('/bookingslot/add/<int:BSlotID>')
 @login_required
 def payment(BSlotID):
     return render_template('add/owner.html', VehicleID=BSlotID)
-
-
 
 @booking.route('/bookingslot/edit/<int:BSlotID>', methods=['GET','POST'])
 @login_required
