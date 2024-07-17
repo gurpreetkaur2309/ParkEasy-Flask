@@ -41,6 +41,10 @@ def add_data():
         PaymentID = session.get('VehicleID')
         print('PaymentID', PaymentID)
         mode = request.form['mode']
+        #debugging
+        data = (PaymentID, mode)
+        print(data)
+        ##end##`
 
         try:
             print('fetch query ke upar in try')
@@ -240,7 +244,6 @@ def Generate_Receipt(PaymentID):
         db.rollback()
         flash('Error generating receipt', 'error')
         return redirect(url_for('payment.display'))
-
 
 
 
