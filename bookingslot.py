@@ -8,7 +8,7 @@ from auth import login_required
 booking = Blueprint('bookingslot', __name__)
 
 
-#########################################Copied Code#####################################################
+
 def formatDate(date):
     date = datetime.strptime(date, '%Y-%m-%d')
     formattedDate = date.strftime('%a, %d %b')
@@ -47,7 +47,7 @@ def clearExpiredBookings():
         current_date = date.today()
         current_time = datetime.now().time()
 
-        # Update expired slots, setting TimeFrom and TimeTo to NULL
+        
         update_query = '''
         UPDATE bookingslot 
         SET TimeFrom = '', TimeTo = '' 
