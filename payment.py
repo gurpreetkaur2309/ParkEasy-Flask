@@ -87,7 +87,7 @@ def add_data():
             TotalPrice = rate * Duration 
             print(TotalPrice)
             TotalPrice = float(TotalPrice)
-            print(TotalPrice)
+            print('TotalPrice',TotalPrice)
 
 
             print('Update query ke upar')
@@ -102,6 +102,7 @@ def add_data():
                           
             cursor.execute(update_query, (mode, PaymentID,))
             db.commit()
+            session.pop('VehicleID')
 
             # Redirect to generate receipt page after successful update
             return render_template('add/payment.html',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID)
@@ -112,9 +113,55 @@ def add_data():
             db.rollback()
             flash('Error processing your payment', 'error')
             return redirect(url_for('payment.add_data'))
+###Added code#########
+    PaymentID = request.args.get('VehicleID')
+    if not PaymentID:
+        flash('An error occured. Please try again for fetching the paymentID','error')
+        return redirect(url_for('payment.add_data'))
+    session['PaymentID'] = PaymentID
+
+    try:
+        fetch_query = ''' SELECT v.VehicleType, b.TimeFrom, b.TimeTo, b.duration
+            FROM payment p   
+            JOIN vehicle v on p.PaymentID = v.VehicleID
+            JOIN bookingslot b on p.PaymentID = b.BSlotID
+            WHERE p.PaymentID=%s
+            '''
+        cursor.execute(fetch_query, (PaymentID,))
+        data = cursor.fetchone()
+        print('Data in get method: ', data)
+        if data is None:
+            flash('No data found','error')
+            return redirect(url_for('payment.add_data'))
+        VehicleType = data[0]
+        TimeFrom = data[1]
+        TimeTo = data[2]
+        duration = data[3]
+
+        Duration = int(duration)
+
+        rate = 0
+        if VehicleType in ['sedan', 'SUV', 'Hatchback', 'Coupe']:
+            rate = 13
+        elif VehicleType == '2-Wheeler':
+            rate = 8
+        elif VehicleType == 'Heavy-Vehicle':
+            rate = 15
+        elif VehicleType == 'Luxury-Vehicle':
+            rate = 18
+
+        TotalPrice = rate * Duration
+        TotalPrice = float(TotalPrice)
+
+        return render_template('add/payment.html', TotalPrice=TotalPrice)
+
+    except mysql.connector.Error as e:
+        db.rollback()
+        flash('Error fetching booking details', 'error')
+        return redirect(url_for('payment.add_data'))
 
 
-    return render_template('add/payment.html')
+    return render_template('add/payment.html', TotalPrice=TotalPrice)
 
 
 
