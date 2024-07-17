@@ -104,7 +104,6 @@ def add_data():
             db.commit()
             session.pop('VehicleID')
 
-            # Redirect to generate receipt page after successful update
             return render_template('add/payment.html',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID)
 
         except mysql.connector.Error as e:
@@ -113,7 +112,7 @@ def add_data():
             db.rollback()
             flash('Error processing your payment', 'error')
             return redirect(url_for('payment.add_data'))
-###Added code#########
+    
     PaymentID = request.args.get('VehicleID')
     if not PaymentID:
         flash('An error occured. Please try again for fetching the paymentID','error')
