@@ -113,7 +113,7 @@ def add_data():
             flash('Error processing your payment', 'error')
             return redirect(url_for('payment.add_data'))
     
-    PaymentID = request.args.get('VehicleID')
+    PaymentID = session.get('VehicleID')
     if not PaymentID:
         flash('An error occured. Please try again for fetching the paymentID','error')
         return redirect(url_for('payment.add_data'))
