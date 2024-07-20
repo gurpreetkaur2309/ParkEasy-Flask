@@ -39,8 +39,7 @@ def add_data():
     if request.method == 'POST':
         print('request.form ke niche')
         PaymentID = session.get('VehicleID')
-        print('VehicleID', VehicleID)
-        print('PaymentID', PaymentID)
+        print('PaymentID in post', PaymentID)
         mode = request.form['mode']
         #debugging
         data = ('debugging', PaymentID, mode)
@@ -117,9 +116,9 @@ def add_data():
     
     PaymentID = session.get('VehicleID')
     print('PaymentID in get: ', PaymentID)
-    if not PaymentID:
-        flash('An error occured. Please try again for fetching the paymentID','error')
-        return redirect(url_for('payment.add_data'))
+    # if not PaymentID:
+    #     flash('An error occured. Please try again for fetching the paymentID','error')
+    #     return redirect(url_for('payment.add_data'))
     session['PaymentID'] = PaymentID
     print('session', session['PaymentID'])
 
@@ -135,7 +134,7 @@ def add_data():
         data = cursor.fetchone()
         print('Data in get method: ', data)
         if data is None:
-            flash('No data found','error')
+            flash('No data found payment wala','error')
             return redirect(url_for('payment.add_data'))
         VehicleType = data[0]
         TimeFrom = data[1]

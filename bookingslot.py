@@ -54,6 +54,7 @@ def clearExpiredBookings():
 def add_data():
     if request.method == 'POST':
         BSlotID = session.get('VehicleID')
+        print(BSlotID, 'BSlotID')
         date = request.form['date']
         TimeFrom = request.form['TimeFrom']
         duration = request.form['duration']
