@@ -39,10 +39,11 @@ def add_data():
     if request.method == 'POST':
         print('request.form ke niche')
         PaymentID = session.get('VehicleID')
+        print('VehicleID', VehicleID)
         print('PaymentID', PaymentID)
         mode = request.form['mode']
         #debugging
-        data = (PaymentID, mode)
+        data = ('debugging', PaymentID, mode)
         print(data)
         ##end##`
 
@@ -57,9 +58,10 @@ def add_data():
             '''
             cursor.execute(fetch_query, (PaymentID,))
             data = cursor.fetchone()
-            print('data is',data)
+            print('data in try is',data)
 
             if data is None:
+                print('No data')
                 flash('No data found', 'error')
                 return redirect(url_for('payment.add_data'))
 
@@ -82,8 +84,8 @@ def add_data():
                 rate = 18
 
 
-            print(rate)
-            print(duration)
+            print('rate', rate)
+            print('duration', duration)
             TotalPrice = rate * Duration 
             print(TotalPrice)
             TotalPrice = float(TotalPrice)
@@ -103,7 +105,7 @@ def add_data():
             cursor.execute(update_query, (mode, PaymentID,))
             db.commit()
             session.pop('VehicleID')
-
+            # return redirect(url_for('payment.Generate_Receipt'))
             return render_template('add/payment.html',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID)
 
         except mysql.connector.Error as e:
@@ -114,12 +116,15 @@ def add_data():
             return redirect(url_for('payment.add_data'))
     
     PaymentID = session.get('VehicleID')
+    print('PaymentID in get: ', PaymentID)
     if not PaymentID:
         flash('An error occured. Please try again for fetching the paymentID','error')
         return redirect(url_for('payment.add_data'))
     session['PaymentID'] = PaymentID
+    print('session', session['PaymentID'])
 
     try:
+        print('Get wale try ke andar')
         fetch_query = ''' SELECT v.VehicleType, b.TimeFrom, b.TimeTo, b.duration
             FROM payment p   
             JOIN vehicle v on p.PaymentID = v.VehicleID
@@ -155,10 +160,11 @@ def add_data():
         return render_template('add/payment.html', TotalPrice=TotalPrice)
 
     except mysql.connector.Error as e:
+        print('Get wale except ke andar')
+        print(e)
         db.rollback()
         flash('Error fetching booking details', 'error')
         return redirect(url_for('payment.add_data'))
-
 
     return render_template('add/payment.html', TotalPrice=TotalPrice)
 
