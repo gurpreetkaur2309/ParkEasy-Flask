@@ -39,7 +39,7 @@ def clearExpiredBookings():
         current_time = datetime.now().time()
         update_query = '''
         UPDATE bookingslot 
-        SET TimeFrom = '', TimeTo = '' 
+        SET TimeFrom = '', TimeTo = '', duration = '' 
         WHERE date = %s AND TimeTo < %s
         '''
         cursor.execute(update_query, (current_date, current_time))

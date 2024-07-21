@@ -104,11 +104,11 @@ def add_data():
             cursor.execute(update_query, (mode, PaymentID,))
             db.commit()
             session.pop('VehicleID')
-            # return redirect(url_for('payment.Generate_Receipt'))
-            return render_template('add/payment.html',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID)
+            return redirect(url_for('payment.Generate_Receipt',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID))
+            # return render_template('add/payment.html',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID)
 
         except mysql.connector.Error as e:
-            print('except ke andar')
+            print('post wale except ke andar')
             print(e)
             db.rollback()
             flash('Error processing your payment', 'error')
@@ -156,7 +156,8 @@ def add_data():
         TotalPrice = rate * Duration
         TotalPrice = float(TotalPrice)
 
-        return render_template('add/payment.html', TotalPrice=TotalPrice)
+        # return render_template('add/payment.html', TotalPrice=TotalPrice)
+        return redirect(url_for('payment.Generate_Receipt', TotalPrice=TotalPrice, PaymentID=PaymentID, VehicleID=VehicleID))
 
     except mysql.connector.Error as e:
         print('Get wale except ke andar')
