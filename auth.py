@@ -26,6 +26,9 @@ def register():
         name = request.form['name']
         address = request.form['address']
         contact = request.form['contact']
+        S_No = request.form['SNo']
+        session['SNo'] = S_No
+        print(session)
 
         if len(password) > 8:
             flash('Password should not be more than 8 letters', 'error')
@@ -74,8 +77,11 @@ def register():
                 INSERT INTO owner (name, address, contact) 
                 VALUES(%s, %s, %s)
             '''
+            print('update query ke niche cursor.execute ke upar')
             cursor.execute(update_query, (name, address, contact))
+            print('db.commit ke upar')
             db.commit()
+            print('mydata', name, address, contact)
             print('Owner data added successfully')
             return redirect(url_for('auth.dashboard'))
         except mysql.connector.Error as e:

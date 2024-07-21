@@ -58,8 +58,16 @@ def add_data():
         date = request.form['date']
         TimeFrom = request.form['TimeFrom']
         duration = request.form['duration']
-        if not all ((BSlotID or date or TimeFrom or duration)):
-          flash('All fields are required')
+        if not date:
+            flash('Please enter date','error')
+            return redirect(url_for('bookingslot.add_data'))
+        if not TimeFrom:
+            flash('Please enter time to continue','error')
+            return redirect(url_for('bookingslot.add_data'))
+        if not duration:
+            flash('Please enter duration to continue','error')
+            return redirect(url_for('bookingslot.add_data'))
+
 
         try:
             durationStr = int(duration)

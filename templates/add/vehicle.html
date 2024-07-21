@@ -11,12 +11,13 @@
     </div>
     <div class="CAligndiv">
 
-        
-{##}
+
+
         {% for slot in availableSlots %}
             <label class="CAlign" for="Slot">Slot(Auto generated)</label><br>
             <input class="CAlign" type="number" id="VehicleID" name="VehicleID" placeholder="Enter Vehicle ID" value="{{ slot }}" required maxlength="20" readonly>
         {% endfor %}
+        <input type="number" class="CAlignID" id="S_No" name="S_No" placeholder="S_No" value="{{S_No}}" readonly>
         <br><br>
         <p style="margin-left:600px;">Don't like your slot. No worries, <a href="{{ url_for('vehicle.addCustomVehicle') }}">Change it</a></p>
 
@@ -28,7 +29,8 @@
             <option value="2-Wheeler">2-Wheeler</option>
             <option value="Heavy-Vehicle">Heavy-Vehicle</option>
         </select>
-{#        <input class="CAlign" type="search" list="mylist" placeholder="VehicleType" id="VehicleType" name="VehicleType" required maxlength="15">#}
+
+
 
         <br><br>
 
