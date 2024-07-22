@@ -55,19 +55,25 @@ def register():
 
         print('insert_query executed')
         try:
+            maxSNo = 'SELECT MAX(SNo) FROM user'
+            cursor.execute(maxSNo)
+            db.commit()
+            result = cursor.fetchone()
+            maxS_No = result[0]
+            incrementedSNo = maxS_No + 1
 
             hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
             insert_query = '''
-                INSERT INTO user(username, password, role) VALUES (%s, %s, 'user')
+                INSERT INTO user(username, password, role, SNo) VALUES (%s, %s, 'user', %s)
             '''
-            user_data = (username, hashed_password)
+            user_data = (username, hashed_password, incrementedSNo)
             cursor.execute(insert_query, user_data)
             db.commit()
             print('insert query wale try mai gaya')
         except mysql.connector.Error as e:
             print('insert query wale except mai gaya')
             db.rollback()
-            print('Error', e)
+            print('Error: ', e)
             flash('Error inserting user','error')
             return redirect(url_for('auth.register_form'))
 
