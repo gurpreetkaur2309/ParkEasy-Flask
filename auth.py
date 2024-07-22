@@ -27,7 +27,7 @@ def register():
         address = request.form['address']
         contact = request.form['contact']
         S_No = request.form['SNo']
-        session['SNo'] = S_No
+        # session['SNo'] = S_No
         print(session)
 
         if len(password) > 8:
@@ -61,6 +61,7 @@ def register():
             result = cursor.fetchone()
             maxS_No = result[0]
             incrementedSNo = maxS_No + 1
+            session['incrementedSNo'] = incrementedSNo
 
             hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
             insert_query = '''
@@ -78,16 +79,23 @@ def register():
             return redirect(url_for('auth.register_form'))
 
         try:
-            print('update wale try mai')
+            # maxSNo = 'SELECT MAX(SNo) FROM owner'
+            # cursor.execute(maxSNo)
+            # db.commit()
+            # result = cursor.fetchone()
+            # maxS_No = result[0]
+            incrementedSNo = session.get('incrementedSNo')
+            print('incrementedSNo: ', incrementedSNo)
+            # print('update wale try mai')
             update_query = '''
-                INSERT INTO owner (name, address, contact) 
-                VALUES(%s, %s, %s)
+                INSERT INTO owner (name, address, contact, SNo) 
+                VALUES(%s, %s, %s, %s)
             '''
             print('update query ke niche cursor.execute ke upar')
-            cursor.execute(update_query, (name, address, contact))
+            cursor.execute(update_query, (name, address, contact, incrementedSNo))
             print('db.commit ke upar')
             db.commit()
-            print('mydata', name, address, contact)
+            print('mydata', name, address, contact, incrementedSNo)
             print('Owner data added successfully')
             return redirect(url_for('auth.dashboard'))
         except mysql.connector.Error as e:

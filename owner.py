@@ -53,6 +53,8 @@ def add_data():
         Name = request.form['Name']
         contact = request.form['contact']
         address = request.form['address']
+        S_No = session.get('SNo')
+        print('S_No in owner: ', SNo)
         print(request.form)
 
         if not ValidName(Name):
@@ -67,13 +69,18 @@ def add_data():
         if len(contact) > 12:
             flash('Contact connot be more than 12 numbers')
             return redirect(url_for('owner.add_data'))
-        
+        maxSNo = 'SELECT MAX(SNo) FROM user'
+        cursor.execute(maxSNo)
+        db.commit()
+        result = cursor.fetchone()
+        maxS_No = result[0]
+        incrementedSNo = maxS_No + 1
         update_query = '''
             UPDATE owner
-            SET Name=%s, contact=%s, address=%s
+            SET Name=%s, contact=%s, address=%s, SNo=%s
             WHERE OwnerID=%s
         '''
-        cursor.execute(update_query, (Name, contact, address, OwnerID))
+        cursor.execute(update_query, (Name, contact, address, incrementedSNo, OwnerID))
         db.commit()
         #flash('Data added successfully')
         # return redirect(url_for('payment.add_data'))

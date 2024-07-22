@@ -72,8 +72,8 @@ def add_data():
         session['VehicleID'] = VehicleID
         VehicleType = request.form['VehicleType']
         VehicleNumber = request.form['VehicleNumber']
-        S_No = session.get('SNo')
-        print("S_No in vehicle", S_No)
+        S_No = session.get('incrementedSNo')
+        print("S_No in vehicle: ", S_No)
         if not ValidNumber(VehicleNumber):
             flash('Registration Number is not valid')
             return redirect(url_for('vehicle.add_data'))
