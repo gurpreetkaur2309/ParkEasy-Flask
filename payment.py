@@ -53,8 +53,8 @@ def add_data():
             fetch_query = '''
                 SELECT v.VehicleType, b.TimeFrom, b.TimeTo, b.duration
                 FROM payment p   
-                JOIN vehicle v on p.PaymentID = v.VehicleID
-                JOIN bookingslot b on p.PaymentID = b.BSlotID
+                JOIN vehicle v on p.SNo = v.SNo
+                JOIN bookingslot b on p.SNo = b.SNo
                 WHERE p.PaymentID=%s
             '''
             cursor.execute(fetch_query, (PaymentID,))

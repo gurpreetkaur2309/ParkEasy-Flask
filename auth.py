@@ -117,7 +117,8 @@ def AdminLogin():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        get_user_query = 'SELECT username, password, role FROM Admin WHERE username=%s'
+        S_No = session.get('incrementedSNo')
+        get_user_query = 'SELECT username, password, role, SNo FROM Admin WHERE username=%s'
         cursor.execute(get_user_query, (username,))
         userData = cursor.fetchone()
         print(userData)
@@ -125,7 +126,7 @@ def AdminLogin():
         if len(password) > 8:
             flash('Password should not be more than 8 letters', 'error')
 
-        if userData and password:
+        if userData and password and S_No: 
             session['username'] = userData[0]
             session['role'] = userData[2]
             print(session['role'])
@@ -143,10 +144,11 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        S_No = session.get('incrementedSNo')
         if len(password) > 8:
             flash('Password should not be more than 8 letters', 'error')
         #query to fetch user's hashed password
-        get_user_query = 'SELECT username, password FROM user WHERE username=%s'
+        get_user_query = 'SELECT username, password, SNo FROM user WHERE username=%s'
         cursor.execute(get_user_query,(username,))
         db.commit()
         user_data = cursor.fetchone()

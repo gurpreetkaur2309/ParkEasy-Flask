@@ -73,6 +73,8 @@ def add_data():
         VehicleType = request.form['VehicleType']
         VehicleNumber = request.form['VehicleNumber']
         S_No = session.get('incrementedSNo')
+        if not S_No:
+            flash('An error occured. Please try again after sometime', 'error')
         print("S_No in vehicle: ", S_No)
         print('request.form', request.form)
         if not ValidNumber(VehicleNumber):
