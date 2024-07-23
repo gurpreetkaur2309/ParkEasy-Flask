@@ -90,7 +90,8 @@ def add_data():
             TotalPrice = rate * Duration 
             print(TotalPrice)
             TotalPrice = float(TotalPrice)
-            print('TotalPrice',TotalPrice)
+            session['TotalPrice'] = TotalPrice
+            print(session, 'totalprice')
 
 
             print('Update query ke upar')
@@ -105,7 +106,7 @@ def add_data():
                           
             cursor.execute(update_query, (mode, S_No, PaymentID,))
             db.commit()
-            session.pop('VehicleID')
+
             return redirect(url_for('payment.Generate_Receipt',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID))
             # return render_template('add/payment.html',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID)
 
@@ -116,60 +117,8 @@ def add_data():
             flash('Error processing your payment', 'error')
             return redirect(url_for('payment.add_data'))
     
-    PaymentID = session.get('VehicleID')
-    print('PaymentID in get: ', PaymentID)
-    # if not PaymentID:
-    #     flash('An error occured. Please try again for fetching the paymentID','error')
-    #     return redirect(url_for('payment.add_data'))
-    session['PaymentID'] = PaymentID
-    print('session', session['PaymentID'])
-
-    try:
-        print('Get wale try ke andar')
-        fetch_query = ''' SELECT v.VehicleType, b.TimeFrom, b.TimeTo, b.duration
-            FROM payment p   
-            JOIN vehicle v on p.PaymentID = v.VehicleID
-            JOIN bookingslot b on p.PaymentID = b.BSlotID
-            WHERE p.PaymentID=%s
-            '''
-        cursor.execute(fetch_query, (PaymentID,))
-        data = cursor.fetchone()
-        print('Data in get method: ', data)
-        if data is None:
-            flash('No data found payment wala','error')
-            return redirect(url_for('payment.add_data'))
-        VehicleType = data[0]
-        TimeFrom = data[1]
-        TimeTo = data[2]
-        duration = data[3]
-
-        Duration = int(duration)
-
-        rate = 0
-        if VehicleType in ['sedan', 'SUV', 'Hatchback', 'Coupe']:
-            rate = 13
-        elif VehicleType == '2-Wheeler':
-            rate = 8
-        elif VehicleType == 'Heavy-Vehicle':
-            rate = 15
-        elif VehicleType == 'Luxury-Vehicle':
-            rate = 18
-
-        TotalPrice = rate * Duration
-        TotalPrice = float(TotalPrice)
-
-        VehicleID = session.get('VehicleID')
-        # return render_template('add/payment.html', TotalPrice=TotalPrice)
-        # return redirect(url_for('payment.Generate_Receipt', TotalPrice=TotalPrice, PaymentID=PaymentID, VehicleID=VehicleID))
-
-    except mysql.connector.Error as e:
-        print('Get wale except ke andar')
-        print(e)
-        db.rollback()
-        flash('Error fetching booking details', 'error')
-        return redirect(url_for('payment.add_data'))
-
-    return render_template('add/payment.html', TotalPrice=TotalPrice)
+    Amount = session.get('TotalPrice')
+    return render_template('add/payment.html', Amount = Amount)
 
 
 
