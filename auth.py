@@ -136,11 +136,16 @@ def AdminLogin():
 #################################################################################
 @auth.route('/login')
 def login_form():
-    return render_template('auth/login.html')
+    print('in login form')
+    SNo = session.get('incrementedSNo')
+    print(SNo,'SNo in login form')
+    return render_template('auth/login.html',SNo=SNo)
 
-@auth.route('/login', methods=['GET', 'POST'])
+@auth.route('/login', methods=['GET','POST'])
 def login():
+    print('On top of request.form')
     if request.method == 'POST':
+        print('inside post method')
         username = request.form['username']
         password = request.form['password']
         S_No = session.get('incrementedSNo')
@@ -155,6 +160,8 @@ def login():
         if user_data and check_password_hash(user_data[1], password):
             session['username'] = user_data[0]
             session['role'] = 'user'
+            session['SNo'] = user_data[2]
+            print('session', session['SNo'])
             # flash('login successful', 'success')
             if session['role'] == 'admin':
                 return redirect(url_for('auth.dashboard'))
@@ -162,10 +169,16 @@ def login():
                 return redirect(url_for('vehicle.add_data'))
         else:
             flash('Invalid username or password', 'error')
-
+            print('return redirect ke upar')
         return redirect(url_for('auth.login_form'))
-            # return render_template('auth/login.html', message='Invalid username or password', message_type='error')
-    return render_template('auth/login.html')
+
+    print('SNo ke upar')
+
+    SNo = session.get('incrementedSNo')
+    S_No = session.get('user_data[2]')
+    print('S_No is: ', S_No)
+    print('SNo: ', SNo)
+    return render_template('auth/login.html', SNo=SNo, S_No=S_No)
 
 @auth.route('/logout')
 def logout():

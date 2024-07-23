@@ -27,7 +27,8 @@ app.register_blueprint(auth)
 @app.context_processor
 def inject_user():
     username = session.get('username')
-    return dict(username=username)
+    SNo = session.get('incrementedSNo')
+    return dict(username=username, SNo=SNo)
 
 
 def configure_scheduler():
