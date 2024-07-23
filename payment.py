@@ -41,6 +41,8 @@ def add_data():
         PaymentID = session.get('VehicleID')
         print('PaymentID in post', PaymentID)
         mode = request.form['mode']
+        S_No = session.get('incrementedSNo')
+        print('S_No: ', S_No)
         #debugging
         data = ('debugging', PaymentID, mode)
         print(data)
@@ -94,14 +96,14 @@ def add_data():
             print('Update query ke upar')
             update_query = '''
                 UPDATE payment
-                SET mode=%s
+                SET mode=%s, SNo=%s
                 WHERE PaymentID=%s
             '''
 
             if not TotalPrice:
                 flash('No data found','error')
                           
-            cursor.execute(update_query, (mode, PaymentID,))
+            cursor.execute(update_query, (mode, S_No, PaymentID,))
             db.commit()
             session.pop('VehicleID')
             return redirect(url_for('payment.Generate_Receipt',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID))
@@ -156,8 +158,9 @@ def add_data():
         TotalPrice = rate * Duration
         TotalPrice = float(TotalPrice)
 
+        VehicleID = session.get('VehicleID')
         # return render_template('add/payment.html', TotalPrice=TotalPrice)
-        return redirect(url_for('payment.Generate_Receipt', TotalPrice=TotalPrice, PaymentID=PaymentID))
+        # return redirect(url_for('payment.Generate_Receipt', TotalPrice=TotalPrice, PaymentID=PaymentID, VehicleID=VehicleID))
 
     except mysql.connector.Error as e:
         print('Get wale except ke andar')
