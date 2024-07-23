@@ -74,19 +74,28 @@ def add_data():
         VehicleNumber = request.form['VehicleNumber']
         S_No = session.get('incrementedSNo')
         print("S_No in vehicle: ", S_No)
+        print('request.form', request.form)
         if not ValidNumber(VehicleNumber):
             flash('Registration Number is not valid')
             return redirect(url_for('vehicle.add_data'))
 
         try:
+            print('update query ke upar')
             update_query = '''
                     UPDATE vehicle
-                    SET VehicleType=%s, VehicleNumber=%s
+                    SET VehicleType=%s, VehicleNumber=%s, SNo = %s
                     WHERE VehicleID=%s
                 '''
-            cursor.execute(update_query, (VehicleType, VehicleNumber, VehicleID))
+            print('query: ', update_query)
+            print('cursor.execute ke upar')
+            cursor.execute(update_query, (VehicleType, VehicleNumber, S_No, VehicleID))
+            print('cursor.execute ke niche')
+            print('S_No: ', S_No)
             db.commit()
+            flash('Data added successfully', 'success')
+            print('db.commit k niche')
         except mysql.connector.Error as e:
+            print('except ke andar')
             print(e)
             db.rollback()
             flash('Error adding data', 'error')
@@ -94,15 +103,16 @@ def add_data():
         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
 
 
-    cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
+    cursor.execute("SELECT VehicleID, SNo FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
     availableSlots = cursor.fetchone()
-    print(availableSlots)
+    VID = availableSlots[0]
+    SNo = session.get('incrementedSNo')
 
     if not availableSlots:
         flash('No slots found. Please try after sometime', 'error')
         return redirect(url_for('auth.dashboard'))
 
-    return render_template('add/vehicle.html', availableSlots=availableSlots)
+    return render_template('add/vehicle.html', VID=VID, SNo=SNo)
 
 @Vehicle.route('/vehicle/custom/add', methods=['GET','POST'])
 @login_required

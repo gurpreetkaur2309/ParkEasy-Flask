@@ -58,6 +58,8 @@ def add_data():
         date = request.form['date']
         TimeFrom = request.form['TimeFrom']
         duration = request.form['duration']
+        S_No = session.get('incrementedSNo')
+        print('SNo in bookingslot: ', S_No)
         if not date:
             flash('Please enter date','error')
             return redirect(url_for('bookingslot.add_data'))
@@ -83,12 +85,13 @@ def add_data():
         try:
             update_query = '''
                 UPDATE bookingslot
-                SET date=%s, duration=%s, TimeFrom=%s, TimeTo=%s 
+                SET date=%s, duration=%s, TimeFrom=%s, TimeTo=%s, SNo=%s 
                 WHERE BSlotID=%s
             '''
-            cursor.execute(update_query, (date,  duration, TimeFrom, TimeTo, BSlotID,))
+            cursor.execute(update_query, (date,  duration, TimeFrom, TimeTo, S_No, BSlotID,))
             db.commit()
             # return render_template('add/owner.html', VehicleID=BSlotID)
+            return redirect(url_for('payment.add_data'))
         except  mysql.connector.Error as e:
             print(e)
             db.rollback()
@@ -96,7 +99,8 @@ def add_data():
             return render_template('add/bookingslot.html')
         return redirect(url_for('payment.add_data', VehicleID=BSlotID))
     BSlotID = session.get('VehicleID')
-    return render_template('add/bookingslot.html')
+    SID = session.get('incrementedSNo')
+    return render_template('add/bookingslot.html', SID=SID)
 
 @booking.route('/bookingslot/add/<int:BSlotID>')
 @login_required

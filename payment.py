@@ -157,7 +157,7 @@ def add_data():
         TotalPrice = float(TotalPrice)
 
         # return render_template('add/payment.html', TotalPrice=TotalPrice)
-        return redirect(url_for('payment.Generate_Receipt', TotalPrice=TotalPrice, PaymentID=PaymentID, VehicleID=VehicleID))
+        return redirect(url_for('payment.Generate_Receipt', TotalPrice=TotalPrice, PaymentID=PaymentID))
 
     except mysql.connector.Error as e:
         print('Get wale except ke andar')
