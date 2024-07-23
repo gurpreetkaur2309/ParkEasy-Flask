@@ -7,7 +7,6 @@ from functools import wraps
 import re
 from utils import requires_role
 auth = Blueprint('auth', __name__)
-secret_key='flaskdev140401020402yhanddhe0eb'
 @auth.route('/register')
 def register_form():
     return render_template('auth/register.html')
@@ -145,6 +144,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         S_No = session.get('incrementedSNo')
+        print('Sno in login', S_No)
         if len(password) > 8:
             flash('Password should not be more than 8 letters', 'error')
         #query to fetch user's hashed password

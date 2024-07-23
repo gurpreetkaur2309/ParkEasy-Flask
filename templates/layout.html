@@ -35,6 +35,7 @@
 
                           <li class="nav-item active">
                             <a href="/vehicle/add" style="color:blue;" class="nav-link active" aria-current="page">Book Slot</a>
+
                           </li>
                           <li class="nav-item active">
                             {% if session['role'] == 'admin' %}
@@ -74,7 +75,9 @@
                               <a class="nav-link active" href="{{ url_for('sensor.display') }}">Sensor</a>
                               {% endif %}
                           </li>
-                    
+                          <li>
+
+                          </li>
                   </div>
 
               </div>

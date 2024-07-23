@@ -11,7 +11,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import logging
 
 app = Flask(__name__)
-app.secret_key = 'kdjlfbwiekf0123'
+app.secret_key = 'kjasdfhoiuehsfowe9phif9824ye8972hwuiefohnsdfp'
 
 @app.route('/')
 def index():
