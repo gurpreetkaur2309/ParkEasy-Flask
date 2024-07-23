@@ -104,9 +104,9 @@ def add_data():
             return redirect(url_for('vehicle.add_data'))
         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
 
-
     cursor.execute("SELECT VehicleID, SNo FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
     availableSlots = cursor.fetchone()
+
     VID = availableSlots[0]
     SNo = session.get('incrementedSNo')
 
@@ -151,10 +151,14 @@ def addCustomVehicle():
             flash('Error adding data', 'error')
             return redirect(url_for('vehicle.addCustomVehicle'))
         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
-    cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = ' ' and VehicleNumber = ' ' ")
+    cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
     availableSlots = cursor.fetchall()
-    availableSlots = [slot[0] for slot in availableSlots]
-    print(availableSlots)
+    slots1 = cursor.fetchone()
+    slots2 = session.get('incrementedSNo')
+    print('slots: ', slots1)
+    print('slots2: ', slots2)
+
+    print('available slots: ', availableSlots)
 
     if not availableSlots:
         flash('No slots found. Please try after sometime', 'error')

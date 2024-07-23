@@ -171,11 +171,11 @@ def login():
             flash('Invalid username or password', 'error')
             print('return redirect ke upar')
         return redirect(url_for('auth.login_form'))
-
     print('SNo ke upar')
 
-    SNo = session.get('incrementedSNo')
+    SNo = session.get('SNo')
     S_No = session.get('user_data[2]')
+
     print('S_No is: ', S_No)
     print('SNo: ', SNo)
     return render_template('auth/login.html', SNo=SNo, S_No=S_No)
