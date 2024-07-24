@@ -106,28 +106,35 @@ def register():
 def AdminLoginForm():
     return render_template('auth/adminlogin.html')
 
-@auth.route('/adminlogin', methods=['POST'])
+@auth.route('/adminlogin', methods=[ 'GET','POST'])
 def AdminLogin():
+    print('in get method')
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        S_No = session.get('incrementedSNo')
-        get_user_query = 'SELECT username, password, role, SNo FROM Admin WHERE username=%s'
+        role = 'admin'
+
+        get_user_query = "SELECT username, password, role, SNo FROM Admin WHERE username=%s"
         cursor.execute(get_user_query, (username,))
         userData = cursor.fetchone()
-        print(userData)
+        SNo = userData[3]
+        session['SNo'] = SNo
+        print('user data: ', userData)
 
         if len(password) > 8:
             flash('Password should not be more than 8 letters', 'error')
 
-        if userData and password and S_No: 
+        if userData and password: 
             session['username'] = userData[0]
             session['role'] = userData[2]
             print(session['role'])
             return redirect(url_for('auth.dashboard'))
         else:
             flash('Invalid username or password', 'danger')
-    return render_template('auth/adminlogin.html')
+    print('in get method')
+    S_No = session.get('SNo')
+    print(S_No)
+    return render_template('auth/adminlogin.html', S_No = S_No)
 #################################################################################
 @auth.route('/login')
 def login_form():
