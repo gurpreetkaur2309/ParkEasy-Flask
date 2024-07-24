@@ -104,6 +104,7 @@ def add_data():
             return redirect(url_for('vehicle.add_data'))
         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
 
+    print('on top of cursor.execute')
     cursor.execute("SELECT VehicleID, SNo FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
     availableSlots = cursor.fetchone()
 
@@ -151,13 +152,15 @@ def addCustomVehicle():
             flash('Error adding data', 'error')
             return redirect(url_for('vehicle.addCustomVehicle'))
         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
+        Blueprint
     cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
     availableSlots = cursor.fetchall()
+    ####debugging######
     slots1 = cursor.fetchone()
     slots2 = session.get('incrementedSNo')
     print('slots: ', slots1)
     print('slots2: ', slots2)
-
+    ######end####
     print('available slots: ', availableSlots)
 
     if not availableSlots:
