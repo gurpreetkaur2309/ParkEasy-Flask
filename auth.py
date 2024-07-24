@@ -205,13 +205,12 @@ def login_required(view):
         else:
             flash('You are not logged in, Please login to continue', 'error')
             return redirect(url_for('auth.login_form'))
-        #chatgpt code
+
         g.user = session['username']
         return view(*args, **kwargs)
-    # return wrapped_view()
+
     return wrapped_view
-###########################
-# #################
+
 
 cursor.execute('SELECT COUNT(*) FROM slots')
 slots_count = cursor.fetchone()
