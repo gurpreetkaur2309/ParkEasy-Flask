@@ -106,9 +106,8 @@ def register():
 def AdminLoginForm():
     return render_template('auth/adminlogin.html')
 
-@auth.route('/adminlogin', methods=[ 'GET','POST'])
+@auth.route('/adminlogin', methods=['POST', 'GET'])
 def AdminLogin():
-    print('in get method')
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -138,7 +137,7 @@ def AdminLogin():
 #################################################################################
 @auth.route('/login')
 def login_form():
-    return render_template('auth/login.html',SNo=SNo)
+    return render_template('auth/login.html')
 
 @auth.route('/login', methods=['GET','POST'])
 def login():
@@ -166,12 +165,12 @@ def login():
             session['username'] = user_data[0]
             session['role'] = 'user'
             session['S_No'] = user_data[2]
-            print('session', session['SNo'])
+
             # flash('login successful', 'success')
             if session['role'] == 'admin':
                 return redirect(url_for('auth.dashboard'))
             else:
-                return redirect(url_for('vehicle.add_data', SNo=SNo))
+                return redirect(url_for('vehicle.add_data'))
         else:
             flash('Invalid username or password', 'error')
             print('return redirect ke upar')

@@ -155,14 +155,18 @@ def addCustomVehicle():
         Blueprint
     cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
     availableSlots = cursor.fetchall()
+    availableSlots = [slot[0] for slot in availableSlots]
+    print(availableSlots)
+
+
     ####debugging######
-    slots1 = cursor.fetchone()
+
     slots2 = session.get('incrementedSNo')
-    print('slots: ', slots1)
+
     print('slots2: ', slots2)
     ######end####
     print('available slots: ', availableSlots)
-
+    print('hello    ')
     if not availableSlots:
         flash('No slots found. Please try after sometime', 'error')
         return redirect(url_for('auth.dashboard'))
