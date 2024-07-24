@@ -205,10 +205,12 @@ def anotherSlot():
             flash('Error adding new vehicle','error')
             return redirect(url_for('vehicle.anotherSlot'))
         return redirect(url_for('bookingslot.add_data'))
-    print('on top of cursor.execute')
-    cursor.execute("SELECT VehicleID, SNo FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
-    availableSlots = cursor.fetchone()
 
+    cursor.execute("SELECT VehicleID, SNo FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
+
+    db.commit()
+    availableSlots = cursor.fetchone()
+    print(availableSlots)
     VID = availableSlots[0]
     SNo = session.get('incrementedSNo')
 

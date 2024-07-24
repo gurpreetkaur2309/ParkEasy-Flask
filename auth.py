@@ -151,9 +151,8 @@ def login():
     if request.method == 'POST':
         print('inside post method')
         username = request.form['username']
+        session['username'] = username
         password = request.form['password']
-        S_No = session.get('incrementedSNo')
-        print('Sno in login', S_No)
         if len(password) > 8:
             flash('Password should not be more than 8 letters', 'error')
         #query to fetch user's hashed password
@@ -164,7 +163,6 @@ def login():
         if user_data and check_password_hash(user_data[1], password):
             session['username'] = user_data[0]
             session['role'] = 'user'
-            session['S_No'] = user_data[2]
 
             # flash('login successful', 'success')
             if session['role'] == 'admin':
@@ -175,19 +173,12 @@ def login():
             flash('Invalid username or password', 'error')
             print('return redirect ke upar')
         return redirect(url_for('auth.login_form'))
-    print('SNo ke upar')
 
-    cursor.execute('SELECT max(SNO) FROM user')
-    db.commit()
-    SNo = cursor.fetchone()
-    print('cursor.fetchone: ', SNo[0])
 
     # print('S_No is: ', S_No)
     # print('SNo: ', SNo)
-    return render_template('auth/login.html', SNo = SNo)
+    return render_template('auth/login.html')
 
-def vehicle(SNo):
-    return render_template('add/vehicle.html', SNo=SNo)
 
 @auth.route('/logout')
 def logout():
