@@ -169,6 +169,50 @@ def addCustomVehicle():
 
     return render_template('add/CustomVehicle.html', availableSlots=availableSlots)
 
+@Vehicle.route('/vehicle/anotherSlot/add', methods = ['GET','POST'])
+@login_required
+def anotherSlot():
+    if request.method == 'POST':
+        VehicleID = request.form['VehicleID']
+        if not VehicleID:
+            flash('Cannot continue without VehicleID. Please try Again later','error')
+            return redirect(url_for('vehicle.anotherSlot'))
+        session['VehicleID'] = VehicleID
+        VehicleType = request.form['VehicleType']
+        VehicleNumber = request.form['VehicleNumber']
+        SNo = request.form['S_No']
+        if VehicleType == '0':
+            flash('Please select a valid Vehicle Type.', 'error')
+            return redirect(url_for('vehicle.anotherSlot'))
+        if not ValidNumber:
+            flash('Registration Number is not valid', 'error')
+            return redirect(url_for('vehicle.anotherSlot'))
+        try:
+            update_query = '''
+                    UPDATE vehicle
+                    SET VehicleType=%s, VehicleNumber=%s, SNo = %s
+                    WHERE VehicleID=%s
+                '''
+            cursor.execute(update_query, (VehicleType, VehicleNumber, SNo, VehicleID,))
+            db.commit()
+        except mysql.connector.Error as e:
+            db.rollback()
+            flash('Error adding new vehicle','error')
+            return redirect(url_for('vehicle.anotherSlot'))
+        return redirect(url_for('bookingslot.add_data'))
+    print('on top of cursor.execute')
+    cursor.execute("SELECT VehicleID, SNo FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
+    availableSlots = cursor.fetchone()
+
+    VID = availableSlots[0]
+    SNo = session.get('incrementedSNo')
+
+    if not availableSlots:
+        flash('No slots found. Please try after sometime', 'error')
+        return redirect(url_for('auth.dashboard'))
+
+    return render_template('add/vehicle.html', VID=VID, SNo=SNo)
+
 
 @Vehicle.route('/vehicle/bookingslot/add/<int:VehicleID>', methods=['GET'])
 @login_required
