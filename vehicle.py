@@ -137,14 +137,15 @@ def addCustomVehicle():
         if not ValidNumber(VehicleNumber):
             flash('Registration Number is not valid')
             return redirect(url_for('vehicle.add_data'))
-
+        S_No = session.get('incrementedSNo')
+        print('sno: ', S_No)
         try:
             update_query = '''
                     UPDATE vehicle
-                    SET VehicleType=%s, VehicleNumber=%s
+                    SET VehicleType=%s, VehicleNumber=%s, SNo=%s
                     WHERE VehicleID=%s
                 '''
-            cursor.execute(update_query, (VehicleType, VehicleNumber, VehicleID))
+            cursor.execute(update_query, (VehicleType, VehicleNumber, S_No, VehicleID))
             db.commit()
         except mysql.connector.Error as e:
             print(e)
