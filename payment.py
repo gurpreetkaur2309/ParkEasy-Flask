@@ -4,6 +4,8 @@ import mysql.connector
 from auth import login_required
 from datetime import datetime, time
 from utils import requires_role
+import pdb
+
 payment = Blueprint('payment', __name__)
 
 @payment.route('/payment')
@@ -47,6 +49,12 @@ def add_data():
         data = ('debugging', PaymentID, mode)
         print(data)
         ##end##`
+        OwnerID = PaymentID
+        BSlotID = PaymentID
+        VehicleID = PaymentID
+        AllotmentID = PaymentID
+        print('all ids are: ', OwnerID, BSlotID, VehicleID, AllotmentID)
+
 
         try:
             print('fetch query ke upar in try')
