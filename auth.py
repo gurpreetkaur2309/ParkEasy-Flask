@@ -141,13 +141,9 @@ def login_form():
 
 @auth.route('/login', methods=['GET','POST'])
 def login():
-    cursor.execute('SELECT max(SNO) FROM user')
-    db.commit()
-    SNo = cursor.fetchone()
-    print('cursor.fetchone: ', SNo[0])
+    
     print('On top of request.form')
-    S_No = session.get('incrementedSNo')
-    print('sno: ', S_No)
+    
     if request.method == 'POST':
         print('inside post method')
         username = request.form['username']
@@ -161,22 +157,20 @@ def login():
         db.commit()
         user_data = cursor.fetchone()
         if user_data and check_password_hash(user_data[1], password):
+            print('inside the if statemenr')
             session['username'] = user_data[0]
             session['role'] = 'user'
 
-            # flash('login successful', 'success')
             if session['role'] == 'admin':
                 return redirect(url_for('auth.dashboard'))
             else:
                 return redirect(url_for('vehicle.add_data'))
         else:
+            print('inside the else condition')
             flash('Invalid username or password', 'error')
-            print('return redirect ke upar')
         return redirect(url_for('auth.login_form'))
 
 
-    # print('S_No is: ', S_No)
-    # print('SNo: ', SNo)
     return render_template('auth/login.html')
 
 
