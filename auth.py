@@ -16,7 +16,7 @@ def ValidUser(username):
     pattern = "^[a-zA-Z0-9_.-]+$"
     return re.match(pattern, username)
 
-@auth.route('/register', methods=['POST'])
+@auth.route('/register', methods=['GET', 'POST'])
 def register():
     print('register function initiated')
     if request.method == 'POST':
@@ -97,6 +97,7 @@ def register():
             print(e)
             db.rollback()
             flash('Error adding owner data','danger')
+    print('in get method of refgister')
     return render_template('auth/register.html')
 
 
@@ -156,8 +157,9 @@ def login():
         cursor.execute(get_user_query,(username,))
         db.commit()
         user_data = cursor.fetchone()
+        print(user_data)
         if user_data and check_password_hash(user_data[1], password):
-            print('inside the if statemenr')
+            print('inside the if statement')
             session['username'] = user_data[0]
             session['role'] = 'user'
 
@@ -168,9 +170,25 @@ def login():
         else:
             print('inside the else condition')
             flash('Invalid username or password', 'error')
-        return redirect(url_for('auth.login_form'))
+            return redirect(url_for('auth.login_form'))
+    if request.method == 'GET':
+        print('Inside the get method')
+        try:
+            username = session.get('username')
+            print(username, 'username')
+            select_query = '''
+                SELECT SNo FROM user where username=%s
+            '''
+            cursor.execute(select_query,(username,))
+            db.commit()
+            SNo = cursor.fetchone()
+            print(SNo, 'snois')
+        except mysql.connector.Error as e:
+            db.rollback()
+            flash('Error selecting user','error')
+            return redirect(url_for('auth.login'))
 
-
+    print('hello world')
     return render_template('auth/login.html')
 
 

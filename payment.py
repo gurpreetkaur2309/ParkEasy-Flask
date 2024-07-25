@@ -52,8 +52,8 @@ def add_data():
         OwnerID = PaymentID
         BSlotID = PaymentID
         VehicleID = PaymentID
-        AllotmentID = PaymentID
-        print('all ids are: ', OwnerID, BSlotID, VehicleID, AllotmentID)
+
+        print('all ids are: ', OwnerID, BSlotID, VehicleID)
 
 
 
@@ -120,9 +120,9 @@ def add_data():
 
             try:
                 insert_query = '''
-                    INSERT INTO allotment(AllotmentID, SNo, OwnerID, BSlotID, VehicleID, PaymentID) VALUES (%s, %s, %s, %s, %s, %s)
+                    INSERT INTO allotment(SNo, OwnerID, BSlotID, VehicleID, PaymentID) VALUES (%s, %s, %s, %s, %s)
                 '''
-                cursor.execute(insert_query, (AllotmentID, S_No, OwnerID, BSlotID, VehicleID, PaymentID))
+                cursor.execute(insert_query, (S_No, OwnerID, BSlotID, VehicleID, PaymentID))
                 db.commit()
             except mysql.connector.Error as e:
                 print(e)
