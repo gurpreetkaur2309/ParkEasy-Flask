@@ -56,6 +56,8 @@ def add_data():
         print('all ids are: ', OwnerID, BSlotID, VehicleID, AllotmentID)
 
 
+
+
         try:
             print('fetch query ke upar in try')
             fetch_query = '''
@@ -109,11 +111,23 @@ def add_data():
                 WHERE PaymentID=%s
             '''
 
-            if not TotalPrice:
-                flash('No data found','error')
+            # if not TotalPrice:
+            #     print('Total price not found')
+            #     flash('Please try again or check the localhost','error')
                           
             cursor.execute(update_query, (mode, S_No, PaymentID,))
             db.commit()
+
+            try:
+                insert_query = '''
+                    INSERT INTO allotment(AllotmentID, SNo, OwnerID, BSlotID, VehicleID, PaymentID) VALUES (%s, %s, %s, %s, %s, %s)
+                '''
+                cursor.execute(insert_query, (AllotmentID, S_No, OwnerID, BSlotID, VehicleID, PaymentID))
+                db.commit()
+            except mysql.connector.Error as e:
+                print(e)
+                flash('Error adding allotment', 'error')
+                return redirect(url_for('payment.add_data'))
 
             return redirect(url_for('payment.Generate_Receipt',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID))
             # return render_template('add/payment.html',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID)
@@ -188,7 +202,6 @@ def delete_data(PaymentID):
 
 
 def Generate_Receipt(PaymentID):
-
 
     Null_query = '''
         SELECT v.VehicleType, v.VehicleNumber, p.TotalPrice
