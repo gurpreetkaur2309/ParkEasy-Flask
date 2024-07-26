@@ -31,8 +31,11 @@ def register():
 
         if len(password) > 8:
             flash('Password should not be more than 8 letters', 'error')
+            return redirect(url_for('auth.register_form'))
+
         elif len(password) < 6:
             flash('Password cannot be less than 6 letters', 'error')
+            return redirect(url_for('auth.register_form'))
 
         if ' ' in username:
             flash('Username cannot contain spaces', 'error')
@@ -143,23 +146,6 @@ def login_form():
 @auth.route('/login', methods=['GET','POST'])
 def login():
     
-    print('On top of request.form')
-    if request.method == 'GET':
-        print('Inside the get method')
-        try:
-            username = session.get('username')
-            print(username, 'username')
-            select_query = '''
-                SELECT SNo FROM user where username=%s
-            '''
-            cursor.execute(select_query,(username,))
-            db.commit()
-            SNo = cursor.fetchone()
-            print(SNo, 'snois')
-        except mysql.connector.Error as e:
-            db.rollback()
-            flash('Error selecting user','error')
-            return redirect(url_for('auth.login'))
     if request.method == 'POST':
         print('inside post method')
         username = request.form['username']
@@ -186,15 +172,31 @@ def login():
             print('inside the else condition')
             flash('Invalid username or password', 'error')
             return redirect(url_for('auth.login_form'))
-    
 
+    print('On top of request.form')
+
+    username = session.get('username')
+    print(username, 'username')
+    select_query = '''
+         SELECT SNo FROM user where username=%s
+     '''
+    cursor.execute(select_query,(username,))
+    db.commit()
+    
+    
+    SID = session.get('SNo')
+    print(SNo)
     print('hello world')
-    return render_template('auth/login.html')
+    return render_template('auth/login.html', SID=SID)
 
 
 @auth.route('/logout')
 def logout():
     session.clear()
+    if session:
+        print(session)
+    else:
+        print('Not found')
     return render_template('index.html')
 
 
