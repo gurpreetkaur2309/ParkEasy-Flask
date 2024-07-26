@@ -144,7 +144,22 @@ def login_form():
 def login():
     
     print('On top of request.form')
-    
+    if request.method == 'GET':
+        print('Inside the get method')
+        try:
+            username = session.get('username')
+            print(username, 'username')
+            select_query = '''
+                SELECT SNo FROM user where username=%s
+            '''
+            cursor.execute(select_query,(username,))
+            db.commit()
+            SNo = cursor.fetchone()
+            print(SNo, 'snois')
+        except mysql.connector.Error as e:
+            db.rollback()
+            flash('Error selecting user','error')
+            return redirect(url_for('auth.login'))
     if request.method == 'POST':
         print('inside post method')
         username = request.form['username']
@@ -171,22 +186,7 @@ def login():
             print('inside the else condition')
             flash('Invalid username or password', 'error')
             return redirect(url_for('auth.login_form'))
-    if request.method == 'GET':
-        print('Inside the get method')
-        try:
-            username = session.get('username')
-            print(username, 'username')
-            select_query = '''
-                SELECT SNo FROM user where username=%s
-            '''
-            cursor.execute(select_query,(username,))
-            db.commit()
-            SNo = cursor.fetchone()
-            print(SNo, 'snois')
-        except mysql.connector.Error as e:
-            db.rollback()
-            flash('Error selecting user','error')
-            return redirect(url_for('auth.login'))
+    
 
     print('hello world')
     return render_template('auth/login.html')
