@@ -153,7 +153,7 @@ def login():
         password = request.form['password']
         if len(password) > 8:
             flash('Password should not be more than 8 letters', 'error')
-        #query to fetch user's hashed password
+
         get_user_query = 'SELECT username, password, SNo FROM user WHERE username=%s'
         cursor.execute(get_user_query,(username,))
         db.commit()

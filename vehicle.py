@@ -107,7 +107,7 @@ def add_data():
     print('on top of cursor.execute')
     cursor.execute("SELECT VehicleID, SNo FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
     availableSlots = cursor.fetchone()
-
+    print('hello')
     VID = availableSlots[0]
     SNo = session.get('incrementedSNo')
 
