@@ -145,60 +145,6 @@ def AdminLogin():
     return render_template('auth/adminlogin.html')
 
 
-# @auth.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         print('inside post method')
-#         username = request.form['username']
-#         password = request.form['password']
-
-#         if len(password) > 8:
-#             flash('Password should not be more than 8 characters', 'error')
-#             return redirect(url_for('auth.login'))
-
-#         fetch_query = "SELECT username, password, SNo FROM user WHERE username=%s"
-#         cursor.execute(fetch_query, (username,))
-#         user_data = cursor.fetchone()
-#         SNo = user_data[2]
-#         db.commit()
-#         print('doneeeeee', user_data)
-
-#         if user_data and check_password_hash(user_data[1], password):
-#             print('inside the if statement')
-#             session['username'] = user_data[0]
-#             session['role'] = 'user'
-
-#             if session['role'] == 'admin':
-#                 return redirect(url_for('auth.dashboard'))
-#             else:
-#                 return redirect(url_for('vehicle.add_data',SNo = SNo))
-#         else:
-#             print('inside the else condition')
-#             flash('Invalid username or password', 'error')
-#             return redirect(url_for('auth.login'))
-
-
-#     print('inside get method')
-#     username = session.get('user_data[0]')
-#     print(username, 'username')
-
-#     if username:
-#         select_query = '''
-#             SELECT SNo FROM user WHERE username=%s
-#         '''
-#         print('select_query')
-#         cursor.execute(select_query, (username,))
-#         user_data = cursor.fetchone()
-#         db.commit()
-#         SID = user_data[0] if user_data else None
-#         print('SID is: ', SID)
-#     else:
-#         SID = None  
-
-#     print(SID)
-#     print('hello world')
-#     return render_template('auth/login.html', SID=SID)
-
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
