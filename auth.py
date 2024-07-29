@@ -119,9 +119,9 @@ def AdminLogin():
 
         get_user_query = "SELECT username, password, role, SNo FROM Admin WHERE username=%s"
         cursor.execute(get_user_query, (username,))
+        db.commit()
         userData = cursor.fetchone()
-        SNo = userData[3]
-        session['SNo'] = SNo
+        print(userData[0])
         print('user data: ', userData)
 
         if len(password) > 8:
@@ -134,18 +134,23 @@ def AdminLogin():
             return redirect(url_for('auth.dashboard'))
         else:
             flash('Invalid username or password', 'danger')
+    
     print('in get method')
-    S_No = session.get('SNo')
-    print(S_No)
-    return render_template('auth/adminlogin.html', S_No = S_No)
-#################################################################################
+    username = session.get('username')
+    cursor.execute('SELECT SNo FROM allotment where username=%s')
+    db.commit()
+    S_No = cursor.fetchone()
+    print('S_No: ', S_No)
+    return render_template('auth/adminlogin.html')
+
+
 @auth.route('/login')
 def login_form():
     return render_template('auth/login.html')
 
 @auth.route('/login', methods=['GET','POST'])
 def login():
-    
+    print('On top of request.form')
     if request.method == 'POST':
         print('inside post method')
         username = request.form['username']
@@ -154,7 +159,7 @@ def login():
         if len(password) > 8:
             flash('Password should not be more than 8 letters', 'error')
 
-        get_user_query = 'SELECT username, password, SNo FROM user WHERE username=%s'
+        get_user_query = "SELECT username, password, SNo FROM user WHERE username=%s"
         cursor.execute(get_user_query,(username,))
         db.commit()
         user_data = cursor.fetchone()
@@ -173,8 +178,26 @@ def login():
             flash('Invalid username or password', 'error')
             return redirect(url_for('auth.login_form'))
 
-    print('On top of request.form')
+    print('bottom of the post') 
+    username = session.get('username')
+    print(username, 'username')
+    select_query = '''
+         SELECT SNo FROM user where username=%s
+     '''
+    cursor.execute(select_query,(username,))
+    db.commit()
+    
+    
+    SID = session.get('SNo')
+    print(SNo)
+    print('hello world')
+    return render_template('auth/login.html', SID=SID)
 
+
+@auth.route('/login', methods = ['GET'])
+def login():
+    print('in the get function')
+    
     username = session.get('username')
     print(username, 'username')
     select_query = '''
@@ -196,7 +219,7 @@ def logout():
     if session:
         print(session)
     else:
-        print('Not found')
+        print('Session not found')
     return render_template('index.html')
 
 

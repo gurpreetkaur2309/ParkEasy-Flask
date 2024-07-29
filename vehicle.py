@@ -104,10 +104,8 @@ def add_data():
             return redirect(url_for('vehicle.add_data'))
         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
 
-    print('on top of cursor.execute')
     cursor.execute("SELECT VehicleID, SNo FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
     availableSlots = cursor.fetchone()
-    print('hello')
     VID = availableSlots[0]
     SNo = session.get('incrementedSNo')
 
