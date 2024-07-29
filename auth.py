@@ -157,11 +157,11 @@ def login_form():
         user_data = cursor.fetchone()
         SID = user_data[0] if user_data else None
     else:
-        SID = None
+        print('Your SID is None')
     
     print(SID)
     print('hello world')
-    return render_template('auth/login.html', SID=SID)
+    return render_template('auth/login.html', SID=SID)  
     # return render_template('auth/login.html')
 
 @auth.route('/login', methods=['GET','POST'])
