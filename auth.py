@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 import re
 from utils import requires_role
+import pdb
 auth = Blueprint('auth', __name__)
 @auth.route('/register')
 def register_form():
@@ -144,27 +145,8 @@ def AdminLogin():
     return render_template('auth/adminlogin.html')
 
 
-@auth.route('/login')
-def login_form():
-    username = session.get('username')
-    print(username, 'username')
-    if username:
-        select_query = '''
-            SELECT SNo FROM user WHERE username=%s
-        '''
-        cursor.execute(select_query, (username,))
-        db.commit()
-        user_data = cursor.fetchone()
-        SID = user_data[0] if user_data else None
-    else:
-        print('Your SID is None')
-    
-    print(SID)
-    print('hello world')
-    return render_template('auth/login.html', SID=SID)  
-    # return render_template('auth/login.html')
 
-@auth.route('/login', methods=['GET','POST'])
+@auth.route('/login', methods=['POST'])
 def login():
     print('On top of request.form')
     if request.method == 'POST':
@@ -195,19 +177,47 @@ def login():
             return redirect(url_for('auth.login_form'))
 
     print('bottom of the post') 
+    # username = session.get('username')
+    # print(username, 'username')
+    # select_query = '''
+    #      SELECT SNo FROM user where username=%s
+    #  '''
+    # cursor.execute(select_query,(username,))
+    # db.commit()
+    
+    
+    # SID = session.get('SNo')
+    # print(SNo)
+    # print('hello world')
+    # return render_template('auth/login.html', SID=SID)
+
+
+
+@auth.route('/login')
+def login_form():
     username = session.get('username')
+
     print(username, 'username')
-    select_query = '''
-         SELECT SNo FROM user where username=%s
-     '''
-    cursor.execute(select_query,(username,))
-    db.commit()
+    if username:
+        select_query = '''
+            SELECT SNo FROM user WHERE username=%s
+        '''
+        cursor.execute(select_query, (username,))
+        db.commit()
+        user_data = cursor.fetchone()
+
+
+        SID = user_data[0] if user_data else None
+        pdb.set_trace()
+
+        print(SID)
+    else:
+        print('Your SID is None')
     
-    
-    SID = session.get('SNo')
-    print(SNo)
+    # print(SID)
     print('hello world')
-    return render_template('auth/login.html', SID=SID)
+    return render_template('auth/login.html')  
+    # return render_template('auth/login.html')
 
 
 @auth.route('/logout')
