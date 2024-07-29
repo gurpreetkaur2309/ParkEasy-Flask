@@ -194,25 +194,6 @@ def login():
     return render_template('auth/login.html', SID=SID)
 
 
-@auth.route('/login', methods = ['GET'])
-def login():
-    print('in the get function')
-    
-    username = session.get('username')
-    print(username, 'username')
-    select_query = '''
-         SELECT SNo FROM user where username=%s
-     '''
-    cursor.execute(select_query,(username,))
-    db.commit()
-    
-    
-    SID = session.get('SNo')
-    print(SNo)
-    print('hello world')
-    return render_template('auth/login.html', SID=SID)
-
-
 @auth.route('/logout')
 def logout():
     session.clear()
