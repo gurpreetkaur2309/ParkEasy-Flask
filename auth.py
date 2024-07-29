@@ -146,7 +146,23 @@ def AdminLogin():
 
 @auth.route('/login')
 def login_form():
-    return render_template('auth/login.html')
+    username = session.get('username')
+    print(username, 'username')
+    if username:
+        select_query = '''
+            SELECT SNo FROM user WHERE username=%s
+        '''
+        cursor.execute(select_query, (username,))
+        db.commit()
+        user_data = cursor.fetchone()
+        SID = user_data[0] if user_data else None
+    else:
+        SID = None
+    
+    print(SID)
+    print('hello world')
+    return render_template('auth/login.html', SID=SID)
+    # return render_template('auth/login.html')
 
 @auth.route('/login', methods=['GET','POST'])
 def login():
@@ -293,5 +309,4 @@ def UserDashboard():
         print(OwnerName, OwnerContact, VehicleType, VehicleNumber, Date, TimeFrom, TimeTo, duration, address, Slot)
     if 'role' in session:
         return render_template('dashboard.html', OwnerName = data[0], OwnerContact=data[1], VehicleType=data[2], VehicleNumber=data[3], Date=data[4], TimeFrom=data[5], TimeTo=data[6], duration=data[7], address=data[8], Slot=data[9], role = session['role'])
-
 

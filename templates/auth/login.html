@@ -9,7 +9,7 @@
 </head>
 <body>
 <h1>login</h1>
-<form method="POST" action="{{ url_for('auth.login_form') }}">
+<form method="POST" action="{{ url_for('auth.login') }}">
     <div class="flash message">
         {% with messages = get_flashed_messages() %}
             {% if messages %}
