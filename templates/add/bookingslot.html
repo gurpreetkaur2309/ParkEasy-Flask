@@ -5,6 +5,8 @@
 <h1 style="margin-top: 20px;">Add booking time and date</h1>
 
 <form method="POST" action="{{ url_for('bookingslot.add_data') }}">
+    <form id="commonFormID" method="POST" action="{{ url_for('bookingslot.add_data') }}?SNo={{ SNo }}">
+
 <div class="flash message">
         {% for msg in get_flashed_messages() %}
             <div class="alert alert-danger">{{ msg }}</div>

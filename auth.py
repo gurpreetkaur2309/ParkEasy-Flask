@@ -145,25 +145,24 @@ def AdminLogin():
     return render_template('auth/adminlogin.html')
 
 
-
-
-
-# @auth.route('/login', methods=['GET','POST'])
+# @auth.route('/login', methods=['GET', 'POST'])
 # def login():
-#     print('On top of request.form')
 #     if request.method == 'POST':
 #         print('inside post method')
 #         username = request.form['username']
-#         session['username'] = username
 #         password = request.form['password']
-#         if len(password) > 8:
-#             flash('Password should not be more than 8 letters', 'error')
 
-#         get_user_query = "SELECT username, password, SNo FROM user WHERE username=%s"
-#         cursor.execute(get_user_query,(username,))
-#         db.commit()
+#         if len(password) > 8:
+#             flash('Password should not be more than 8 characters', 'error')
+#             return redirect(url_for('auth.login'))
+
+#         fetch_query = "SELECT username, password, SNo FROM user WHERE username=%s"
+#         cursor.execute(fetch_query, (username,))
 #         user_data = cursor.fetchone()
-#         print(user_data)
+#         SNo = user_data[2]
+#         db.commit()
+#         print('doneeeeee', user_data)
+
 #         if user_data and check_password_hash(user_data[1], password):
 #             print('inside the if statement')
 #             session['username'] = user_data[0]
@@ -172,27 +171,33 @@ def AdminLogin():
 #             if session['role'] == 'admin':
 #                 return redirect(url_for('auth.dashboard'))
 #             else:
-#                 return redirect(url_for('vehicle.add_data'))
+#                 return redirect(url_for('vehicle.add_data',SNo = SNo))
 #         else:
 #             print('inside the else condition')
 #             flash('Invalid username or password', 'error')
-#             return redirect(url_for('auth.login_form'))
+#             return redirect(url_for('auth.login'))
 
-#     print('bottom of the post') 
-#     # username = session.get('username')
-#     # print(username, 'username')
-#     # select_query = '''
-#     #      SELECT SNo FROM user where username=%s
-#     #  '''
-#     # cursor.execute(select_query,(username,))
-#     # db.commit()
-    
-    
-#     # SID = session.get('SNo')
-#     # print(SNo)
-#     # print('hello world')
-#     return render_template('auth/login.html')
 
+#     print('inside get method')
+#     username = session.get('user_data[0]')
+#     print(username, 'username')
+
+#     if username:
+#         select_query = '''
+#             SELECT SNo FROM user WHERE username=%s
+#         '''
+#         print('select_query')
+#         cursor.execute(select_query, (username,))
+#         user_data = cursor.fetchone()
+#         db.commit()
+#         SID = user_data[0] if user_data else None
+#         print('SID is: ', SID)
+#     else:
+#         SID = None  
+
+#     print(SID)
+#     print('hello world')
+#     return render_template('auth/login.html', SID=SID)
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -206,11 +211,11 @@ def login():
             flash('Password should not be more than 8 characters', 'error')
             return redirect(url_for('auth.login'))
 
-        get_user_query = "SELECT username, password, SNo FROM user WHERE username=%s"
-        cursor.execute(get_user_query, (username,))
+        fetch_query = "SELECT username, password, SNo FROM user WHERE username=%s"
+        cursor.execute(fetch_query, (username,))
         user_data = cursor.fetchone()
         db.commit()
-        print(user_data)
+        print('doneeeeee', user_data)
 
         if user_data and check_password_hash(user_data[1], password):
             print('inside the if statement')
@@ -220,54 +225,18 @@ def login():
             if session['role'] == 'admin':
                 return redirect(url_for('auth.dashboard'))
             else:
-                return redirect(url_for('vehicle.add_data'))
+                return redirect(url_for('vehicle.add_data', SNo=user_data[2]))  # Pass SNo in the URL
         else:
             print('inside the else condition')
             flash('Invalid username or password', 'error')
             return redirect(url_for('auth.login'))
 
-    # Handling GET request
     print('inside get method')
-    username = session.get('username')
-    print(username, 'username')
-
-    if username:
-        select_query = '''
-            SELECT SNo FROM user WHERE username=%s
-        '''
-        cursor.execute(select_query, (username,))
-        user_data = cursor.fetchone()
-        db.commit()
-        SID = user_data[0] if user_data else None
-    else:
-        SID = None
-
-    print(SID)
-    print('hello world')
-    return render_template('auth/login.html', SID=SID)
-
-
-
+    return render_template('auth/login.html')
 
 
 @auth.route('/login')
 def login_form():
-    username = session.get('username')
-    print(username, 'username')
-    if username:
-        select_query = '''
-            SELECT SNo FROM user WHERE username=%s
-        '''
-        cursor.execute(select_query, (username,))
-        db.commit()
-        user_data = cursor.fetchone()
-        SID = user_data[0] if user_data else None
-        print(SID)
-    else:
-        print('Your SID is None')
-    
-    # print(SID)
-    print('hello world')
     return render_template('auth/login.html')  
     # return render_template('auth/login.html')
 

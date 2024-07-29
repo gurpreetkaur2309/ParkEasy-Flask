@@ -60,32 +60,101 @@ def ValidNumber(VehicleNumber):
     return re.search(pattern, VehicleNumber)
 
 
-@Vehicle.route('/vehicle/add', methods=['POST','GET'])
+# @Vehicle.route('/vehicle/add', methods=['POST','GET'])
+# @login_required
+# def add_data():
+
+#     if request.method == 'POST':
+#         print('post method chali')
+#         VehicleID = request.form['VehicleID']
+#         if not VehicleID:
+#             print('vehicle id ni h')
+#             flash('Cannot continue without vehicleID', 'danger')
+#             return redirect(url_for('vehicle.add_data'))
+#         session['VehicleID'] = VehicleID
+#         VehicleType = request.form['VehicleType']
+#         VehicleNumber = request.form['VehicleNumber']
+#         S_No = session.get('incrementedSNo')
+#         if not S_No:
+#             print('not s no.')
+#             flash('An error occured. Please try again after sometime', 'error')
+#         print("S_No in vehicle: ", S_No)
+#         print('request.form', request.form)
+#         if not ValidNumber(VehicleNumber):
+#             flash('Registration Number is not valid')
+#             return redirect(url_for('vehicle.add_data'))
+
+#         try:
+#             print('try me update query ke upar')
+#             update_query = '''
+#                     UPDATE vehicle
+#                     SET VehicleType=%s, VehicleNumber=%s, SNo = %s
+#                     WHERE VehicleID=%s
+#                 '''
+#             print('query: ', update_query)
+#             print('cursor.execute ke upar')
+#             cursor.execute(update_query, (VehicleType, VehicleNumber, S_No, VehicleID))
+#             print('cursor.execute ke niche')
+#             print('S_No: ', S_No)
+#             db.commit()
+#             flash('Data added successfully', 'success')
+#             print('db.commit k niche')
+#         except mysql.connector.Error as e:
+#             print('except ke andar')
+#             print(e)
+#             db.rollback()
+#             flash('Error adding data', 'error')
+#             return redirect(url_for('vehicle.add_data'))
+#         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
+
+#     cursor.execute("SELECT VehicleID, SNo FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
+#     availableSlots = cursor.fetchone()
+#     VID = availableSlots[0]
+#     SNo = session.get('incrementedSNo')
+
+#     if not availableSlots:
+#         flash('No slots found. Please try after sometime', 'error')
+#         return redirect(url_for('auth.dashboard'))
+
+#     return render_template('add/vehicle.html', VID=VID, SNo=SNo)
+@Vehicle.route('/vehicle/add', methods=['POST', 'GET'])
 @login_required
 def add_data():
+    SNo = request.args.get('SNo')  # Retrieve SNo from query parameters
+    print(SNo, "SNO hai")  # Debug output
 
     if request.method == 'POST':
-        VehicleID = request.form['VehicleID']
+        print('post method chali')
+        VehicleID = request.form.get('VehicleID')
         if not VehicleID:
+            print('vehicle id ni h')
             flash('Cannot continue without vehicleID', 'danger')
-            return redirect(url_for('vehicle.add_data'))
+            return redirect(url_for('vehicle.add_data', SNo=SNo))  # Ensure SNo is passed
+
         session['VehicleID'] = VehicleID
-        VehicleType = request.form['VehicleType']
-        VehicleNumber = request.form['VehicleNumber']
-        S_No = session.get('incrementedSNo')
+        VehicleType = request.form.get('VehicleType')
+        VehicleNumber = request.form.get('VehicleNumber')
+
+        # Debugging: Ensure SNo is set correctly
+        S_No = SNo if SNo else session.get('incrementedSNo')
+        print(S_No, "SNo")
+
         if not S_No:
-            flash('An error occured. Please try again after sometime', 'error')
+            print('not s no.')
+            flash('An error occurred. Please try again after sometime', 'error')
+            return redirect(url_for('vehicle.add_data', SNo=SNo))  # Ensure SNo is passed
+        
         print("S_No in vehicle: ", S_No)
         print('request.form', request.form)
         if not ValidNumber(VehicleNumber):
             flash('Registration Number is not valid')
-            return redirect(url_for('vehicle.add_data'))
+            return redirect(url_for('vehicle.add_data', SNo=SNo))  # Ensure SNo is passed
 
         try:
-            print('update query ke upar')
+            print('try me update query ke upar')
             update_query = '''
                     UPDATE vehicle
-                    SET VehicleType=%s, VehicleNumber=%s, SNo = %s
+                    SET VehicleType=%s, VehicleNumber=%s, SNo=%s
                     WHERE VehicleID=%s
                 '''
             print('query: ', update_query)
@@ -101,19 +170,23 @@ def add_data():
             print(e)
             db.rollback()
             flash('Error adding data', 'error')
-            return redirect(url_for('vehicle.add_data'))
+            return redirect(url_for('vehicle.add_data', SNo=SNo))  # Ensure SNo is passed
+
         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
 
-    cursor.execute("SELECT VehicleID, SNo FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
+    # Ensure SNo is retrieved correctly for the GET request
+    print(SNo, "SNO hai")
+    cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
     availableSlots = cursor.fetchone()
-    VID = availableSlots[0]
-    SNo = session.get('incrementedSNo')
+    VID = availableSlots[0] if availableSlots else None
 
     if not availableSlots:
         flash('No slots found. Please try after sometime', 'error')
         return redirect(url_for('auth.dashboard'))
 
     return render_template('add/vehicle.html', VID=VID, SNo=SNo)
+
+
 
 @Vehicle.route('/vehicle/custom/add', methods=['GET','POST'])
 @login_required

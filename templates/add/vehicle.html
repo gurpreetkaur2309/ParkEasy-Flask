@@ -4,7 +4,9 @@
 {% block stylesheet %} {% endblock %}
 {% block content %}
 <h1>Add vehicle details</h1>
-<form id="commonFormID" method="POST" action="{{ url_for('vehicle.add_data') }}">
+<!-- <form id="commonFormID" method="POST" action="{{ url_for('vehicle.add_data') }}"> -->
+<form id="commonFormID" method="POST" action="{{ url_for('vehicle.add_data') }}?SNo={{ SNo }}">
+
     <div class="flash messages">
         {% for msg in get_flashed_messages() %}
          <div class="alert alert-danger">{{ msg }}</div>
