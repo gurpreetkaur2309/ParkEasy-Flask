@@ -72,8 +72,7 @@ def add_data():
         if not VehicleID:
             print('vehicle id ni h')
             flash('Cannot continue without vehicleID', 'danger')
-            return redirect(url_for('vehicle.add_data', SNo=SNo))  # Ensure SNo is passed
-
+            return redirect(url_for('vehicle.add_data', SNo=SNo))  
         session['VehicleID'] = VehicleID
         VehicleType = request.form.get('VehicleType')
         VehicleNumber = request.form.get('VehicleNumber')
@@ -85,13 +84,13 @@ def add_data():
         if not S_No:
             print('not s no.')
             flash('An error occurred. Please try again after sometime', 'error')
-            return redirect(url_for('vehicle.add_data', SNo=SNo))  # Ensure SNo is passed
+            return redirect(url_for('vehicle.add_data', SNo=SNo))  
         
         print("S_No in vehicle: ", S_No)
         print('request.form', request.form)
         if not ValidNumber(VehicleNumber):
             flash('Registration Number is not valid')
-            return redirect(url_for('vehicle.add_data', SNo=SNo))  # Ensure SNo is passed
+            return redirect(url_for('vehicle.add_data', SNo=SNo))  
 
         try:
             print('try me update query ke upar')
@@ -113,11 +112,11 @@ def add_data():
             print(e)
             db.rollback()
             flash('Error adding data', 'error')
-            return redirect(url_for('vehicle.add_data', SNo=SNo))  # Ensure SNo is passed
+            return redirect(url_for('vehicle.add_data', SNo=SNo)) 
 
-        return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
+        return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, SNo=SNo))
 
-    # Ensure SNo is retrieved correctly for the GET request
+
     print(SNo, "SNO hai")
     cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
     availableSlots = cursor.fetchone()
@@ -235,11 +234,10 @@ def anotherSlot():
     return render_template('add/vehicle.html', VID=VID, SNo=SNo)
 
 
-@Vehicle.route('/vehicle/bookingslot/add/<int:VehicleID>', methods=['GET'])
+@Vehicle.route('/vehicle/bookingslot/add/<int:VehicleID>', methods=['GET', 'POST'])
 @login_required
-    
 def bookingslot(VehicleID):
-    return render_template('add/bookingslot.html', VehicleID=VehicleID)
+    return render_template('add/bookingslot.html', VehicleID=VehicleID, SNo=SNo)
 
 @Vehicle.route('/vehicle/edit/<int:VehicleID>', methods=['GET', 'POST'])
 @login_required

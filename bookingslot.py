@@ -52,7 +52,10 @@ def clearExpiredBookings():
 @booking.route('/bookingslot/add', methods=['GET', 'POST'])
 @login_required
 def add_data():
+    SNo = request.args.get('SNo')
+    print(SNo, 'SNo hai')
     if request.method == 'POST':
+        print('Post method mai gaya')
         BSlotID = session.get('VehicleID')
         print(BSlotID, 'BSlotID')
         date = request.form['date']
@@ -62,15 +65,21 @@ def add_data():
         print('SNo in bookingslot: ', S_No)
         if not date:
             flash('Please enter date','error')
-            return redirect(url_for('bookingslot.add_data'))
+            return redirect(url_for('bookingslot.add_data', SNo=SNo))
         if not TimeFrom:
             flash('Please enter time to continue','error')
-            return redirect(url_for('bookingslot.add_data'))
+            return redirect(url_for('bookingslot.add_data', SNo=SNo))
         if not duration:
             flash('Please enter duration to continue','error')
-            return redirect(url_for('bookingslot.add_data'))
-
-
+            return redirect(url_for('bookingslot.add_data', SNo=SNo))
+        if not S_No:
+            print('not s no.')
+            flash('An error occurred. Please try again after sometime','error')
+            return redirect(url_for('bookingslot.add_data', SNo=SNo))  
+        if not BSlotID:
+            flash('Error fetching your BSlotID','error')
+            return redirect(url_for('bookingslot.add', SNo=SNo))  
+   
         try:
             durationStr = int(duration)
         except ValueError as ve:
@@ -105,7 +114,7 @@ def add_data():
 @booking.route('/bookingslot/add/<int:BSlotID>')
 @login_required
 def payment(BSlotID):
-    return render_template('add/owner.html', VehicleID=BSlotID)
+    return render_template('add/owner.html', VehicleID=BSlotID, SNo=SNo)
 
 @booking.route('/bookingslot/edit/<int:BSlotID>', methods=['GET','POST'])
 @login_required
