@@ -63,8 +63,8 @@ def ValidNumber(VehicleNumber):
 @Vehicle.route('/vehicle/add', methods=['POST', 'GET'])
 @login_required
 def add_data():
-    SNo = request.args.get('SNo')  # Retrieve SNo from query parameters
-    print(SNo, "SNO hai")  # Debug output
+    SNo = request.args.get('SNo')  
+    print(SNo, "SNO hai") 
 
     if request.method == 'POST':
         print('post method chali')
@@ -77,7 +77,7 @@ def add_data():
         VehicleType = request.form.get('VehicleType')
         VehicleNumber = request.form.get('VehicleNumber')
 
-        # Debugging: Ensure SNo is set correctly
+
         S_No = SNo if SNo else session.get('incrementedSNo')
         print(S_No, "SNo")
 

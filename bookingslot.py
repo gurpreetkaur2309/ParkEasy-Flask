@@ -53,6 +53,10 @@ def clearExpiredBookings():
 @login_required
 def add_data():
     SNo = request.args.get('SNo')
+    print(SNo, 'SNo')
+
+
+    
     print(SNo, 'SNo hai')
     if request.method == 'POST':
         print('Post method mai gaya')
@@ -63,6 +67,7 @@ def add_data():
         duration = request.form['duration']
         S_No = session.get('incrementedSNo')
         print('SNo in bookingslot: ', S_No)
+        
         if not date:
             flash('Please enter date','error')
             return redirect(url_for('bookingslot.add_data', SNo=SNo))
@@ -74,7 +79,7 @@ def add_data():
             return redirect(url_for('bookingslot.add_data', SNo=SNo))
         if not S_No:
             print('not s no.')
-            flash('An error occurred. Please try again after sometime','error')
+            flash('S_No nahi mil raha bhai','error')
             return redirect(url_for('bookingslot.add_data', SNo=SNo))  
         if not BSlotID:
             flash('Error fetching your BSlotID','error')
@@ -108,8 +113,13 @@ def add_data():
             return render_template('add/bookingslot.html')
         return redirect(url_for('payment.add_data', VehicleID=BSlotID))
     BSlotID = session.get('VehicleID')
+    print('BSlotID', BSlotID)
+    cursor.execute("SELECT SNo FROM bookingslot WHERE BSlotID=%s", (BSlotID,))
+    S = cursor.fetchone()
+    SNo = S[0]
+    db.commit()
     SID = session.get('incrementedSNo')
-    return render_template('add/bookingslot.html', SID=SID)
+    return render_template('add/bookingslot.html', SNo = S[0])
 
 @booking.route('/bookingslot/add/<int:BSlotID>')
 @login_required
