@@ -152,7 +152,6 @@ def add_data():
 def receipt(PaymentID):
     return render_template('view/GenerateReceipt.html',PaymentID=PaymentID)
 
-
 @payment.route('/payment/edit/<int:PaymentID>', methods = ['GET','POST'])
 @login_required
 def edit_data(PaymentID):

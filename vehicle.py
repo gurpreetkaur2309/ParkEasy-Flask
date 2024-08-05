@@ -134,6 +134,7 @@ def add_data():
 @login_required
 def bookSlot():
     session.get('incrementedSNo')
+
     if request.method == 'POST':
         VehicleID = request.form['VehicleID']
         if not VehicleID:
@@ -151,17 +152,14 @@ def bookSlot():
             flash('Registration No is not valid')
             return redirect(url_for('vehicle.bookSlot'))
 
-
-
-
-
 @Vehicle.route('/vehicle/custom/add', methods=['GET','POST'])
 @login_required
-
 def addCustomVehicle():
+    print('inside custom vehicle function')
     SNo = session.get('incrementedSNo')
     print(SNo, 'SNo')
     if request.method == 'POST':
+        print('inside post method')
         VehicleID = request.form['VehicleID']
         if not VehicleID:
             flash('Cannot continue without vehicleID', 'danger')
@@ -225,7 +223,10 @@ def anotherSlot():
         session['VehicleID'] = VehicleID
         VehicleType = request.form['VehicleType']
         VehicleNumber = request.form['VehicleNumber']
-        SNo = request.form['S_No']
+        cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=%s')
+        db.commit()
+        S_No = cursor.fetchone()
+        SNo = S_No[0]
         if VehicleType == '0':
             flash('Please select a valid Vehicle Type.', 'error')
             return redirect(url_for('vehicle.anotherSlot'))
@@ -252,7 +253,7 @@ def anotherSlot():
     availableSlots = cursor.fetchone()
     print(availableSlots)
     VID = availableSlots[0]
-    SNo = session.get('incrementedSNo')
+
 
     if not availableSlots:
         flash('No slots found. Please try after sometime', 'error')
