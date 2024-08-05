@@ -52,20 +52,22 @@ def clearExpiredBookings():
 @booking.route('/bookingslot/add', methods=['GET', 'POST'])
 @login_required
 def add_data():
-    SNo = request.args.get('SNo')
-    print(SNo, 'outside post SNo')
 
 
-    
-    print(SNo, 'SNo hai')
     if request.method == 'POST':
         print('Post method mai gaya')
+        VehicleID = session.get('VehicleID')
         BSlotID = session.get('VehicleID')
         print(BSlotID, 'BSlotID')
         date = request.form['date']
         TimeFrom = request.form['TimeFrom']
         duration = request.form['duration']
-        S_No = session.get('incrementedSNo')
+#Always add parameters in the tuple with cursor.execute
+        cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=%s', (VehicleID,))
+        db.commit()
+        SNo = cursor.fetchone()
+        print('fetched SNo', SNo)
+        S_No = SNo[0]
         print('SNo in bookingslot: ', S_No)
         
         if not date:
@@ -77,7 +79,7 @@ def add_data():
         if not duration:
             flash('Please enter duration to continue','error')
             return redirect(url_for('bookingslot.add_data', SNo=SNo))
-        if not S_No:
+        if not SNo:
             print('not s no.')
             flash('S_No nahi mil raha bhai','error')
             return redirect(url_for('bookingslot.add_data', SNo=SNo))  
@@ -105,13 +107,13 @@ def add_data():
             cursor.execute(update_query, (date,  duration, TimeFrom, TimeTo, S_No, BSlotID,))
             db.commit()
             # return render_template('add/owner.html', VehicleID=BSlotID)
-            return redirect(url_for('payment.add_data'))
+            return redirect(url_for('payment.add_data', VehicleID=BSlotID, S_No=S_No))
         except  mysql.connector.Error as e:
             print(e)
             db.rollback()
             flash('Error adding data')
             return render_template('add/bookingslot.html')
-        return redirect(url_for('payment.add_data', VehicleID=BSlotID))
+        return redirect(url_for('payment.add_data', VehicleID=BSlotID,S_No=S_No))
     BSlotID = session.get('VehicleID')
     print('BSlotID', BSlotID)
     cursor.execute("SELECT SNo FROM bookingslot WHERE BSlotID=%s", (BSlotID,))
