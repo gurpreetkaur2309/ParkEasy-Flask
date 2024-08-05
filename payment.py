@@ -41,10 +41,18 @@ def add_data():
     if request.method == 'POST':
         print('request.form ke niche')
         PaymentID = session.get('VehicleID')
+        VehicleID = session.get('VehicleID')
         print('PaymentID in post', PaymentID)
         mode = request.form['mode']
-        S_No = session.get('incrementedSNo')
-        print('S_No: ', S_No)
+        cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=%s', (VehicleID,))
+        db.commit()
+        SNo = cursor.fetchone()
+        S_No = SNo[0]
+        # S_No = session.get('incrementedSNo')
+        # print('S_No: ', S_No)
+        if not S_No:
+            flash('S_No nahi mil raha bhai','error')
+            return redirect(url_for('payment.add_data', VehicleID=PaymentID, SNo = S_No))
         #debugging
         data = ('debugging', PaymentID, mode)
         print(data)
@@ -54,9 +62,6 @@ def add_data():
         VehicleID = PaymentID
 
         print('all ids are: ', OwnerID, BSlotID, VehicleID)
-
-
-
 
         try:
             print('fetch query ke upar in try')
