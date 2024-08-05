@@ -53,7 +53,7 @@ def clearExpiredBookings():
 @login_required
 def add_data():
     SNo = request.args.get('SNo')
-    print(SNo, 'SNo')
+    print(SNo, 'outside post SNo')
 
 
     

@@ -63,6 +63,7 @@ def ValidNumber(VehicleNumber):
 @Vehicle.route('/vehicle/add', methods=['POST', 'GET'])
 @login_required
 def add_data():
+    print(session)
     SNo = request.args.get('SNo')  
     print(SNo, "SNO hai") 
 
@@ -132,7 +133,7 @@ def add_data():
 @Vehicle.route('/vehicle/bookslot', methods=['GET','POST'])
 @login_required
 def bookSlot():
-    session.get('')
+    session.get('incrementedSNo')
     if request.method == 'POST':
         VehicleID = request.form['VehicleID']
         if not VehicleID:
