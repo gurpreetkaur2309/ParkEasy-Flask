@@ -227,6 +227,8 @@ def anotherSlot():
         db.commit()
         S_No = cursor.fetchone()
         SNo = S_No[0]
+        print(SNo, 'SNo')
+        print
         if VehicleType == '0':
             flash('Please select a valid Vehicle Type.', 'error')
             return redirect(url_for('vehicle.anotherSlot'))
@@ -255,11 +257,12 @@ def anotherSlot():
     VID = availableSlots[0]
 
 
+
     if not availableSlots:
         flash('No slots found. Please try after sometime', 'error')
         return redirect(url_for('auth.dashboard'))
 
-    return render_template('add/vehicle.html', VID=VID, SNo=SNo)
+    return render_template('add/vehicle.html', VID=VID)
 
 
 @Vehicle.route('/vehicle/bookingslot/add/<int:VehicleID>', methods=['GET', 'POST'])

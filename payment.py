@@ -112,7 +112,7 @@ def add_data():
             print('Update query ke upar')
             update_query = '''
                 UPDATE payment
-                SET mode=%s, SNo=%s
+                SET TotalPrice=%s, mode=%s, SNo=%s
                 WHERE PaymentID=%s
             '''
 
@@ -120,7 +120,7 @@ def add_data():
             #     print('Total price not found')
             #     flash('Please try again or check the localhost','error')
                           
-            cursor.execute(update_query, (mode, S_No, PaymentID,))
+            cursor.execute(update_query, (TotalPrice, mode, S_No, PaymentID,))
             db.commit()
 
             try:
@@ -151,6 +151,7 @@ def add_data():
 
 def receipt(PaymentID):
     return render_template('view/GenerateReceipt.html',PaymentID=PaymentID)
+
 
 @payment.route('/payment/edit/<int:PaymentID>', methods = ['GET','POST'])
 @login_required
@@ -220,7 +221,7 @@ def Generate_Receipt(PaymentID):
 
     try:
         fetch_query = '''
-            SELECT v.VehicleType, v.VehicleNumber, b.date, p.PaymentID, p.TotalPrice, p.Mode, b.TimeFrom, b.TimeTo
+            SELECT v.SNo, v.VehicleType, v.VehicleNumber, b.date, p.PaymentID, p.TotalPrice, p.Mode, b.TimeFrom, b.TimeTo
             FROM payment p 
             JOIN bookingslot b ON p.PaymentID = b.BSlotID 
             JOIN vehicle v  ON p.PaymentID = v.VehicleID
@@ -236,15 +237,16 @@ def Generate_Receipt(PaymentID):
             flash('Slot not booked. Please book the slot to generate receipt', 'danger')
             return redirect(url_for('payment.display'))
 
+        SNo = data[0]
+        VehicleType = data[1]
+        VehicleNumber = data[2]
+        Date = data[3]
+        ReceiptID = data[4]
+        Price = data[5]
+        Mode = data[6]
+        TimeFrom = data[7]
+        TimeTo = data[8]
 
-        VehicleType = data[0]
-        VehicleNumber = data[1]
-        Date = data[2]
-        ReceiptID = data[3]
-        Price = data[4]
-        Mode = data[5]
-        TimeFrom = data[6]
-        TimeTo = data[7]
         if TimeFrom is None or TimeTo is None:
             flash('Booking slot time data is missing', 'error')
             return redirect(url_for('payment.display'))
@@ -266,7 +268,7 @@ def Generate_Receipt(PaymentID):
             rate = 18
         Price = rate * duration
         return render_template('view/GenerateReceipt.html', strftime=datetime.strftime, PaymentID=PaymentID,
-                               VehicleType=VehicleType, VehicleNumber=VehicleNumber, date=Date, ReceiptID=ReceiptID, Price=Price, Mode=Mode, TimeFrom=TimeFrom, TimeTo=TimeTo)
+                               VehicleType=VehicleType, VehicleNumber=VehicleNumber, date=Date, ReceiptID=ReceiptID, Price=Price, Mode=Mode, TimeFrom=TimeFrom, TimeTo=TimeTo, SNo=SNo)
 
     except mysql.connector.Error as e:
         print(e)
