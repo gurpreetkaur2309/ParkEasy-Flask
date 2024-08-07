@@ -38,7 +38,6 @@ def configure_scheduler():
     scheduler.start()
     logging.info("Scheduler started to clear expired bookings every 5 minutes.")
 
-
 configure_scheduler()
 if __name__ == '__main__':
     app.run(debug=True, port='5000')
