@@ -13,9 +13,15 @@ def register_form():
     return render_template('auth/register.html')
 
 def ValidUser(username):
+    print('valid user function works')
     # pattern = "^[a-zA-Z][a-zA-Z\s'-]*$"
     pattern = "^[a-zA-Z0-9_.-]+$"
     return re.match(pattern, username)
+def ValidContact(contact):
+    print('valid contact function works')
+    pattern = "^(\+91[\-\s]?)?[0]?(91)?[789]\d{9}$"
+    return re.match(pattern, contact)
+
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
@@ -46,7 +52,10 @@ def register():
             flash('Username cannot start with numbers')
             return redirect(url_for('auth.register_form'))
 
-        #Check if username already exists
+        if not ValidContact(contact):
+            flash('Contact is not valid','error')
+            return redirect(url_for('auth.register_form'))
+
         check_user_query = 'SELECT username FROM user WHERE username=%s'
         cursor.execute(check_user_query,(username,))
         db.commit()
@@ -95,7 +104,9 @@ def register():
             db.commit()
             print('mydata', name, address, contact, incrementedSNo)
             print('Owner data added successfully')
+
             return redirect(url_for('auth.dashboard'))
+
         except mysql.connector.Error as e:
             print('Update wale except mai')
             print(e)
@@ -234,8 +245,6 @@ owner_count = cursor.fetchone()
 cursor.execute('SELECT COUNT(*) FROM payment')
 payment_count = cursor.fetchone()
 
-
-
 ####dashboard########
 @auth.route('/dashboard')
 def dashboard():
@@ -250,7 +259,6 @@ def dashboard():
 
     else:
         return redirect(url_for('auth.login_form'))
-
 
 @auth.route('/user/dashboard')
 def UserDashboard():

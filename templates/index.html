@@ -18,6 +18,7 @@
     </div>
     <div class="text-center">
         <img style="width:60%; height:60%; margin-top:40px;" class="rounded" src="static/ParkEasy.jpeg"></div>
+        <a href="{{ url_for('vehicle.bookSlot') }}"><button type="submit" class="btn btn-primary" value="save">Book Slot</button></a>
     <div class="text-center">
         <br><br>
         {% if not session['username'] %}

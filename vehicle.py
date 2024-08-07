@@ -63,12 +63,8 @@ def ValidNumber(VehicleNumber):
 @Vehicle.route('/vehicle/add', methods=['POST', 'GET'])
 @login_required
 def add_data():
-    print(session)
     SNo = request.args.get('SNo')  
-    print(SNo, "SNO hai") 
-
     if request.method == 'POST':
-        print('post method chali')
         VehicleID = request.form.get('VehicleID')
         if not VehicleID:
             print('vehicle id ni h')
@@ -77,39 +73,38 @@ def add_data():
         session['VehicleID'] = VehicleID
         VehicleType = request.form.get('VehicleType')
         VehicleNumber = request.form.get('VehicleNumber')
-
-
         S_No = SNo if SNo else session.get('incrementedSNo')
-        print(S_No, "SNo")
-
+        
+        check_number_query = 'SELECT VehicleNumber FROM vehicle WHERE VehicleID=%s'
+        cursor.execute(check_number_query,(VehicleID,))
+        db.commit()
+        existing_number = cursor.fetchone()
+        print(existing_number, 'existing number')
+        
+        if existing_number and existing_number[0] == VehicleNumber:
+            flash(f'A vehicle with this Registration number has already booked slot','error')
+            return redirect(url_for('vehicle.add_data', VehicleID=VehicleID, SNo=SNo))
+        
         if not S_No:
             print('not s no.')
             flash('An error occurred. Please try again after sometime', 'error')
             return redirect(url_for('vehicle.add_data', SNo=SNo))  
         
-        print("S_No in vehicle: ", S_No)
-        print('request.form', request.form)
         if not ValidNumber(VehicleNumber):
             flash('Registration Number is not valid')
             return redirect(url_for('vehicle.add_data', SNo=SNo))  
 
         try:
-            print('try me update query ke upar')
             update_query = '''
                     UPDATE vehicle
                     SET VehicleType=%s, VehicleNumber=%s, SNo=%s
                     WHERE VehicleID=%s
                 '''
-            print('query: ', update_query)
-            print('cursor.execute ke upar')
             cursor.execute(update_query, (VehicleType, VehicleNumber, S_No, VehicleID))
-            print('cursor.execute ke niche')
-            print('S_No: ', S_No)
             db.commit()
             flash('Data added successfully', 'success')
             print('db.commit k niche')
         except mysql.connector.Error as e:
-            print('except ke andar')
             print(e)
             db.rollback()
             flash('Error adding data', 'error')
@@ -118,7 +113,6 @@ def add_data():
         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, SNo=SNo))
 
 
-    print(SNo, "SNO hai")
     cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
     availableSlots = cursor.fetchone()
     print(availableSlots, 'available slots')
@@ -133,15 +127,21 @@ def add_data():
 @Vehicle.route('/vehicle/bookslot', methods=['GET','POST'])
 @login_required
 def bookSlot():
-    session.get('incrementedSNo')
-
+    username = session.get('username')
+    print('username: ', username)
+    fetch_query = 'SELECT SNo FROM user WHERE username=%s'
+    cursor.execute(fetch_query, (username,))
+    db.commit()
+    SNo = cursor.fetchone()[0]
+    print(SNo, 'SNo')
+ 
     if request.method == 'POST':
         VehicleID = request.form['VehicleID']
         if not VehicleID:
             flash('Cannot continue without VehicleID','error')
             return redirect(url_for('vehicle.bookSlot'))
         SNo = session.get('incrementedSNo')
-        print(SNo, 'sno')
+        print(SNo, 'sno inside the post method')
         session['VehicleID'] = VehicleID
         VehicleType = request.form['VehicleType']
         if VehicleType == '0':
@@ -151,6 +151,56 @@ def bookSlot():
         if not ValidNumber(VehicleNumber):
             flash('Registration No is not valid')
             return redirect(url_for('vehicle.bookSlot'))
+
+        check_number_query = 'SELECT VehicleNumber FROM vehicle WHERE VehicleID=%s'
+        cursor.execute(check_number_query,(VehicleID,))
+        db.commit()
+        existing_number = cursor.fetchone()
+        print(existing_number, 'existing number')
+        if existing_number and existing_number[0] == VehicleNumber:
+            flash(f'A vehicle with this Registration number has already booked slot','error')
+            return redirect(url_for('vehicle.add_data', VehicleID=VehicleID, SNo=SNo))
+        
+        if not SNo:
+            print('not s no.')
+            flash('An error occurred. Please try again after sometime', 'error')
+            return redirect(url_for('vehicle.add_data', SNo=SNo))  
+        
+        if not ValidNumber(VehicleNumber):
+            flash('Registration Number is not valid')
+            return redirect(url_for('vehicle.add_data', SNo=SNo))  
+
+        try:
+            update_query = '''
+                    UPDATE vehicle
+                    SET VehicleType=%s, VehicleNumber=%s, SNo=%s
+                    WHERE VehicleID=%s
+                '''
+            cursor.execute(update_query, (VehicleType, VehicleNumber, S_No, VehicleID))
+            db.commit()
+            flash('Data added successfully', 'success')
+            print('db.commit k niche')
+        except mysql.connector.Error as e:
+            print(e)
+            db.rollback()
+            flash('Error adding data', 'error')
+            return redirect(url_for('vehicle.add_data', SNo=SNo)) 
+
+        return redirect(url_for('bookingslot.bookSlot', VehicleID=VehicleID, SNo=SNo))
+
+
+    cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
+    availableSlots = cursor.fetchone()
+    print(availableSlots, 'available slots')
+    VID = availableSlots[0] if availableSlots else None
+
+    if not availableSlots:
+        flash('No slots found. Please try after sometime', 'error')
+        return redirect(url_for('auth.dashboard'))
+
+    return render_template('add/vehicle.html', VID=VID, SNo=SNo)
+        
+
 
 @Vehicle.route('/vehicle/custom/add', methods=['GET','POST'])
 @login_required
