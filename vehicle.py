@@ -54,7 +54,6 @@ def display():
     return render_template('view/vehicle.html', data=data, pagination=pagination, has_next=has_next, page=page,
                            per_page=per_page, NullID=NullID)
 
-
 def ValidNumber(VehicleNumber):
     pattern = r"^[A-Z]{2}[ -]?\d{2}[ -]?[A-Z]{1,2}[ -]?\d{1,4}$"
     return re.search(pattern, VehicleNumber)
@@ -102,7 +101,7 @@ def add_data():
                 '''
             cursor.execute(update_query, (VehicleType, VehicleNumber, S_No, VehicleID))
             db.commit()
-            flash('Data added successfully', 'success')
+
             print('db.commit k niche')
         except mysql.connector.Error as e:
             print(e)
@@ -178,7 +177,7 @@ def bookSlot():
                 '''
             cursor.execute(update_query, (VehicleType, VehicleNumber, S_No, VehicleID))
             db.commit()
-            flash('Data added successfully', 'success')
+
             print('db.commit k niche')
         except mysql.connector.Error as e:
             print(e)

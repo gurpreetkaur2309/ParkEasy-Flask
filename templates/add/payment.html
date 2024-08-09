@@ -2,7 +2,7 @@
 {% block title %}Add payment{% endblock %}
 {% block stylesheet %}{% endblock %}
 {% block content %}
-<h1>Process the payment;</h1>
+<h1>Add Payment Details</h1>
 <form id="commonFormID" method="POST" action="{{ url_for('payment.add_data') }}">
     <div class="flash message">
         {% with messages = get_flashed_messages() %}
@@ -30,6 +30,6 @@
         <option value="Net-Banking">Net-Banking</option>
     </select>
     
-    <button id="CAlignID" type="submit" class="btn btn-primary">Submit</button>
+    <button style="margin-left: 650px; margin-top:30px;" id="CAlignID" type="submit" class="btn btn-primary">Generate Receipt</button>
 </form>
 {% endblock %}
