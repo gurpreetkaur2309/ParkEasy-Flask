@@ -18,12 +18,14 @@
     </div>
     <div class="text-center">
         <img style="width:60%; height:60%; margin-top:40px;" class="rounded" src="static/ParkEasy.jpeg"></div>
-        <a href="{{ url_for('vehicle.bookSlot') }}"><button type="submit" class="btn btn-primary" value="save">Book Slot</button></a>
+        <!-- <a href="{{ url_for('vehicle.bookSlot') }}"><button type="submit" class="btn btn-primary" value="save">Book Slot</button></a> -->
     <div class="text-center">
         <br><br>
         {% if not session['username'] %}
-        <a style="text-decoration: none; color: black" href="{{ url_for('vehicle.add_data') }}">Login to book your slot now: <button type="submit" class="btn btn-primary">Login</button>
-            {% endif %}
+            <a style="text-decoration: none; color: black" href="{{ url_for('vehicle.add_data') }}">Login to book your slot now: <button type="submit" class="btn btn-primary">Login</button>
+        {% else %} 
+            <a href="{{ url_for('vehicle.bookSlot') }}"><button type="submit" class="btn btn-primary" value="save">Book Slot</button></a>
+        {% endif %}
     <div class="container m-5 p-5">
         <h3>Key Features</h3>
 
