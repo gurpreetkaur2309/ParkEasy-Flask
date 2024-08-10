@@ -314,6 +314,63 @@ def anotherSlot():
     return render_template('add/vehicle.html', VID=VID)
 
 
+@Vehicle.route('/vehicle/admin/add', methods=['GET','POST'])
+@login_required
+def AdminVehicle():
+    print('inside custom vehicle function')
+    SNo = session.get('incrementedSNo')
+    print(SNo, 'SNo')
+    if request.method == 'POST':
+        print('inside post method')
+        VehicleID = request.form['VehicleID']
+        name = request.form['name']
+        address = request.form['address']
+        contact = request.form['contact']
+        if not name and address and contact:
+            return "Owner Details not found"
+
+        if not VehicleID:   
+            flash('Cannot continue without vehicleID', 'danger')
+            return redirect(url_for('vehicle.add_data'))
+
+        session['VehicleID'] = VehicleID
+        VehicleType = request.form['VehicleType']
+        if VehicleType == '0':
+            flash('Please select a valid VehicleType','danger')
+            return redirect(url_for('vehicle.addCustomVehicle'))
+        VehicleNumber = request.form['VehicleNumber']
+        if not ValidNumber(VehicleNumber):
+            flash('Registration Number is not valid')
+            return redirect(url_for('vehicle.add_data'))
+        S_No = session.get('incrementedSNo')
+        print('sno: ', S_No)
+        try:
+            update_query = '''
+                    UPDATE vehicle
+                    SET VehicleType=%s, VehicleNumber=%s, SNo=%s
+                    WHERE VehicleID=%s
+                '''
+            cursor.execute(update_query, (VehicleType, VehicleNumber, S_No, VehicleID))
+            db.commit()
+        except mysql.connector.Error as e:
+            print(e)
+            db.rollback()
+            flash('Error adding data', 'error')
+            return redirect(url_for('vehicle.addCustomVehicle'))
+        return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
+        Blueprint
+    cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
+    availableSlots = cursor.fetchall()
+    availableSlots = [slot[0] for slot in availableSlots]
+    print(availableSlots)
+    print('available slots: ', availableSlots)
+    print('hello    ')
+    if not availableSlots:
+        flash('No slots found. Please try after sometime', 'error')
+        return redirect(url_for('auth.dashboard'))
+
+    return render_template('add/CustomVehicle.html', availableSlots=availableSlots)
+
 
 
 @Vehicle.route('/vehicle/bookingslot/add/<int:VehicleID>', methods=['GET', 'POST'])
