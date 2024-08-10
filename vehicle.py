@@ -314,6 +314,8 @@ def anotherSlot():
     return render_template('add/vehicle.html', VID=VID)
 
 
+
+
 @Vehicle.route('/vehicle/bookingslot/add/<int:VehicleID>', methods=['GET', 'POST'])
 @login_required
 def bookingslot(VehicleID):
