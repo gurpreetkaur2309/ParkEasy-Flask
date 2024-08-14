@@ -326,7 +326,7 @@ def AdminVehicle():
         name = request.form['name']
         address = request.form['address']
         contact = request.form['contact']
-        if not name and address and contact:
+        if not name or address or contact:
             return "Owner Details not found"
 
         if not VehicleID:   
