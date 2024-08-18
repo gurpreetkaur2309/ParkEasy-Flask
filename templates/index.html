@@ -24,7 +24,11 @@
         {% if not session['username'] %}
             <a style="text-decoration: none; color: black" href="{{ url_for('vehicle.add_data') }}">Login to book your slot now: <button type="submit" class="btn btn-primary">Login</button>
         {% else %} 
-            <a href="{{ url_for('vehicle.bookSlot') }}"><button type="submit" class="btn btn-primary" value="save">Book Slot</button></a>
+            {% if session['username'] == 'user' %}
+                <a href="{{ url_for('vehicle.bookSlot') }}"><button type="submit" class="btn btn-primary" value="save">Book Slot</button></a>
+            {% else %}
+                <a href="{{ url_for('vehicle.AdminVehicle') }}"><button type="submit" class="btn btn-primary" value="save">Book Slot</button></a>
+            {% endif %}
         {% endif %}
     <div class="container m-5 p-5">
         <h3>Key Features</h3>
