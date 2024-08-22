@@ -317,59 +317,94 @@ def anotherSlot():
 @Vehicle.route('/vehicle/admin/add', methods=['GET','POST'])
 @login_required
 def AdminVehicle():
-    print('inside custom vehicle function')
-    SNo = session.get('incrementedSNo')
-    print(SNo, 'SNo')
     if request.method == 'POST':
-        print('inside post method')
         VehicleID = request.form['VehicleID']
+        VehicleType = request.form['VehicleType']
+        VehicleNumber = request.form['VehicleNumber']
         name = request.form['name']
         address = request.form['address']
         contact = request.form['contact']
+        date = request.form['date']
+        TimeFrom = request.form['TimeFrom']
+        duration = request.form['duration']
+        mode = request.form['mode']
+        
+        if not VehicleID or VehicleType or VehicleNumber:
+            flash('An issue occurred. Please try after sometime','error')
+            print('Vehicle details not found')
+            return redirect(url_for('vehicle.AdminVehicle'))
+        
         if not name or address or contact:
-            return "Owner Details not found"
+            flash('An issue occurred. Please try after sometime','error')
+            print('Owner Details not found')
+            return redirect(url_for('vehicle.AdminVehicle'))
 
-        if not VehicleID:   
-            flash('Cannot continue without vehicleID', 'danger')
-            return redirect(url_for('vehicle.add_data'))
+        if not date or TimeFrom or duration:
+            flash('An issue occurred. Please try after sometime','error')
+            print('bookingslot details not found')
+            return redirect(url_for('vehicle.AdminVehicle'))
+        
+        rate = 0 
+        if VehicleType in ['sedan', 'Hatchback', 'SUV']:
+            rate = 13
+        if VehicleType == '2-Wheeler':
+            rate = 8
+        if VehicleType == 'Heavy-Vehicle':
+            rate = 15
+        if VehicleType == 'Luxury-Vehicle':
+            rate = 18
+        TotalPrice = rate * duration
+        print('TotalPrice', TotalPrice)
 
-        session['VehicleID'] = VehicleID
-        VehicleType = request.form['VehicleType']
-        if VehicleType == '0':
-            flash('Please select a valid VehicleType','danger')
-            return redirect(url_for('vehicle.addCustomVehicle'))
-        VehicleNumber = request.form['VehicleNumber']
-        if not ValidNumber(VehicleNumber):
-            flash('Registration Number is not valid')
-            return redirect(url_for('vehicle.add_data'))
-        S_No = session.get('incrementedSNo')
-        print('sno: ', S_No)
+        if not mode or TotalPrice:
+            flash('An issue occurred. Please try again after sometime','error')
+            print('Payment Details not found')
+            return redirect(url_for('vehicle.AdminVehicle'))
+
+        cursor.execute('SELECT SNO FROM Vehicle WHERE VehicleID=%s')
+        db.commit()
+        S_No = cursor.fetchone()
+        SNo = S_No[0]
+        print(SNo, ': SNo')
+
+        try:
+            durationStr = int(duration)
+        except ValueError as ve:
+            flash('duration must be a valid number', 'error')
+            return redirect(url_for('bookingslot.add_data'))
+
+        TimeFormat = '%H:%M'
+        timeFrom_dt = datetime.strptime(TimeFrom, TimeFormat)
+        timeTo_dt = timeFrom_dt + timedelta(hours=durationStr)
+        TimeTo = timeTo_dt.strftime(TimeFormat)
+
+        
+
         try:
             update_query = '''
-                    UPDATE vehicle
-                    SET VehicleType=%s, VehicleNumber=%s, SNo=%s
-                    WHERE VehicleID=%s
-                '''
-            cursor.execute(update_query, (VehicleType, VehicleNumber, S_No, VehicleID))
+            UPDATE vehicle v 
+            INNER JOIN bookingslot b ON v.SNo = b.SNo
+            INNER JOIN payment p ON v.SNo = p.SNo
+            SET v.VehicleID=%s, v.VehicleType=%s, v.VehicleNumber=%s,
+                b.date=%s, b.TimeFrom=%s, TimeTo=%s b.duration=%s,
+                p.mode=%s, p.TotalPrice=%s
+            '''
+            cursor.execute(update_query, (VehicleID, VehicleType, VehicleNumber, date, TimeFrom, TimeTo, duration, mode, TotalPrice))
             db.commit()
         except mysql.connector.Error as e:
-            print(e)
+            flash('An error occurred. Please try after sometime','error')
+            print('update query issue: ', e)
             db.rollback()
-            flash('Error adding data', 'error')
-            return redirect(url_for('vehicle.addCustomVehicle'))
-        return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
-        Blueprint
-    cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
-    availableSlots = cursor.fetchall()
-    availableSlots = [slot[0] for slot in availableSlots]
-    print(availableSlots)
-    print('available slots: ', availableSlots)
-    print('hello    ')
-    if not availableSlots:
-        flash('No slots found. Please try after sometime', 'error')
-        return redirect(url_for('auth.dashboard'))
+            return redirect(url_for('vehicle.AdminVehicle'))
+        
+        try:
+            insert_query = 
 
-    return render_template('add/CustomVehicle.html', availableSlots=availableSlots)
+
+
+
+
+
 
 
 
