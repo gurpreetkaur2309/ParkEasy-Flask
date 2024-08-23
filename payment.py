@@ -116,9 +116,6 @@ def add_data():
                 WHERE PaymentID=%s
             '''
 
-            # if not TotalPrice:
-            #     print('Total price not found')
-            #     flash('Please try again or check the localhost','error')
                           
             cursor.execute(update_query, (TotalPrice, mode, S_No, PaymentID,))
             db.commit()
