@@ -204,9 +204,6 @@ def bookSlot():
 @Vehicle.route('/vehicle/custom/add', methods=['GET','POST'])
 @login_required
 def addCustomVehicle():
-    print('inside custom vehicle function')
-    SNo = session.get('incrementedSNo')
-    print(SNo, 'SNo')
     if request.method == 'POST':
         print('inside post method')
         VehicleID = request.form['VehicleID']
@@ -226,6 +223,8 @@ def addCustomVehicle():
             return redirect(url_for('vehicle.add_data'))
         S_No = session.get('incrementedSNo')
         print('sno: ', S_No)
+        cursor.execute('SELECT SNO FROM vehicle WHERE VehicleID=%s')
+        db.commit()
         try:
             update_query = '''
                     UPDATE vehicle
@@ -316,6 +315,7 @@ def anotherSlot():
 
 @Vehicle.route('/vehicle/admin/add', methods=['GET','POST'])
 @login_required
+@requires_role('admin')
 def AdminVehicle():
     if request.method == 'POST':
         VehicleID = request.form['VehicleID']
