@@ -378,8 +378,6 @@ def AdminVehicle():
         timeTo_dt = timeFrom_dt + timedelta(hours=durationStr)
         TimeTo = timeTo_dt.strftime(TimeFormat)
 
-        
-
         try:
             update_query = '''
             UPDATE vehicle v 
@@ -398,14 +396,26 @@ def AdminVehicle():
             return redirect(url_for('vehicle.AdminVehicle'))
         
         try:
-            insert_query = 
+            insert_query = '''
+                INSERT INTO owner(name, address, contact) values (%s, %s, %s)
+            '''
+            cursor.execute(insert_query, (name,owner,contact,))
+            db.commit()
+        except mysql.connector.Error as e:
+            print(e, 'is the error')
+            flash('An error occurred. Please try again later','error')
+            return redirect(url_for('vehicle.AdminVehicle'))
 
+    cursor.execute("SELECT VehicleID,SNo FROM vehicle WHERE VehicleType='' and VehicleNumber='' ")
+    db.commit()
+    availableSlots = cursor.fetchall()
+    VID = [slot[0] for slot in availableSlots]
+    print(VID, 'VID')
+    if not availableSlots:
+        flash('No slots are available currently. Please try again later','error')
+        return redirect(url_for('auth.dashboard'))
 
-
-
-
-
-
+    return render_template('add/adminVehicleSlot.html', VID=VID)
 
 
 @Vehicle.route('/vehicle/bookingslot/add/<int:VehicleID>', methods=['GET', 'POST'])
