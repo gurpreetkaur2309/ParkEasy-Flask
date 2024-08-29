@@ -14,7 +14,7 @@
         <input type="text" name="name" class="CAlign">
         
     {% endif %}
-	<select class="CAlign" name="VehicleID" id="VehicleID">
+	<select class="CAlign" name="VehicleID" id="VehicleID" required>
                 <option value="VehicleID">Available Slots</option> <!-- The option for selecting all slots -->
                 {% for slot in availableSlots %}
                     <option value="{{ slot }}">{{ slot }}</option>
@@ -22,7 +22,7 @@
     </select><br><br>
 
 
-    <select class="CAlign" name="VehicleType" id="VehicleType">
+    <select class="CAlign" name="VehicleType" id="VehicleType" required>
     	<option value="0">Vehicle Type</option>
     	<option value="SUV">SUV</option>
     	<option value="Sedan">Sedan</option>
@@ -32,7 +32,7 @@
     </select>
     <br><br>
 
-    <input class="CAlign" type="text" id="VehicleNumber" name="VehicleNumber" placeholder="Reg. No" required maxlength="10">
+    <input class="CAlign" type="text" id="VehicleNumber" name="VehicleNumber" placeholder="Reg. No" required maxlength="10" required>
 
     <button style="margin-top:10px" id="CAlignID" type="submit" class="btn btn-primary">Submit</button>
 </form>
