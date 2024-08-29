@@ -211,6 +211,7 @@ def addCustomVehicle():
 
         session['VehicleID'] = VehicleID
         VehicleType = request.form['VehicleType']
+        print(VehicleType, 'VehicleType')
         if VehicleID == 'VehicleID':
             flash('Please select a valid slot number','error')
             return redirect(url_for('vehicle.addCustomVehicle'))
@@ -219,13 +220,25 @@ def addCustomVehicle():
             flash('Please select a valid VehicleType','danger')
             return redirect(url_for('vehicle.addCustomVehicle'))
         VehicleNumber = request.form['VehicleNumber']
+        print(VehicleNumber, 'VehicleNumber')
         if not ValidNumber(VehicleNumber):
             flash('Registration Number is not valid')
             return redirect(url_for('vehicle.add_data'))
 
-        if not VehicleID or VehicleType or VehicleNumber:
-            print('Vehicle details not found')
+        if not VehicleID:
+            print('VehicleID not found')
             flash('An error occured. Please try again later','error')
+            return redirect(url_for('vehicle.addCustomVehicle'))
+
+        if not VehicleType:
+            print('VehicleType not found')
+            flash('An error occured. Please try again later','error')
+            return redirect(url_for('vehicle.addCustomVehicle'))
+
+        if not VehicleNumber:
+            print('VehicleNumber not found')
+            flash('An error occured. Please try again later','error')
+            return redirect(url_for('vehicle.addCustomVehicle'))
 
         print(VehicleID, 'VehicleID on top of cursor.execute')
         cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=VehicleID')
