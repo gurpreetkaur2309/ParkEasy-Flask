@@ -208,13 +208,13 @@ def addCustomVehicle():
         print('inside post method')
         VehicleID = request.form['VehicleID']
         print(VehicleID, 'VehicleID')
-        if not VehicleID:
-            flash('Cannot continue without vehicleID', 'danger')
-            return redirect(url_for('vehicle.add_data'))
-        # VehicleID = int(VehicleID)
 
         session['VehicleID'] = VehicleID
         VehicleType = request.form['VehicleType']
+        if VehicleID == 'VehicleID':
+            flash('Please select a valid slot number','error')
+            return redirect(url_for('vehicle.addCustomVehicle'))
+
         if VehicleType == '0':
             flash('Please select a valid VehicleType','danger')
             return redirect(url_for('vehicle.addCustomVehicle'))
@@ -222,6 +222,10 @@ def addCustomVehicle():
         if not ValidNumber(VehicleNumber):
             flash('Registration Number is not valid')
             return redirect(url_for('vehicle.add_data'))
+
+        if not VehicleID or VehicleType or VehicleNumber:
+            print('Vehicle details not found')
+            flash('An error occured. Please try again later','error')
 
         print(VehicleID, 'VehicleID on top of cursor.execute')
         cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=VehicleID')
