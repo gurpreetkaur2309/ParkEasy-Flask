@@ -207,6 +207,7 @@ def addCustomVehicle():
     if request.method == 'POST':
         print('inside post method')
         VehicleID = request.form['VehicleID']
+        print(VehicleID, 'VehicleID')
         if not VehicleID:
             flash('Cannot continue without vehicleID', 'danger')
             return redirect(url_for('vehicle.add_data'))
@@ -221,10 +222,14 @@ def addCustomVehicle():
         if not ValidNumber(VehicleNumber):
             flash('Registration Number is not valid')
             return redirect(url_for('vehicle.add_data'))
-        S_No = session.get('incrementedSNo')
-        print('sno: ', S_No)
-        cursor.execute('SELECT SNO FROM vehicle WHERE VehicleID=%s')
+
+        print(VehicleID, 'VehicleID on top of cursor.execute')
+        cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=VehicleID')
         db.commit()
+        SNo = cursor.fetchone()
+        print(SNo)
+        S_No = SNo[0]
+
         try:
             update_query = '''
                     UPDATE vehicle
