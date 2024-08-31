@@ -1,5 +1,6 @@
 import re
 from flask import redirect, render_template, session, url_for, Blueprint, flash, request
+from datetime import date, datetime, timedelta
 import bookingslot
 from db import db, cursor
 import mysql.connector
@@ -351,19 +352,49 @@ def AdminVehicle():
         duration = request.form['duration']
         mode = request.form['mode']
         
-        if not VehicleID or VehicleType or VehicleNumber:
+        if not VehicleID:
             flash('An issue occurred. Please try after sometime','error')
-            print('Vehicle details not found')
-            return redirect(url_for('vehicle.AdminVehicle'))
-        
-        if not name or address or contact:
-            flash('An issue occurred. Please try after sometime','error')
-            print('Owner Details not found')
+            print('VehicleID not found')
             return redirect(url_for('vehicle.AdminVehicle'))
 
-        if not date or TimeFrom or duration:
+        if not VehicleType:
             flash('An issue occurred. Please try after sometime','error')
-            print('bookingslot details not found')
+            print('VehicleType not found')
+            return redirect(url_for('vehicle.AdminVehicle'))
+
+        if not VehicleNumber:
+            flash('An issue occurred. Please try after sometime','error')
+            print('VehicleNumber not found')
+            return redirect(url_for('vehicle.AdminVehicle'))
+
+        if not name:
+            flash('An issue occurred. Please try after sometime','error')
+            print('name not found')
+            return redirect(url_for('vehicle.AdminVehicle'))
+        
+        if not address:
+            flash('An issue occurred. Please try after sometime','error')
+            print('owner address not found')
+            return redirect(url_for('vehicle.AdminVehicle'))
+        
+        if not contact:
+            flash('An issue occurred. Please try after sometime','error')
+            print('contact not found')
+            return redirect(url_for('vehicle.AdminVehicle'))
+
+        if not date:
+            flash('An issue occurred. Please try after sometime','error')
+            print('date details not found')
+            return redirect(url_for('vehicle.AdminVehicle'))
+
+        if not TimeFrom:
+            flash('An issue occurred. Please try after sometime','error')
+            print('TimeFrom details not found')
+            return redirect(url_for('vehicle.AdminVehicle'))
+
+        if not duration:
+            flash('An issue occurred. Please try after sometime','error')
+            print('duration details not found')
             return redirect(url_for('vehicle.AdminVehicle'))
         
         rate = 0 
@@ -378,12 +409,17 @@ def AdminVehicle():
         TotalPrice = rate * duration
         print('TotalPrice', TotalPrice)
 
-        if not mode or TotalPrice:
+        if not mode:
             flash('An issue occurred. Please try again after sometime','error')
-            print('Payment Details not found')
+            print('Mode not found')
             return redirect(url_for('vehicle.AdminVehicle'))
 
-        cursor.execute('SELECT SNO FROM Vehicle WHERE VehicleID=%s')
+        if not TotalPrice:
+            flash('An issue occurred. Please try again after sometime','error')
+            print('Mode not found')
+            return redirect(url_for('vehicle.AdminVehicle'))
+        print(VehicleID)
+        cursor.execute('SELECT SNO FROM Vehicle WHERE VehicleID=VehicleID')
         db.commit()
         S_No = cursor.fetchone()
         SNo = S_No[0]
@@ -406,11 +442,12 @@ def AdminVehicle():
             INNER JOIN bookingslot b ON v.SNo = b.SNo
             INNER JOIN payment p ON v.SNo = p.SNo
             SET v.VehicleID=%s, v.VehicleType=%s, v.VehicleNumber=%s,
-                b.date=%s, b.TimeFrom=%s, TimeTo=%s b.duration=%s,
+                b.date=%s, b.TimeFrom=%s, b.TimeTo=%s b.duration=%s,
                 p.mode=%s, p.TotalPrice=%s
             '''
             cursor.execute(update_query, (VehicleID, VehicleType, VehicleNumber, date, TimeFrom, TimeTo, duration, mode, TotalPrice))
             db.commit()
+            print('update query',update_query)
         except mysql.connector.Error as e:
             flash('An error occurred. Please try after sometime','error')
             print('update query issue: ', e)
