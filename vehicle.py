@@ -473,6 +473,8 @@ def AdminVehicle():
             print(e, 'is the error')
             flash('An error occurred. Please try again later','error')
             return redirect(url_for('vehicle.AdminVehicle'))
+        PaymentID = VehicleID
+        return redirect(url_for('payment.Generate_Receipt', PaymentID=PaymentID,duration=duration, TotalPrice=TotalPrice))
 
     cursor.execute("SELECT VehicleID,SNo FROM vehicle WHERE VehicleType='' and VehicleNumber='' ")
     db.commit()
