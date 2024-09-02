@@ -351,7 +351,13 @@ def AdminVehicle():
         TimeFrom = request.form['TimeFrom']
         duration = request.form['duration']
         mode = request.form['mode']
-        
+            
+        try:
+            durationStr = int(duration)
+        except ValueError as ve:
+            flash('duration must be a valid number', 'error')
+            return redirect(url_for('bookingslot.add_data'))
+
         if not VehicleID:
             flash('An issue occurred. Please try after sometime','error')
             print('VehicleID not found')
@@ -396,17 +402,23 @@ def AdminVehicle():
             flash('An issue occurred. Please try after sometime','error')
             print('duration details not found')
             return redirect(url_for('vehicle.AdminVehicle'))
-        
+        print('rate=0 ke upar')
         rate = 0 
+        print('total price wali condition ke upar')
         if VehicleType in ['sedan', 'Hatchback', 'SUV']:
+            print('sedan, hatchback, suv ke andar')
             rate = 13
         if VehicleType == '2-Wheeler':
+            print('2 wheeler k andar')
             rate = 8
         if VehicleType == 'Heavy-Vehicle':
+            print('heavy vehicle k andar')
             rate = 15
         if VehicleType == 'Luxury-Vehicle':
+            print('luxury vehicle k andar')
             rate = 18
-        TotalPrice = rate * duration
+        print('Totalprice k upar condition k bahar')
+        TotalPrice = rate * durationStr
         print('TotalPrice', TotalPrice)
 
         if not mode:
@@ -416,20 +428,15 @@ def AdminVehicle():
 
         if not TotalPrice:
             flash('An issue occurred. Please try again after sometime','error')
-            print('Mode not found')
+            print('TotalPrice not found')
             return redirect(url_for('vehicle.AdminVehicle'))
+
         print(VehicleID)
         cursor.execute('SELECT SNO FROM Vehicle WHERE VehicleID=VehicleID')
         db.commit()
         S_No = cursor.fetchone()
         SNo = S_No[0]
         print(SNo, ': SNo')
-
-        try:
-            durationStr = int(duration)
-        except ValueError as ve:
-            flash('duration must be a valid number', 'error')
-            return redirect(url_for('bookingslot.add_data'))
 
         TimeFormat = '%H:%M'
         timeFrom_dt = datetime.strptime(TimeFrom, TimeFormat)
@@ -439,13 +446,13 @@ def AdminVehicle():
         try:
             update_query = '''
             UPDATE vehicle v 
-            INNER JOIN bookingslot b ON v.SNo = b.SNo
-            INNER JOIN payment p ON v.SNo = p.SNo
-            SET v.VehicleID=%s, v.VehicleType=%s, v.VehicleNumber=%s,
-                b.date=%s, b.TimeFrom=%s, b.TimeTo=%s b.duration=%s,
+            INNER JOIN bookingslot b ON v.VehicleID = b.BSlotID
+            INNER JOIN payment p ON v.VehicleID = p.PaymentID
+            SET v.VehicleType=%s, v.VehicleNumber=%s,
+                b.date=%s, b.TimeFrom=%s, b.TimeTo=%s, b.duration=%s,
                 p.mode=%s, p.TotalPrice=%s
             '''
-            cursor.execute(update_query, (VehicleID, VehicleType, VehicleNumber, date, TimeFrom, TimeTo, duration, mode, TotalPrice))
+            cursor.execute(update_query, (VehicleType, VehicleNumber, date, TimeFrom, TimeTo, duration, mode, TotalPrice))
             db.commit()
             print('update query',update_query)
         except mysql.connector.Error as e:
@@ -455,10 +462,12 @@ def AdminVehicle():
             return redirect(url_for('vehicle.AdminVehicle'))
         
         try:
+            print('insert wale try ke andar')
+            print(SNo,'Sno')
             insert_query = '''
                 INSERT INTO owner(name, address, contact) values (%s, %s, %s)
             '''
-            cursor.execute(insert_query, (name,owner,contact,))
+            cursor.execute(insert_query, (name,address,contact,))
             db.commit()
         except mysql.connector.Error as e:
             print(e, 'is the error')
