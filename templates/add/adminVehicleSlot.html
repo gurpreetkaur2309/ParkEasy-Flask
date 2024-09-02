@@ -14,14 +14,14 @@
         <input type="text" name="name" class="CAlign">
         
     {% endif %}
-    <select class="CAlign" name="VehicleID" id="VehicleID">
+    <select class="CAlign" name="VehicleID" id="VehicleID" required>
                 <option value="VID">Available Slots</option> <!-- The option for selecting all slots -->
                 {% for slot in VID %}
                     <option value="{{ slot }}">{{ slot }}</option>
                 {% endfor %}
     </select><br><br>
 
-    <select class="CAlign" name="VehicleType" id="VehicleType">
+    <select class="CAlign" name="VehicleType" id="VehicleType" required>
         <option value="0">Vehicle Type</option>
         <option value="SUV">SUV</option>
         <option value="Sedan">Sedan</option>
@@ -34,10 +34,10 @@
     <input class="CAlign" type="text" id="VehicleNumber" name="VehicleNumber" placeholder="Reg. No" required maxlength="10">
     <br><br>
 
-    <input class="CAlign" type="text" id="name" name="name" placeholder="Name" required maxlength="50">
+    <input class="CAlign" type="text" id="name" name="name" placeholder="Name" required maxlength="30">
     <br><br>
 
-    <input class="CAlign" type="number" id="contact" name="contact" placeholder="contact" required maxlength="10">
+    <input class="CAlign" type="number" id="contact" name="contact" placeholder="contact" required maxlength="10" onkeypress="if(this.value.length==12)return false">
     <br><br>
 
     <input class="CAlign" type="text" type="text" id="address" name="address" placeholder="address" required maxlength="50">
@@ -70,6 +70,9 @@
         <option value="Card">Card</option>
         <option value="Net-Banking">Net-Banking</option>
     </select>
+
+
+
 
 
     
