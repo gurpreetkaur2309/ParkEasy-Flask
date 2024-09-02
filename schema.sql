@@ -8,25 +8,29 @@
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 
- CREATE TABLE `allotment` (
+CREATE TABLE `allotment` (
   `AllotmentID` int NOT NULL AUTO_INCREMENT,
+  `VehicleID` int NOT NULL,
   `SNo` int NOT NULL,
-  `OwnerID` int DEFAULT NULL,
-  `BSlotID` int DEFAULT NULL,
-  `VehicleID` int DEFAULT NULL,
-  `PaymentID` int DEFAULT NULL,
+  `username` int NOT NULL,
+  `date` date NOT NULL,
+  `TimeFrom` time NOT NULL,
+  `TimeTo` time NOT NULL,
+  `duration` varchar(30) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `contact` bigint NOT NULL,
+  `TotalPrice` int NOT NULL,
+  `mode` varchar(40) NOT NULL,
+  `VehicleType` varchar(40) NOT NULL,
+  `VehicleNumber` varchar(40) NOT NULL,
   PRIMARY KEY (`AllotmentID`),
   KEY `fk_sno` (`SNo`),
-  KEY `owner_fk` (`OwnerID`),
-  KEY `fk_bookingslot` (`BSlotID`),
-  KEY `fk_vehicle` (`VehicleID`),
-  KEY `fk_payment` (`PaymentID`),
-  CONSTRAINT `fk_bookingslot` FOREIGN KEY (`BSlotID`) REFERENCES `bookingslot` (`BSlotID`),
-  CONSTRAINT `fk_payment` FOREIGN KEY (`PaymentID`) REFERENCES `payment` (`PaymentID`),
+  CONSTRAINT `fk_bookingslot` FOREIGN KEY (`AllotmentID`) REFERENCES `bookingslot` (`BSlotID`),
+  CONSTRAINT `fk_payment` FOREIGN KEY (`AllotmentID`) REFERENCES `payment` (`PaymentID`),
   CONSTRAINT `fk_sno` FOREIGN KEY (`SNo`) REFERENCES `user` (`SNo`),
-  CONSTRAINT `fk_vehicle` FOREIGN KEY (`VehicleID`) REFERENCES `vehicle` (`VehicleID`),
-  CONSTRAINT `owner_fk` FOREIGN KEY (`OwnerID`) REFERENCES `owner` (`OwnerID`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+  CONSTRAINT `fk_vehicle` FOREIGN KEY (`AllotmentID`) REFERENCES `vehicle` (`VehicleID`),
+  CONSTRAINT `owner_fk` FOREIGN KEY (`AllotmentID`) REFERENCES `owner` (`OwnerID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci 
 
 
 CREATE TABLE `bookingslot` (
