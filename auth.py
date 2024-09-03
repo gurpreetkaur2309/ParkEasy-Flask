@@ -133,7 +133,7 @@ def AdminLogin():
         cursor.execute(get_user_query, (username,))
         db.commit()
         userData = cursor.fetchone()
-        print(userData[0])
+
         print('user data: ', userData)
 
         if len(password) > 8:
@@ -149,7 +149,8 @@ def AdminLogin():
     
     print('in get method')
     username = session.get('username')
-    cursor.execute('SELECT SNo FROM allotment where username=%s')
+    #will do after making allotment table functional
+    # cursor.execute('SELECT SNo FROM allotment where username=%s')
     db.commit()
     S_No = cursor.fetchone()
     print('S_No: ', S_No)
@@ -295,5 +296,16 @@ def UserDashboard():
 
         print(OwnerName, OwnerContact, VehicleType, VehicleNumber, Date, TimeFrom, TimeTo, duration, address, Slot)
     if 'role' in session:
-        return render_template('dashboard.html', OwnerName = data[0], OwnerContact=data[1], VehicleType=data[2], VehicleNumber=data[3], Date=data[4], TimeFrom=data[5], TimeTo=data[6], duration=data[7], address=data[8], Slot=data[9], role = session['role'])
+        return render_template('dashboard.html', OwnerName = data[0], 
+                                                 OwnerContact=data[1],
+                                                 VehicleType=data[2], 
+                                                 VehicleNumber=data[3], 
+                                                 Date=data[4], 
+                                                 TimeFrom=data[5], 
+                                                 TimeTo=data[6], 
+                                                 duration=data[7], 
+                                                 address=data[8], 
+                                                 Slot=data[9], 
+                                                 role = session['role']
+                                                 )
 

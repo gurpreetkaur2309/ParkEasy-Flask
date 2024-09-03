@@ -63,6 +63,7 @@ def ValidNumber(VehicleNumber):
 @Vehicle.route('/vehicle/add', methods=['POST', 'GET'])
 @login_required
 def add_data():
+    print('inside add_data function')
     SNo = request.args.get('SNo')  
     if request.method == 'POST':
         VehicleID = request.form.get('VehicleID')
@@ -73,7 +74,16 @@ def add_data():
         session['VehicleID'] = VehicleID
         VehicleType = request.form.get('VehicleType')
         VehicleNumber = request.form.get('VehicleNumber')
-        S_No = SNo if SNo else session.get('incrementedSNo')
+
+        fetch_SNo = ''' 
+                SELECT u.SNo FROM user u 
+                JOIN vehicle v on u.SNo = v.SNo
+            '''
+        # cursor.execute(fetch_SNo, (VehicleID,))
+        # SNo = cursor.fetchone()
+        # print(SNo,'sno')
+        S_No = SNo[0] if SNo else None
+
         
         check_number_query = 'SELECT VehicleNumber FROM vehicle WHERE VehicleID=%s'
         cursor.execute(check_number_query,(VehicleID,))
@@ -105,7 +115,7 @@ def add_data():
 
             print('db.commit k niche')
         except mysql.connector.Error as e:
-            print(e)
+            print('The error is',)
             db.rollback()
             flash('Error adding data', 'error')
             return redirect(url_for('vehicle.add_data', SNo=SNo)) 
@@ -127,6 +137,7 @@ def add_data():
 @Vehicle.route('/vehicle/bookslot', methods=['GET','POST'])
 @login_required
 def bookSlot():
+    print('inside bookslot function')
     username = session.get('username')
     print('username: ', username)
     fetch_query = 'SELECT SNo FROM user WHERE username=%s'
