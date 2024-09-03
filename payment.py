@@ -66,10 +66,16 @@ def add_data():
         try:
             print('fetch query ke upar in try')
             fetch_query = '''
-                SELECT v.VehicleType, b.TimeFrom, b.TimeTo, b.duration
-                FROM payment p   
-                JOIN vehicle v on p.PaymentID = v.VehicleID
-                JOIN bookingslot b on p.PaymentID = b.BSlotID
+                SELECT v.VehicleID, v.VehicleType, v.VehicleNumber,
+                       b.date, b.TimeFrom, b.TimeTo, b.duration,
+                       u.SNo, u.username,
+                       o.name, o.contact,
+                       p.TotalPrice, p.mode
+                FROM vehicle v 
+                JOIN bookingslot b ON v.SNo = b.SNo
+                JOIN user u ON v.SNo = u.SNo
+                JOIN owner o ON v.SNo = o.SNo
+                JOIN payment p ON v.SNo = p.SNo
                 WHERE p.PaymentID=%s
             '''
             cursor.execute(fetch_query, (PaymentID,))
@@ -81,11 +87,21 @@ def add_data():
                 flash('No data found', 'error')
                 return redirect(url_for('payment.add_data'))
 
-            VehicleType = data[0]
-            TimeFrom = data[1]
-            TimeTo = data[2]
-            duration = data[3]
+            VehicleID = data[0]
+            VehicleType = data[1]
+            VehicleNumber = data[2]
+            date = data[3]
+            TimeFrom = data[4]
+            TimeTo = data[5]
+            duration = data[6]
+            SNo = data[7]
+            username = data[8]
+            name = data[9]
+            contact = data[10]
+            TotalPrice = data[11]
+            mode = data[12]
             Duration = int(duration)
+            
 
 
             print('TimeTo: ', TimeTo,'TimeFrom:', TimeFrom)
@@ -116,15 +132,15 @@ def add_data():
                 WHERE PaymentID=%s
             '''
 
-                          
+                        
             cursor.execute(update_query, (TotalPrice, mode, S_No, PaymentID,))
             db.commit()
 
             try:
                 insert_query = '''
-                    INSERT INTO allotment(SNo, OwnerID, BSlotID, VehicleID, PaymentID) VALUES (%s, %s, %s, %s, %s)
+                    INSERT INTO allotment(VehicleID, SNo, username, date, TimeFrom, TimeTo, duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 '''
-                cursor.execute(insert_query, (S_No, OwnerID, BSlotID, VehicleID, PaymentID))
+                cursor.execute(insert_query, (VehicleID, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber))
                 db.commit()
             except mysql.connector.Error as e:
                 print(e)
@@ -140,6 +156,7 @@ def add_data():
             db.rollback()
             flash('Error processing your payment', 'error')
             return redirect(url_for('payment.add_data'))
+
     
     Amount = session.get('TotalPrice')
     return render_template('add/payment.html', Amount = Amount)
