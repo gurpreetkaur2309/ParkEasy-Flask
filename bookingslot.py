@@ -23,7 +23,8 @@ def display():
         owner.Name AS OwnerName,
         vehicle.VehicleNumber,  bookingslot.duration FROM bookingslot
         INNER JOIN Owner ON bookingslot.SNo = owner.SNo 
-        INNER JOIN vehicle ON bookingslot.SNo = vehicle.SNo '''
+        INNER JOIN vehicle ON bookingslot.BSlotID = vehicle.VehicleID '''
+    
     cursor.execute(fetch_query)
     db.commit()
     data = cursor.fetchall()
@@ -38,8 +39,12 @@ def clearExpiredBookings():
         current_date = date.today()
         current_time = datetime.now().time()
         update_query = '''
-        UPDATE bookingslot 
-        SET TimeFrom = '', TimeTo = '', duration = '' 
+        UPDATE bookingslot b 
+        JOIN payment p ON b.BSlotID = p.PaymentID
+        JOIN vehicle v ON b.BSlotID = v.VehicleID
+        SET b.TimeFrom = '', b.TimeTo = '', b.duration = '', 
+            v.VehicleType = '', v.VehicleNumber = '',
+            p.TotalPrice = 0, p.mode = ''
         WHERE date = %s AND TimeTo < %s
         '''
         cursor.execute(update_query, (current_date, current_time))
