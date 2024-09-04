@@ -65,18 +65,9 @@ def add_data():
 
         try:
             print('fetch query ke upar in try')
+            
             fetch_query = '''
-                SELECT v.VehicleID, v.VehicleType, v.VehicleNumber,
-                       b.date, b.TimeFrom, b.TimeTo, b.duration,
-                       u.SNo, u.username,
-                       o.name, o.contact,
-                       p.TotalPrice, p.mode
-                FROM vehicle v 
-                JOIN bookingslot b ON v.SNo = b.SNo
-                JOIN user u ON v.SNo = u.SNo
-                JOIN owner o ON v.SNo = o.SNo
-                JOIN payment p ON v.SNo = p.SNo
-                WHERE p.PaymentID=%s
+                SELECT      v.VehicleID,      v.VehicleType,      v.VehicleNumber,     b.Date,      b.TimeFrom,      b.TimeTo,      b.duration,     u.SNo,      u.username,     o.name,      o.contact,     p.TotalPrice,      p.mode FROM      vehicle v  JOIN      bookingslot b ON v.VehicleID = b.BSlotID JOIN      user u ON v.SNo = u.SNo JOIN      owner o ON u.SNo = o.SNo JOIN      payment p ON b.BSlotID = p.PaymentID ORDER BY      b.Date DESC, b.TimeFrom DESC LIMIT 1
             '''
             cursor.execute(fetch_query, (PaymentID,))
             data = cursor.fetchone()
@@ -138,9 +129,11 @@ def add_data():
 
             try:
                 insert_query = '''
-                    INSERT INTO allotment(VehicleID, SNo, username, date, TimeFrom, TimeTo, duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                '''
-                cursor.execute(insert_query, (VehicleID, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber))
+                    INSERT INTO allotment(VehicleID, SNo, username, date, TimeFrom, TimeTo, duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)                '''
+                # cursor.execute(insert_query, (VehicleID, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber))
+                cursor.execute(insert_query, (VehicleID, S_No, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber))
+
                 db.commit()
             except mysql.connector.Error as e:
                 print(e)
