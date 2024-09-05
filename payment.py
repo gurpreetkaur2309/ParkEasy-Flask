@@ -226,17 +226,6 @@ def delete_data(PaymentID):
 
 def Generate_Receipt(PaymentID):
 
-    Null_query = '''
-        SELECT v.VehicleType, v.VehicleNumber, p.TotalPrice
-        FROM vehicle v 
-        JOIN bookingslot b ON v.VehicleID = b.BSlotID
-        JOIN payment p ON v.VehicleID = p.PaymentID
-        WHERE b.TimeFrom is Null AND b.TimeTo is Null
-        
-    '''
-    cursor.execute(Null_query)
-    NullID = cursor.fetchall()
-
     try:
         fetch_query = '''
             SELECT v.SNo, v.VehicleType, v.VehicleNumber, b.date, p.PaymentID, p.TotalPrice, p.Mode, b.TimeFrom, b.TimeTo
@@ -250,7 +239,6 @@ def Generate_Receipt(PaymentID):
         data = cursor.fetchone()
         print(data)
         # VehicleType, VehicleNumber, ReceiptID, Price, date, Mode, TimeFrom, TimeTo = data
-
         if data is None:
             flash('Slot not booked. Please book the slot to generate receipt', 'danger')
             return redirect(url_for('payment.display'))

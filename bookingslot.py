@@ -101,7 +101,7 @@ def add_data():
         if not BSlotID:
             flash('Error fetching your BSlotID','error')
             return redirect(url_for('bookingslot.add', SNo=SNo))  
-   
+              
         try:
             durationStr = int(duration)
         except ValueError as ve:
