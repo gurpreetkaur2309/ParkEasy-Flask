@@ -72,9 +72,12 @@
                               <a class="nav-link active" href="{{ url_for('sensor.display') }}">Sensor</a>
                               {% endif %}
                           </li>
-                          <li>
-
+                          <li class="nav-item">
+                              {% if session['role'] == 'admin' %}
+                              <a class="nav-link active" href="{{ url_for('bookingslot.history') }}">History</a>
+                              {% endif %}
                           </li>
+                         
                   </div>
 
               </div>

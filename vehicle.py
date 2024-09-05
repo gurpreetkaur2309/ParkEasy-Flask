@@ -303,18 +303,32 @@ def anotherSlot():
     if request.method == 'POST':
         print('inside the post method')
         VehicleID = request.form['VehicleID']
+        
         if not VehicleID:
             flash('Cannot continue without VehicleID. Please try Again later','error')
             return redirect(url_for('vehicle.anotherSlot'))
+
         session['VehicleID'] = VehicleID
         VehicleType = request.form['VehicleType']
         VehicleNumber = request.form['VehicleNumber']
-        cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=%s')
+        username = session.get('username')
+        print(username, 'username')
+        fetch_query = 'SELECT SNo FROM user WHERE username=%s'
+        cursor.execute(fetch_query,(username,))
         db.commit()
         S_No = cursor.fetchone()
         SNo = S_No[0]
         print(SNo, 'SNo')
-        print
+        if not SNo:
+            flash('An error occured','error')
+            print('SNo nahi mil raha bhai')
+            return redirect(url_for('vehicle.anotherSlot'))
+
+        if not S_No:
+            flash('An error occured','error')
+            print('S_No nahi mil raha')
+            return redirect(url_for('vehicle.anotherslot'))
+
         if VehicleType == '0':
             flash('Please select a valid Vehicle Type.', 'error')
             return redirect(url_for('vehicle.anotherSlot'))
@@ -346,9 +360,9 @@ def anotherSlot():
 
     if not availableSlots:
         flash('No slots found. Please try after sometime', 'error')
-        return redirect(url_for('auth.dashboard'))
+        return redirect(url_for('app.index'))
 
-    return render_template('add/vehicle.html', VID=VID)
+    return render_template('add/anotherSlot.html', VID=VID)
 
 
 @Vehicle.route('/vehicle/admin/add', methods=['GET','POST'])

@@ -25,7 +25,6 @@ def display():
         INNER JOIN Owner ON bookingslot.SNo = owner.SNo 
         INNER JOIN vehicle ON bookingslot.BSlotID = vehicle.VehicleID   
         '''
-    
     cursor.execute(fetch_query)
     db.commit()
     data = cursor.fetchall()
@@ -34,6 +33,16 @@ def display():
     NullID = cursor.fetchone()
     return render_template('view/bookingslot.html', data=data, NullID=NullID)
 
+@booking.route('/history')
+@login_required
+def history():
+    fetch_query = '''
+        SELECT * FROM allotment
+    '''
+    cursor.execute(fetch_query)
+    db.commit()
+    data = cursor.fetchall()
+    return render_template('view/history.html', data=data)
 
 def clearExpiredBookings():
     try:
@@ -68,7 +77,7 @@ def add_data():
         date = request.form['date']
         TimeFrom = request.form['TimeFrom']
         duration = request.form['duration']
-#Always add parameters in the tuple with cursor.execute
+
         cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=%s', (VehicleID,))
         db.commit()
         SNo = cursor.fetchone()

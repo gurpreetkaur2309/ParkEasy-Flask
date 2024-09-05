@@ -1,0 +1,59 @@
+{%  extends "layout.html" %}
+{% block title %}booking slot{% endblock %}
+{% block stylesheet %} {% endblock %}
+{% block content %}
+<h1>Slots booked</h1>
+<div class="flash message">
+    {% for message in get_flashed_messages() %}
+    <div class="flash-message success danger">{{ msg }}</div>
+    {% endfor %}
+</div>
+<table border="2">
+    <thead>
+    <tr class="tabledata">
+        <!-- <th>SlotID</th> -->
+        <th>AllotmentID</th>
+        <th>Slot</th>
+        <th>SNo</th>
+        <th>username</th>
+        <th>date</th>
+        <th>From</th>
+        <th>To</th>
+        <th>durations</th>
+        <th>name</th>        
+        <th>contact</th>
+        <th>Amount</th>
+        <th>Mode</th>
+        <th>Vehicle Type</th>
+        <th>Reg. No</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in data %}
+    <tr class="tabledata">
+
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2]  }}</td>
+        <td>{{ row[3] }}</td>
+        <td>{{ row[4] }}</td>
+        <td>{{ row[5] }}</td>
+        <td>{{ row[6] }}</td>
+        <td>{{ row[7] }}</td>
+        <td>{{ row[8] }}</td>
+        <td>{{ row[9] }}</td>
+        <td>{{ row[10] }}</td>
+        <td>{{ row[11] }}</td>
+        <td>{{ row[12] }}</td>
+        <td>{{ row[13] }}</td>
+
+        <!-- <td>{{ row[7] ~ ' hr' }}</td> -->
+   
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<div style="margin-left: 600px; margin-top: 10px; margin-bottom: 10px; ">
+    <a href="/dashboard"><button type="submit" class="btn btn-primary">Back to Dashboard</button> </a>
+
+{% endblock %}
