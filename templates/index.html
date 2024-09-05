@@ -25,7 +25,7 @@
             <a style="text-decoration: none; color: black" href="{{ url_for('vehicle.add_data') }}">Login to book your slot now: <button type="submit" class="btn btn-primary">Login</button>
         {% else %} 
             {% if session['role'] == 'user' %}
-                <a href="{{ url_for('vehicle.add_data') }}"><button type="submit" class="btn btn-primary" value="save">Book Slot</button></a>
+                <a href="{{ url_for('vehicle.bookSlot') }}"><button type="submit" class="btn btn-primary" value="save">Book Slot</button></a>
             {% else %}
                 <a href="{{ url_for('vehicle.AdminVehicle') }}"><button type="submit" class="btn btn-primary" value="save">Book Slot</button></a>
             

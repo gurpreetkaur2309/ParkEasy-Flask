@@ -69,7 +69,7 @@ def add_data():
             fetch_query = '''
                 SELECT      v.VehicleID,      v.VehicleType,      v.VehicleNumber,     b.Date,      b.TimeFrom,      b.TimeTo,      b.duration,     u.SNo,      u.username,     o.name,      o.contact,     p.TotalPrice,      p.mode FROM      vehicle v  JOIN      bookingslot b ON v.VehicleID = b.BSlotID JOIN      user u ON v.SNo = u.SNo JOIN      owner o ON u.SNo = o.SNo JOIN      payment p ON b.BSlotID = p.PaymentID ORDER BY      b.Date DESC, b.TimeFrom DESC LIMIT 1
             '''
-            cursor.execute(fetch_query, (PaymentID,))
+            cursor.execute(fetch_query)
             data = cursor.fetchone()
             print('data in try is',data)
 

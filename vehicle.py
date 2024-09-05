@@ -65,6 +65,7 @@ def ValidNumber(VehicleNumber):
 def add_data():
     print('inside add_data function')
     SNo = request.args.get('SNo')  
+    print(SNo, 'sno')
     if request.method == 'POST':
         VehicleID = request.form.get('VehicleID')
         if not VehicleID:
@@ -110,7 +111,7 @@ def add_data():
                     SET VehicleType=%s, VehicleNumber=%s, SNo=%s
                     WHERE VehicleID=%s
                 '''
-            cursor.execute(update_query, (VehicleType, VehicleNumber, S_No, VehicleID))
+            cursor.execute(update_query, (VehicleType, VehicleNumber, SNo, VehicleID))
             db.commit()
 
             print('db.commit k niche')
@@ -143,7 +144,8 @@ def bookSlot():
     fetch_query = 'SELECT SNo FROM user WHERE username=%s'
     cursor.execute(fetch_query, (username,))
     db.commit()
-    SNo = cursor.fetchone()[0]
+    S_No = cursor.fetchone()
+    SNo = S_No[0]
     print(SNo, 'SNo')
  
     if request.method == 'POST':
@@ -297,7 +299,9 @@ def addCustomVehicle():
 @Vehicle.route('/vehicle/anotherSlot/add', methods = ['GET','POST'])
 @login_required
 def anotherSlot():
+    print('inside anotherslot function')
     if request.method == 'POST':
+        print('inside the post method')
         VehicleID = request.form['VehicleID']
         if not VehicleID:
             flash('Cannot continue without VehicleID. Please try Again later','error')
@@ -462,8 +466,9 @@ def AdminVehicle():
             SET v.VehicleType=%s, v.VehicleNumber=%s,
                 b.date=%s, b.TimeFrom=%s, b.TimeTo=%s, b.duration=%s,
                 p.mode=%s, p.TotalPrice=%s
+            WHERE VehicleID=%s
             '''
-            cursor.execute(update_query, (VehicleType, VehicleNumber, date, TimeFrom, TimeTo, duration, mode, TotalPrice))
+            cursor.execute(update_query, (VehicleType, VehicleNumber, date, TimeFrom, TimeTo, duration, mode, TotalPrice, VehicleID))
             db.commit()
             print('update query',update_query)
         except mysql.connector.Error as e:

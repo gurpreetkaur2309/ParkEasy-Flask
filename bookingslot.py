@@ -23,7 +23,7 @@ def display():
         owner.Name AS OwnerName,
         vehicle.VehicleNumber,  bookingslot.duration FROM bookingslot
         INNER JOIN Owner ON bookingslot.SNo = owner.SNo 
-        INNER JOIN vehicle ON bookingslot.BSlotID = vehicle.VehicleID 
+        INNER JOIN vehicle ON bookingslot.BSlotID = vehicle.VehicleID   
         '''
     
     cursor.execute(fetch_query)
