@@ -264,6 +264,8 @@ owner_count = cursor.fetchone()
 cursor.execute('SELECT COUNT(*) FROM payment')
 payment_count = cursor.fetchone()
 
+cursor.execute('SELECT COUNT(*) FROM allotment')
+history_count = cursor.fetchone()
 ####dashboard########
 @auth.route('/dashboard')
 def dashboard():
@@ -274,6 +276,7 @@ def dashboard():
                                bookingslot_count = bookingslot_count[0],
                                sensor_count = sensor_count[0],
                                owner_count = owner_count[0],
+                               history_count = history_count[0],
                                payment_count = payment_count[0], role=session['role'])
 
     else:
