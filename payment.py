@@ -134,7 +134,7 @@ def add_data():
                 WHERE PaymentID=%s
             '''
             #debugging
-            cursor.execute('SELECT TotalPrice, mode, SNo FROM payment WHERE PaymentID=%s')
+            cursor.execute('SELECT TotalPrice, mode, SNo FROM payment WHERE PaymentID=%s',(PaymentID,))
             #end
                         
             cursor.execute(update_query, (TotalPrice, mode, S_No, PaymentID,))

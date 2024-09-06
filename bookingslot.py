@@ -121,7 +121,7 @@ def add_data():
             db.commit()
             # return render_template('add/owner.html', VehicleID=BSlotID)
             #debugging
-            cursor.execute('SELECT date,  duration, TimeFrom, TimeTo, S_No, BSlotID FROM bookingslot WHERE BSlotID=%s')
+            cursor.execute('SELECT date,  duration, TimeFrom, TimeTo, S_No, BSlotID FROM bookingslot WHERE BSlotID=%s',(BSlotID,))
             db.commit()
             data = cursor.fetchone()
             print('bookingslot data is: ', data)

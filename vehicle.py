@@ -113,7 +113,7 @@ def add_data():
             cursor.execute(update_query, (VehicleType, VehicleNumber, SNo, VehicleID))
             db.commit()
             #debugging
-            cursor.execute('SELECT * from vehicle where vehicleID=%s')
+            cursor.execute('SELECT * from vehicle where vehicleID=%s',(VehicleID,))
             data = cursor.fetchone()
             print('debugging wala data', data)
             ##end
