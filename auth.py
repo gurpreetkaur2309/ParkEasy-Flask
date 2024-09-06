@@ -252,16 +252,16 @@ slots_count = cursor.fetchone()
 cursor.execute('SELECT COUNT(*) FROM sensor')
 sensor_count = cursor.fetchone()
 
-cursor.execute('SELECT COUNT(*) FROM vehicle')
+cursor.execute("SELECT COUNT(*) FROM vehicle WHERE VehicleType <> ''")
 vehicle_count = cursor.fetchone()
 
-cursor.execute('SELECT COUNT(*) FROM bookingslot')
+cursor.execute("SELECT COUNT(*) FROM bookingslot WHERE duration <> '' ")
 bookingslot_count = cursor.fetchone()
 
 cursor.execute('SELECT COUNT(*) FROM owner')
 owner_count = cursor.fetchone()
 
-cursor.execute('SELECT COUNT(*) FROM payment')
+cursor.execute("SELECT COUNT(*) FROM payment WHERE TotalPrice <> 0")
 payment_count = cursor.fetchone()
 
 cursor.execute('SELECT COUNT(*) FROM allotment')

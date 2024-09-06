@@ -53,11 +53,11 @@ def clearExpiredBookings():
         INNER JOIN payment p ON b.BSlotID = p.PaymentID
         INNER JOIN vehicle v ON b.BSlotID = v.VehicleID
         INNER JOIN sensor s ON b.BSlotID = s.SensorID
-        SET b.TimeFrom = '', b.TimeTo = '', b.duration = '', 
+        SET b.TimeFrom = '', b.TimeTo = '', b.duration = '', b.date = null,
             v.VehicleType = '', v.VehicleNumber = '',
             p.TotalPrice = 0, p.mode = '',
             s.isParked=0
-        WHERE b.date = %s AND b.TimeTo < %s
+        WHERE b.date < %s OR b.TimeTo < %s
         '''
         cursor.execute(update_query, (current_date, current_time))
         db.commit()

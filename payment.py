@@ -12,20 +12,12 @@ payment = Blueprint('payment', __name__)
 @login_required
 @requires_role('admin')
 def display():
-    update_query = '''
-        UPDATE payment p
-        JOIN bookingslot b ON p.PaymentID = b.BSlotID
-        SET TotalPrice=Null, Mode=Null
-        WHERE b.TimeFrom is Null and b.TimeTo is Null
-    '''
-    try:
-        cursor.execute(update_query)
-        db.commit()
-    except mysql.connector.Error as e:
-        db.rollback()
-        flash('Error updating data to null')
 
-    cursor.execute('SELECT * FROM payment')
+    fetch_query = '''
+        SELECT p.PaymentID, if(p.TotalPrice = 0, '', p.TotalPrice) as formatted_Price, p.mode 
+        FROM payment p
+    '''
+    cursor.execute(fetch_query)
     db.commit()
     data = cursor.fetchall()
 
