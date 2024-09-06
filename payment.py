@@ -117,7 +117,6 @@ def add_data():
             elif VehicleType == 'Luxury-Vehicle':
                 rate = 18
 
-
             print('rate', rate)
             print('duration', duration)
             TotalPrice = rate * Duration 
@@ -125,7 +124,6 @@ def add_data():
             TotalPrice = float(TotalPrice)
             session['TotalPrice'] = TotalPrice
             print(session, 'totalprice')
-
 
             print('Update query ke upar')
             update_query = '''
@@ -135,6 +133,9 @@ def add_data():
             '''
             #debugging
             cursor.execute('SELECT TotalPrice, mode, SNo FROM payment WHERE PaymentID=%s',(PaymentID,))
+            db.commit()
+            data = cursor.fetchone()
+            print('data in payment is', data)
             #end
                         
             cursor.execute(update_query, (TotalPrice, mode, S_No, PaymentID,))
