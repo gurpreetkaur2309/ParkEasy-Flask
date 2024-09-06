@@ -16,7 +16,12 @@ def formatDate(date):
 @login_required
 def display():
     fetch_query = '''
-        SELECT b.BSlotID, b.date, b.TimeFrom, b.TimeTo, b.duration, v.VehicleNumber
+        SELECT b.BSlotID, 
+               if(b.date is null, '', b.date) as formatted_Date,
+               if(b.TimeFrom = '00:00:00', '', b.TimeFrom) as formatted_timeFrom, 
+               if(b.TimeTo = '00:00:00', '', b.TimeTo) as formatted_timeTo, 
+               b.duration,
+               v.VehicleNumber
         FROM bookingslot b  
         JOIN vehicle v ON b.BSlotID = v.VehicleID 
         '''
