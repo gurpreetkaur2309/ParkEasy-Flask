@@ -166,7 +166,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        if len(password) > 8:
+        if len(password) > 10:
             flash('Password should not be more than 8 characters', 'error')
             return redirect(url_for('auth.login'))
 
