@@ -9,7 +9,7 @@
     <!-- Include any additional styling or scripts here -->
 </head>
 <body>
-<h1 style="margin-left: 150px; margin-top: 10px;">Receipt</h1>
+<h1 style="margin-left: 10px; margin-top: 10px;">Your bookings</h1>
 <div class="flash message">
     {% for msg in get_flashed_messages() %}
         <div class="flash-messages success-danger">
@@ -17,18 +17,26 @@
         </div>
     {% endfor %}
 </div>
-<div class="Receipt-Container">
-    <p><strong>Slot:</strong>{{ ReceiptID }}</p>
-    <p><strong>Vehicle Type: </strong>{{ VehicleType }}</p>
-    <p><strong>Registration Number: </strong>{{ VehicleNumber }}</p>
-    <p><strong>Date:    </strong>{{ date }}</p>
-    <p><strong>Price: </strong>{{ Price }}</p>
-    <p><strong>Mode: </strong>{{ Mode }}</p>
-    <p><strong>TimeFrom: </strong>{{ TimeFrom }}</p>
-    <p><strong>Time To: </strong>{{ TimeTo }}</p>
 
+
+<div class="Reciept" style="margin-top:20px;">
+    <div class="card border-secondary mb-3" style="max-width: 20rem; margin-left: 40%;">
+      <div class="card-header">Ticket</div>
+      <div class="card-body text-secondary">
+            <p><strong>Slot:</strong>{{ ReceiptID }}</p>
+            <p><strong>Vehicle Type: </strong>{{ VehicleType }}</p>
+            <p><strong>Registration Number: </strong>{{ VehicleNumber }}</p>
+            <p><strong>Date:    </strong>{{ date }}</p>
+            <p><strong>Price: </strong>{{ Price }}</p>
+            <p><strong>Mode: </strong>{{ Mode }}</p>
+            <p><strong>TimeFrom: </strong>{{ TimeFrom }}</p>
+            <p><strong>Time To: </strong>{{ TimeTo }}</p>
+      </div>
+    </div>
 </div>
-<a style="display: flex; justify-content: center; text-decoration: none;" href="{{ url_for('vehicle.anotherSlot') }}">Book another Slot</a>
+
+<a style="display: flex; justify-content: center; text-decoration: none;" href="{{ url_for('vehicle.anotherSlot') }}"> <button style="margin-left: 0%; margin-top:30px;" id="CAlignID" type="submit" class="btn btn-primary">Book another Slot</button>
+</a>
 <br>
 </body>
 </html>

@@ -38,35 +38,74 @@ def display():
 @payment.route('/payment/add', methods=['GET', 'POST'])
 @login_required
 def add_data():
+    print('add_data ke andar')
     if request.method == 'POST':
-        print('request.form ke niche')
+        print('post method k andar')
         PaymentID = session.get('VehicleID')
+        print('paymentID', PaymentID)
         VehicleID = session.get('VehicleID')
-        print('PaymentID in post', PaymentID)
+        print('VehicleID', VehicleID)
         mode = request.form['mode']
-        print('mode ke niche', mode)
+        print('mode', mode)
         cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=%s', (VehicleID,))
         db.commit()
         SNo = cursor.fetchone()
+        print('sno', SNo)
         S_No = SNo[0]
         # S_No = session.get('incrementedSNo')
         # print('S_No: ', S_No)
         if not S_No:
             flash('S_No nahi mil raha bhai','error')
             return redirect(url_for('payment.add_data', VehicleID=PaymentID, SNo = S_No))
-        #debugging
-        data = ('debugging', PaymentID, mode)
-        print(data)
-        ##end##`
-        OwnerID = PaymentID
-        BSlotID = PaymentID
-        VehicleID = PaymentID
-
-        print(request.form)
-
         try:
-            print('fetch query ke upar in try')
+            fetchData = '''
+                SELECT v.VehicleType, b.duration FROM vehicle v 
+                JOIN bookingslot b ON v.VehicleID = b.BSlotID
+                WHERE VehicleID=%s
+                '''
+            cursor.execute(fetchData, (VehicleID,))
+            v_data = cursor.fetchone();
+            print(v_data)
+            if not v_data:
+                flash('v_data not found','error')
+                return redirect(url_for('payment.add_data'))
+            VehicleType = v_data[0]
+            duration = v_data[1]
+            Duration = int(duration)
+            print(Duration, 'duration')
+            print(VehicleType, 'VehicleType')
+            rate = 0
+            if VehicleType in ['sedan', 'SUV', 'Hatchback', 'Coupe']:
+                rate = 13
+            elif VehicleType == '2-Wheeler':
+                rate = 8
+            elif VehicleType == 'Heavy-Vehicle':
+                rate = 15
+            elif VehicleType == 'Luxury-Vehicle':
+                rate = 18
 
+            TotalPrice = rate * Duration 
+            TotalPrice = float(TotalPrice)
+            session['TotalPrice'] = TotalPrice
+            print(TotalPrice, 'TotalPrice')
+            print('update query wale try ke andar')
+            update_query = '''
+                UPDATE payment
+                SET TotalPrice=%s, mode=%s, SNo=%s
+                WHERE PaymentID=%s
+            '''
+            cursor.execute(update_query, (TotalPrice, mode, S_No, PaymentID,))
+            db.commit()
+        except mysql.connector.Error as e:
+            print('update query wale except ke andar')
+
+            db.rollback()
+            print(e)
+            flash('Error adding your data','error')
+            return redirect(url_for('payment.add_data', PaymentID=PaymentID, SNo=SNo))
+       
+        try:
+            print('fetch query wale try ke andar')
             fetch_query = '''
                 SELECT v.VehicleID, v.VehicleType, v.VehicleNumber, 
                        b.Date, b.TimeFrom, b.TimeTo, b.duration, 
@@ -83,8 +122,7 @@ def add_data():
             '''
             cursor.execute(fetch_query)
             data = cursor.fetchone()
-            print('data in try is',data)
-
+            print(data)
             if data is None:
                 print('No data')
                 flash('No data found', 'error')
@@ -103,45 +141,19 @@ def add_data():
             contact = data[10]
             TotalPrice = data[11]
             mode = data[12]
-            Duration = int(duration)
             
-            print('TimeTo: ', TimeTo,'TimeFrom:', TimeFrom)
-            rate = 0
-            if VehicleType in ['sedan', 'SUV', 'Hatchback', 'Coupe']:
-                rate = 13
-            elif VehicleType == '2-Wheeler':
-                rate = 8
-            elif VehicleType == 'Heavy-Vehicle':
-                rate = 15
-            elif VehicleType == 'Luxury-Vehicle':
-                rate = 18
-
-            print('rate', rate)
-            print('duration', duration)
-            TotalPrice = rate * Duration 
-            print(TotalPrice)
-            TotalPrice = float(TotalPrice)
-            session['TotalPrice'] = TotalPrice
-            print(session, 'totalprice')
-
-            print('Update query ke upar')
-            update_query = '''
-                UPDATE payment
-                SET TotalPrice=%s, mode=%s, SNo=%s
-                WHERE PaymentID=%s
-            '''
+            
+            
             #debugging
             cursor.execute('SELECT TotalPrice, mode, SNo FROM payment WHERE PaymentID=%s',(PaymentID,))
             db.commit()
-            data = cursor.fetchone()
-            print('data in payment is', data)
+            data1 = cursor.fetchone()
             #end
                         
-            cursor.execute(update_query, (TotalPrice, mode, S_No, PaymentID,))
-            db.commit()
-            print('update query', update_query)
+            
 
             try:
+                print('insert query wale try ke andar')
                 insert_query = '''
                     INSERT INTO allotment(VehicleID, SNo, username, date, TimeFrom, TimeTo, duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber) 
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)                '''
@@ -150,15 +162,16 @@ def add_data():
 
                 db.commit()
             except mysql.connector.Error as e:
+                print('insert query wale allotment ke andar')
                 print(e)
                 flash('Error adding allotment', 'error')
                 return redirect(url_for('payment.add_data'))
 
-            return redirect(url_for('payment.Generate_Receipt',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID))
+            return redirect(url_for('payment.Generate_Receipt',duration=duration, TotalPrice=TotalPrice, mode=mode, PaymentID=PaymentID))
             # return render_template('add/payment.html',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID)
 
         except mysql.connector.Error as e:
-            print('post wale except ke andar')
+            print('fetch query wale except ke andar')
             print(e)
             db.rollback()
             flash('Error processing your payment', 'error')
@@ -278,14 +291,26 @@ def Generate_Receipt(PaymentID):
         elif VehicleType == 'Luxury-Vehicle':
             rate = 18
         Price = rate * duration
-        return render_template('view/GenerateReceipt.html', strftime=datetime.strftime, PaymentID=PaymentID,
-                               VehicleType=VehicleType, VehicleNumber=VehicleNumber, date=Date, ReceiptID=ReceiptID, Price=Price, Mode=Mode, TimeFrom=TimeFrom, TimeTo=TimeTo, SNo=SNo)
-
+        
     except mysql.connector.Error as e:
         print(e)
         db.rollback()
         flash('Error generating receipt', 'error')
         return redirect(url_for('payment.display'))
+
+    try:
+        username = session.get('username')
+        print(username)
+        cursor.execute('SELECT * FROM allotment WHERE username=%s', (username,))
+        db.commit()
+    except mysql.connector.Error as e:
+        print(e)
+        db.rollback()
+        return redirect(url_for('payment.Generate_Receipt', PaymentID=PaymentID))
+
+    return render_template('view/GenerateReceipt.html', strftime=datetime.strftime, PaymentID=PaymentID,
+                               VehicleType=VehicleType, VehicleNumber=VehicleNumber, date=Date, ReceiptID=ReceiptID, Price=Price, Mode=Mode, TimeFrom=TimeFrom, TimeTo=TimeTo, SNo=SNo)
+
 
 
 
