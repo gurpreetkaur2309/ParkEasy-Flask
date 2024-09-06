@@ -75,7 +75,7 @@ def add_data():
             print(Duration, 'duration')
             print(VehicleType, 'VehicleType')
             rate = 0
-            if VehicleType in ['sedan', 'SUV', 'Hatchback', 'Coupe']:
+            if VehicleType == 'car':
                 rate = 13
             elif VehicleType == '2-Wheeler':
                 rate = 8
