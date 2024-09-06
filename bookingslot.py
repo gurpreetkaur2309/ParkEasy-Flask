@@ -16,14 +16,9 @@ def formatDate(date):
 @login_required
 def display():
     fetch_query = '''
-        SELECT vehicle.VehicleID,
-        bookingslot.date,
-        DATE_FORMAT(bookingslot.TimeFrom, '%k:%i') AS TimeFromFormatted,
-        DATE_FORMAT(bookingslot.TimeTo, '%k:%i') AS TimeToFormatted,
-        owner.Name AS OwnerName,
-        vehicle.VehicleNumber,  bookingslot.duration FROM bookingslot
-        INNER JOIN Owner ON bookingslot.SNo = owner.SNo 
-        INNER JOIN vehicle ON bookingslot.BSlotID = vehicle.VehicleID   
+        SELECT b.BSlotID, b.date, b.TimeFrom, b.TimeTo, b.duration, v.VehicleNumber
+        FROM bookingslot b  
+        JOIN vehicle v ON b.BSlotID = v.VehicleID 
         '''
     cursor.execute(fetch_query)
     db.commit()

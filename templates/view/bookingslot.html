@@ -14,11 +14,10 @@
         <!-- <th>SlotID</th> -->
         <th>Slot</th>
         <th>Date</th>
-        <th>Owner</th>
-        <th>Reg. No</th>
         <th>From</th>
         <th>To</th>
         <th>duration</th>
+        <th>Reg. No</th>
         <th>Operations</th>
     </tr>
     </thead>
@@ -29,7 +28,6 @@
         <td>{{ row[0] }}</td>
         <td>{{ row[1] }}</td>
         <td>{{ row[4]  }}</td>
-        <td><a class="booking" style="color: black;text-decoration: none" href="{{ url_for('owner.display') }}">{{ row[5] }}</a></td>
         <td>{{ row[2] }}</td>
         <td>{{ row[3] }}</td>
         <td><a class="booking" style="color: black; text-decoration: none" href="{{ url_for('vehicle.display') }}">{{ row[6] ~ ' hr' }}</a></td>
