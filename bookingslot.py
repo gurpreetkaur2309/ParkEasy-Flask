@@ -50,12 +50,14 @@ def clearExpiredBookings():
         current_time = datetime.now().time()
         update_query = '''
         UPDATE bookingslot b 
-        JOIN payment p ON b.BSlotID = p.PaymentID
-        JOIN vehicle v ON b.BSlotID = v.VehicleID
+        INNER JOIN payment p ON b.BSlotID = p.PaymentID
+        INNER JOIN vehicle v ON b.BSlotID = v.VehicleID
+        INNER JOIN sensor s ON b.BSlotID = s.SensorID
         SET b.TimeFrom = '', b.TimeTo = '', b.duration = '', 
             v.VehicleType = '', v.VehicleNumber = '',
-            p.TotalPrice = 0, p.mode = ''
-        WHERE date = %s AND TimeTo < %s
+            p.TotalPrice = 0, p.mode = '',
+            s.isParked=0
+        WHERE b.date = %s AND b.TimeTo < %s
         '''
         cursor.execute(update_query, (current_date, current_time))
         db.commit()
@@ -68,20 +70,15 @@ def clearExpiredBookings():
 @login_required
 def add_data():
     if request.method == 'POST':
-        print('Post method mai gaya')
         VehicleID = session.get('VehicleID')
         BSlotID = session.get('VehicleID')
-        print(BSlotID, 'BSlotID')
         date = request.form['date']
         TimeFrom = request.form['TimeFrom']
         duration = request.form['duration']
-        print(request.form)
         cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=%s', (VehicleID,))
         db.commit()
         SNo = cursor.fetchone()
-        print('fetched SNo', SNo)
         S_No = SNo[0]
-        print('SNo in bookingslot: ', S_No)
         
         if not date:
             flash('Please enter date','error')
@@ -124,7 +121,6 @@ def add_data():
             cursor.execute('SELECT date,  duration, TimeFrom, TimeTo, SNo, BSlotID FROM bookingslot WHERE BSlotID=%s',(BSlotID,))
             db.commit()
             data = cursor.fetchone()
-            print('bookingslot data is: ', data)
             #end
             return redirect(url_for('payment.add_data', VehicleID=BSlotID, SNo=S_No))
         except  mysql.connector.Error as e:
