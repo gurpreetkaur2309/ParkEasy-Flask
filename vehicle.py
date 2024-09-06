@@ -62,9 +62,7 @@ def ValidNumber(VehicleNumber):
 @Vehicle.route('/vehicle/add', methods=['POST', 'GET'])
 @login_required
 def add_data():
-    print('inside add_data function')
     SNo = request.args.get('SNo')  
-    print(SNo, 'sno')
     if request.method == 'POST':
         VehicleID = request.form.get('VehicleID')
         if not VehicleID:
@@ -74,7 +72,6 @@ def add_data():
         session['VehicleID'] = VehicleID
         VehicleType = request.form.get('VehicleType')
         VehicleNumber = request.form.get('VehicleNumber')
-        print(request.form)
         fetch_SNo = ''' 
                 SELECT u.SNo FROM user u 
                 JOIN vehicle v on u.SNo = v.SNo
@@ -82,9 +79,7 @@ def add_data():
         # cursor.execute(fetch_SNo, (VehicleID,))
         # SNo = cursor.fetchone()
         # print(SNo,'sno')
-        S_No = SNo[0] if SNo else None
-
-        
+        S_No = SNo[0] if SNo else None        
         check_number_query = 'SELECT VehicleNumber FROM vehicle WHERE VehicleID=%s'
         cursor.execute(check_number_query,(VehicleID,))
         db.commit()
@@ -112,13 +107,7 @@ def add_data():
                 '''
             cursor.execute(update_query, (VehicleType, VehicleNumber, SNo, VehicleID))
             db.commit()
-            #debugging
-            cursor.execute('SELECT * from vehicle where vehicleID=%s',(VehicleID,))
-            data = cursor.fetchone()
-            print('debugging wala data', data)
-            ##end
 
-            print('db.commit k niche')
         except mysql.connector.Error as e:
             print('The error is',e)
             db.rollback()

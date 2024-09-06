@@ -44,6 +44,7 @@ def add_data():
         VehicleID = session.get('VehicleID')
         print('PaymentID in post', PaymentID)
         mode = request.form['mode']
+        print('mode ke niche', mode)
         cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=%s', (VehicleID,))
         db.commit()
         SNo = cursor.fetchone()
@@ -65,7 +66,7 @@ def add_data():
 
         try:
             print('fetch query ke upar in try')
-            
+
             fetch_query = '''
                 SELECT v.VehicleID, v.VehicleType, v.VehicleNumber, 
                        b.Date, b.TimeFrom, b.TimeTo, b.duration, 
@@ -104,8 +105,6 @@ def add_data():
             mode = data[12]
             Duration = int(duration)
             
-
-
             print('TimeTo: ', TimeTo,'TimeFrom:', TimeFrom)
             rate = 0
             if VehicleType in ['sedan', 'SUV', 'Hatchback', 'Coupe']:
@@ -140,6 +139,7 @@ def add_data():
                         
             cursor.execute(update_query, (TotalPrice, mode, S_No, PaymentID,))
             db.commit()
+            print('update query', update_query)
 
             try:
                 insert_query = '''
