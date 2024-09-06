@@ -61,7 +61,7 @@ def add_data():
         BSlotID = PaymentID
         VehicleID = PaymentID
 
-        print('all ids are: ', OwnerID, BSlotID, VehicleID)
+        print(request.form)
 
         try:
             print('fetch query ke upar in try')
@@ -133,7 +133,9 @@ def add_data():
                 SET TotalPrice=%s, mode=%s, SNo=%s
                 WHERE PaymentID=%s
             '''
-
+            #debugging
+            cursor.execute('SELECT TotalPrice, mode, SNo FROM payment WHERE PaymentID=%s')
+            #end
                         
             cursor.execute(update_query, (TotalPrice, mode, S_No, PaymentID,))
             db.commit()
@@ -242,6 +244,8 @@ def Generate_Receipt(PaymentID):
         if data is None:
             flash('Slot not booked. Please book the slot to generate receipt', 'danger')
             return redirect(url_for('payment.display'))
+        if data[5] == 0.0:
+            return redirect(url_for('vehicle.add_data',SNo=data[0]))
 
         SNo = data[0]
         VehicleType = data[1]

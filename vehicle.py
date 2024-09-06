@@ -59,7 +59,6 @@ def ValidNumber(VehicleNumber):
     pattern = r"^[A-Z]{2}[ -]?\d{2}[ -]?[A-Z]{1,2}[ -]?\d{1,4}$"
     return re.search(pattern, VehicleNumber)
 
-
 @Vehicle.route('/vehicle/add', methods=['POST', 'GET'])
 @login_required
 def add_data():
@@ -75,7 +74,7 @@ def add_data():
         session['VehicleID'] = VehicleID
         VehicleType = request.form.get('VehicleType')
         VehicleNumber = request.form.get('VehicleNumber')
-
+        print(request.form)
         fetch_SNo = ''' 
                 SELECT u.SNo FROM user u 
                 JOIN vehicle v on u.SNo = v.SNo
@@ -113,10 +112,15 @@ def add_data():
                 '''
             cursor.execute(update_query, (VehicleType, VehicleNumber, SNo, VehicleID))
             db.commit()
+            #debugging
+            cursor.execute('SELECT * from vehicle where vehicleID=%s')
+            data = cursor.fetchone()
+            print('debugging wala data', data)
+            ##end
 
             print('db.commit k niche')
         except mysql.connector.Error as e:
-            print('The error is',)
+            print('The error is',e)
             db.rollback()
             flash('Error adding data', 'error')
             return redirect(url_for('vehicle.add_data', SNo=SNo)) 

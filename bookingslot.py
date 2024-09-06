@@ -67,8 +67,6 @@ def clearExpiredBookings():
 @booking.route('/bookingslot/add', methods=['GET', 'POST'])
 @login_required
 def add_data():
-
-
     if request.method == 'POST':
         print('Post method mai gaya')
         VehicleID = session.get('VehicleID')
@@ -77,7 +75,7 @@ def add_data():
         date = request.form['date']
         TimeFrom = request.form['TimeFrom']
         duration = request.form['duration']
-
+        print(request.form)
         cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=%s', (VehicleID,))
         db.commit()
         SNo = cursor.fetchone()
@@ -122,6 +120,12 @@ def add_data():
             cursor.execute(update_query, (date,  duration, TimeFrom, TimeTo, S_No, BSlotID,))
             db.commit()
             # return render_template('add/owner.html', VehicleID=BSlotID)
+            #debugging
+            cursor.execute('SELECT date,  duration, TimeFrom, TimeTo, S_No, BSlotID FROM bookingslot WHERE BSlotID=%s')
+            db.commit()
+            data = cursor.fetchone()
+            print('bookingslot data is: ', data)
+            #end
             return redirect(url_for('payment.add_data', VehicleID=BSlotID, SNo=S_No))
         except  mysql.connector.Error as e:
             print(e)
