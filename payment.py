@@ -235,10 +235,8 @@ def delete_data(PaymentID):
         return redirect(url_for('payment.display'))
     return render_template('delete/payment.html',data=data)
 
-
 @payment.route('/payment/generate_receipt/<int:PaymentID>', methods=['GET', 'POST'])
 @login_required
-
 
 def Generate_Receipt(PaymentID):
 
@@ -280,11 +278,7 @@ def Generate_Receipt(PaymentID):
         rate=0
         if VehicleType == '2-Wheeler':
             rate = 8
-        elif VehicleType == 'Sedan':
-            rate = 13
-        elif VehicleType == 'SUV':
-            rate = 13
-        elif VehicleType == 'Hatchback':
+        elif VehicleType == 'car':
             rate = 13
         elif VehicleType == 'Heavy-Vehicle':
             rate = 15
