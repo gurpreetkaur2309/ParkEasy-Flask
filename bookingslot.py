@@ -37,7 +37,7 @@ def display():
 @login_required
 def history():
     fetch_query = '''
-        SELECT * FROM allotment
+        SELECT VehicleID, username, date, TimeFrom, TimeTo, duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber FROM allotment
     '''
     cursor.execute(fetch_query)
     db.commit()
