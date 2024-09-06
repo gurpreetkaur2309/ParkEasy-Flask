@@ -63,10 +63,10 @@
         </div>
             <div class="col m-4">
                 <div class="card" style="width:350px;">
-                    <div class="card-header">Sensor(Only for admin)</div>
+                    <div class="card-header">History</div>
                     <div class="card-body">
-                        <p class="card-text">No. of sensor: {{ sensor_count }}</p>
-                        <a class="btn btn-primary" href="{{ url_for('sensor.display') }}">View Sensors</a>
+                        <p class="card-text">No. of vehicles booked: {{ history_count }}</p>
+                        <a class="btn btn-primary" href="{{ url_for('bookingslot.history') }}">View Bookings</a>
                     </div>
                 </div>
             </div>
