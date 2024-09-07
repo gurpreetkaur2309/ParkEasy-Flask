@@ -133,7 +133,7 @@ def add_data():
             contact = data[10]
             TotalPrice = data[11]
             mode = data[12]
-            
+
             
             
             #debugging
@@ -142,8 +142,6 @@ def add_data():
             data1 = cursor.fetchone()
             #end
                         
-            
-
             try:
                 print('insert query wale try ke andar')
                 insert_query = '''
