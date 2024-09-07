@@ -104,23 +104,11 @@ InputCenter{
     margin-top: 10px;
 }
 
-/*.col {*/
-/*    text-align: center;*/
-/*    !*position: fixed;*!*/
-/*    !*left:40px;*!*/
-/*    bottom: 1px;*/
-
-/*}*/
-/*.container{*/
-/*    position: absolute;*/
-/*    left:5px;*/
-/*}*/
-
-
-
 .navbar{
-    background-color: whitesmoke;
-    /*color: white;*/
+/*    background-color: #2a2c2e;*/
+    background-color: #434547;
+
+    color: white;
     margin: 0;
     padding: 0;
 }
