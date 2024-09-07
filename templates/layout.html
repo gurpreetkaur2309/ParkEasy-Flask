@@ -36,41 +36,41 @@
                         
                           <li class="nav-item active">
                             {% if session['role'] == 'admin' %}
-                              <a class="nav-link active" aria-current="page" href="/dashboard">Dashboard</a>
+                              <a class="nav-link active" aria-current="page" href="/dashboard" style="color:white;">Dashboard</a>
                             {% endif %}
                             
                           </li>
                           <li class="nav-item">
                               {% if session['role'] == 'admin' %}
-                              <a class="nav-link active" href="{{ url_for('Slots.display') }}">Slots</a>
+                              <a class="nav-link active" href="{{ url_for('Slots.display') }}"style="color:white">Slots</a>
                               {% endif %}
                           </li>
                           <li class="nav-item">
                             {% if session['role'] == 'admin' %}
-                              <a class="nav-link active" href="{{ url_for('bookingslot.display') }}">Booked-slots</a>
+                              <a class="nav-link active" href="{{ url_for('bookingslot.display') }}" style="color:white">Booked-slots</a>
                             {% endif %}
                             
                           </li>
                           <li class="nav-item">
                             {% if session['role'] == 'admin' %}
-                              <a class="nav-link active" href="{{ url_for('vehicle.display') }}">Vehicles</a>
+                              <a class="nav-link active" href="{{ url_for('vehicle.display') }}" style="color:white">Vehicles</a>
                             {% endif %}
                           </li>
                           <li class="nav-item">
                             {% if session['role'] == 'admin' %}
-                              <a class="nav-link active" href="{{ url_for('owner.display') }}">Owner</a>
+                              <a class="nav-link active" href="{{ url_for('owner.display') }}" style="color:white">Owner</a>
                             {% endif %}
                           </li>
                           <li class="nav-item">
                             {% if session['role'] == 'admin' %}
-                              <a class="nav-link active" href="{{ url_for('payment.display') }}">Payment</a>
+                              <a class="nav-link active" href="{{ url_for('payment.display') }}" style="color:white">Payment</a>
                             {% endif %}
                             
                           </li>
                           
                           <li class="nav-item">
                               {% if session['role'] == 'admin' %}
-                              <a class="nav-link active" href="{{ url_for('bookingslot.history') }}">History</a>
+                              <a class="nav-link active" href="{{ url_for('bookingslot.history') }}" style="color:white">History</a>
                               {% endif %}
                           </li>
                          
