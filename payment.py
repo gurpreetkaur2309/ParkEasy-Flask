@@ -134,7 +134,8 @@ def add_data():
             TotalPrice = data[11]
             mode = data[12]
 
-            
+            if(TotalPrice==0):
+                db.rollback            
             
             #debugging
             cursor.execute('SELECT TotalPrice, mode, SNo FROM payment WHERE PaymentID=%s',(PaymentID,))
