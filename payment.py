@@ -134,8 +134,7 @@ def add_data():
             TotalPrice = data[11]
             mode = data[12]
 
-            if(TotalPrice==0):
-                db.rollback            
+
             
             #debugging
             cursor.execute('SELECT TotalPrice, mode, SNo FROM payment WHERE PaymentID=%s',(PaymentID,))
@@ -152,6 +151,11 @@ def add_data():
                 cursor.execute(insert_query, (VehicleID, S_No, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber))
 
                 db.commit()
+
+                if(TotalPrice==0):
+                    db.rollback()
+                    return "Server error" 
+
             except mysql.connector.Error as e:
                 print('insert query wale allotment ke andar')
                 print(e)
