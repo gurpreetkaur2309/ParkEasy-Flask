@@ -69,6 +69,7 @@ def clearExpiredBookings():
 @booking.route('/bookingslot/add', methods=['GET', 'POST'])
 @login_required
 def add_data():
+    print(session['username'])
     if request.method == 'POST':
         VehicleID = session.get('VehicleID')
         BSlotID = session.get('VehicleID')
