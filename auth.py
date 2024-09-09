@@ -198,6 +198,7 @@ def login():
                 if data:
                     print('inside if data condition')
                     print('user_data[2]', user_data[2])
+                    print(session['username'])
                     return redirect(url_for('payment.Generate_Receipt',PaymentID=data[0], SNo=user_data[2]))  
                 else:
                     print('inside else')
