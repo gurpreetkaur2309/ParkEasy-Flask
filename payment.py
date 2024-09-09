@@ -30,6 +30,7 @@ def display():
 @payment.route('/payment/add', methods=['GET', 'POST'])
 @login_required
 def add_data():
+    print(session['username'])
     print('add_data ke andar')
     if request.method == 'POST':
         print('post method k andar')
@@ -149,7 +150,6 @@ def add_data():
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)                '''
                 # cursor.execute(insert_query, (VehicleID, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber))
                 cursor.execute(insert_query, (VehicleID, S_No, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber))
-
                 db.commit()
 
                 if(TotalPrice==0):

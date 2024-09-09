@@ -80,13 +80,13 @@ def add_data():
         # SNo = cursor.fetchone()
         # print(SNo,'sno')
         S_No = SNo[0] if SNo else None        
-        check_number_query = 'SELECT VehicleNumber FROM vehicle WHERE VehicleID=%s'
-        cursor.execute(check_number_query,(VehicleID,))
+        check_number_query = 'SELECT VehicleNumber FROM vehicle'
+        cursor.execute(check_number_query)
         db.commit()
-        existing_number = cursor.fetchone()
+        existing_number = cursor.fetchall()
         print(existing_number, 'existing number')
         
-        if existing_number and existing_number[0] == VehicleNumber:
+        if existing_number == VehicleNumber:
             flash(f'A vehicle with this Registration number has already booked slot','error')
             return redirect(url_for('vehicle.add_data', VehicleID=VehicleID, SNo=SNo))
         
@@ -293,6 +293,7 @@ def addCustomVehicle():
 @login_required
 def anotherSlot():
     print('inside anotherslot function')
+    print(session['username'])
     if request.method == 'POST':
         print('inside the post method')
         VehicleID = request.form['VehicleID']
