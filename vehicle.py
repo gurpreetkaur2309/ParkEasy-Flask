@@ -63,6 +63,7 @@ def ValidNumber(VehicleNumber):
 @login_required
 def add_data():
     SNo = request.args.get('SNo')  
+    print(SNo, 'SNo in vehicle;')
     if request.method == 'POST':
         VehicleID = request.form.get('VehicleID')
         if not VehicleID:
@@ -79,7 +80,8 @@ def add_data():
         # cursor.execute(fetch_SNo, (VehicleID,))
         # SNo = cursor.fetchone()
         # print(SNo,'sno')
-        S_No = SNo[0] if SNo else None        
+        S_No = SNo[0] if SNo else None  
+
         check_number_query = 'SELECT VehicleNumber FROM vehicle'
         cursor.execute(check_number_query)
         db.commit()

@@ -173,7 +173,7 @@ def login():
         fetch_query = "SELECT username, password, SNo FROM user WHERE username=%s"
         cursor.execute(fetch_query, (username,))
         user_data = cursor.fetchone()
-        print(user_data, 'user_data')
+        print(user_data, 'user_data, SNo')
         db.commit()
         print('doneeeeee', user_data)
 

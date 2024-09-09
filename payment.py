@@ -43,7 +43,7 @@ def add_data():
         cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=%s', (VehicleID,))
         db.commit()
         SNo = cursor.fetchone()
-        print('sno', SNo)
+        print('sno in payment', SNo)
         S_No = SNo[0]
         # S_No = session.get('incrementedSNo')
         # print('S_No: ', S_No)
@@ -134,8 +134,6 @@ def add_data():
             contact = data[10]
             TotalPrice = data[11]
             mode = data[12]
-
-
             
             #debugging
             cursor.execute('SELECT TotalPrice, mode, SNo FROM payment WHERE PaymentID=%s',(PaymentID,))
