@@ -510,6 +510,78 @@ def AdminVehicle():
     if not availableSlots:
         flash('No slots are available currently. Please try again later','error')
         return redirect(url_for('auth.dashboard'))
+    try:
+        print('fetch query wale try ke andar')
+        fetch_query = '''
+            SELECT v.VehicleID, v.VehicleType, v.VehicleNumber, 
+                   b.Date, b.TimeFrom, b.TimeTo, b.duration, 
+                   u.SNo, u.username,     
+                   o.name, o.contact,     
+                   p.TotalPrice, p.mode 
+                   FROM vehicle v
+                   JOIN bookingslot b ON v.VehicleID = b.BSlotID 
+                   JOIN user u ON v.SNo = u.SNo 
+                   JOIN owner o ON u.SNo = o.SNo 
+                   JOIN payment p ON b.BSlotID = p.PaymentID 
+                   ORDER BY  b.Date DESC, 
+                   b.TimeFrom DESC LIMIT 1
+        '''
+        cursor.execute(fetch_query)
+        data = cursor.fetchone()
+        print(data)
+        if data is None:
+            print('No data')
+            flash('No data found', 'error')
+            return redirect(url_for('payment.add_data'))
+
+        VehicleID = data[0]
+        VehicleType = data[1]
+        VehicleNumber = data[2]
+        date = data[3]
+        TimeFrom = data[4]
+        TimeTo = data[5]
+        duration = data[6]
+        SNo = data[7]
+        username = data[8]
+        name = data[9]
+        contact = data[10]
+        TotalPrice = data[11]
+        mode = data[12]
+        
+        #debugging
+        cursor.execute('SELECT TotalPrice, mode, SNo FROM payment WHERE PaymentID=%s',(PaymentID,))
+        db.commit()
+        data1 = cursor.fetchone()
+        #end
+                    
+        try:
+            print('insert query wale try ke andar')
+            insert_query = '''
+                INSERT INTO allotment(VehicleID, SNo, username, date, TimeFrom, TimeTo, duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)                '''
+            # cursor.execute(insert_query, (VehicleID, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber))
+            cursor.execute(insert_query, (VehicleID, S_No, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber))
+            db.commit()
+
+            if(TotalPrice==0):
+                db.rollback()
+                return "Server error" 
+
+        except mysql.connector.Error as e:
+            print('insert query wale allotment ke andar')
+            print(e)
+            flash('Error adding allotment', 'error')
+            return redirect(url_for('payment.add_data'))
+
+        return redirect(url_for('payment.Generate_Receipt',duration=duration, TotalPrice=TotalPrice, mode=mode, PaymentID=PaymentID))
+        # return render_template('add/payment.html',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID)
+
+    except mysql.connector.Error as e:
+        print('fetch query wale except ke andar')
+        print(e)
+        db.rollback()
+        flash('Error processing your payment', 'error')
+        return redirect(url_for('payment.add_data'))
 
     return render_template('add/adminVehicleSlot.html', VID=VID)
 
