@@ -547,12 +547,6 @@ def AdminVehicle():
         contact = data[10]
         TotalPrice = data[11]
         mode = data[12]
-        
-        #debugging
-        cursor.execute('SELECT TotalPrice, mode, SNo FROM payment WHERE PaymentID=%s',(PaymentID,))
-        db.commit()
-        data1 = cursor.fetchone()
-        #end
                     
         try:
             print('insert query wale try ke andar')
@@ -574,7 +568,6 @@ def AdminVehicle():
             return redirect(url_for('payment.add_data'))
 
         return redirect(url_for('payment.Generate_Receipt',duration=duration, TotalPrice=TotalPrice, mode=mode, PaymentID=PaymentID))
-        # return render_template('add/payment.html',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID)
 
     except mysql.connector.Error as e:
         print('fetch query wale except ke andar')
