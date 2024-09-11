@@ -547,7 +547,12 @@ def AdminVehicle():
         contact = data[10]
         TotalPrice = data[11]
         mode = data[12]
-                    
+        
+        cursor.execute("SELECT SNo FROM vehicle WHERE VehicleID=%s")
+        db.commit()
+        SNo = cursor.fetchone()
+        S_No = SNo[0]
+
         try:
             print('insert query wale try ke andar')
             insert_query = '''
@@ -560,12 +565,12 @@ def AdminVehicle():
             if(TotalPrice==0):
                 db.rollback()
                 return "Server error" 
-
+                
         except mysql.connector.Error as e:
             print('insert query wale allotment ke andar')
             print(e)
             flash('Error adding allotment', 'error')
-            return redirect(url_for('payment.add_data'))
+            return redirect(url_for('payment.adminVehicleSlot'))
 
         return redirect(url_for('payment.Generate_Receipt',duration=duration, TotalPrice=TotalPrice, mode=mode, PaymentID=PaymentID))
 
