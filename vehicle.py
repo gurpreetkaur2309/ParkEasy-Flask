@@ -462,6 +462,8 @@ def AdminVehicle():
         S_No = cursor.fetchone()
         SNo = S_No[0]
         print(SNo, ': SNo')
+        if not SNo:
+            return "Server Error"
 
         TimeFormat = '%H:%M'
         timeFrom_dt = datetime.strptime(TimeFrom, TimeFormat)
