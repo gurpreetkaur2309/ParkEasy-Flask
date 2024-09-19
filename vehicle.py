@@ -467,6 +467,7 @@ def AdminVehicle():
         if not SNo:
             return "Server Error"
 
+
         TimeFormat = '%H:%M'
         timeFrom_dt = datetime.strptime(TimeFrom, TimeFormat)
         timeTo_dt = timeFrom_dt + timedelta(hours=durationStr)
