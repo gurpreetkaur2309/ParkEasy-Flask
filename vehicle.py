@@ -430,8 +430,8 @@ def AdminVehicle():
         print('rate=0 ke upar')
         rate = 0 
         print('total price wali condition ke upar')
-        if VehicleType in ['sedan', 'Hatchback', 'SUV']:
-            print('sedan, hatchback, suv ke andar')
+        if VehicleType == 'car':
+            print('car ke andar')
             rate = 13
         if VehicleType == '2-Wheeler':
             print('2 wheeler k andar')
@@ -467,6 +467,11 @@ def AdminVehicle():
         if not SNo:
             return "Server Error"
 
+        add_query = '''
+            UPDATE admin a set SNo = SNo 
+        '''
+        cursor.execute(add_query)
+        db.commit()
 
         TimeFormat = '%H:%M'
         timeFrom_dt = datetime.strptime(TimeFrom, TimeFormat)
@@ -478,6 +483,7 @@ def AdminVehicle():
             UPDATE vehicle v 
             INNER JOIN bookingslot b ON v.VehicleID = b.BSlotID
             INNER JOIN payment p ON v.VehicleID = p.PaymentID
+            INNER JOIN admin a ON a.SNo = v.SNo
             SET v.VehicleType=%s, v.VehicleNumber=%s,
                 b.date=%s, b.TimeFrom=%s, b.TimeTo=%s, b.duration=%s,
                 p.mode=%s, p.TotalPrice=%s
@@ -515,48 +521,54 @@ def AdminVehicle():
     if not availableSlots:
         flash('No slots are available currently. Please try again later','error')
         return redirect(url_for('auth.dashboard'))
-    try:
-        print('fetch query wale try ke andar')
-        fetch_query = '''
-            SELECT v.VehicleID, v.VehicleType, v.VehicleNumber, 
-                   b.Date, b.TimeFrom, b.TimeTo, b.duration, 
-                   u.SNo, u.username,     
-                   o.name, o.contact,     
-                   p.TotalPrice, p.mode 
-                   FROM vehicle v
-                   JOIN bookingslot b ON v.VehicleID = b.BSlotID 
-                   JOIN user u ON v.SNo = u.SNo 
-                   JOIN owner o ON u.SNo = o.SNo 
-                   JOIN payment p ON b.BSlotID = p.PaymentID 
-                   ORDER BY  b.Date DESC, 
-                   b.TimeFrom DESC LIMIT 1
-        '''
-        cursor.execute(fetch_query)
-        data = cursor.fetchone()
-        print(data)
-        if data is None:
-            print('No data')
-            flash('No data found', 'error')
-            return redirect(url_for('payment.add_data'))
+        try:
+            print('fetch query wale try ke andar')
+            fetch_query = '''
+                SELECT v.VehicleID, v.VehicleType, v.VehicleNumber, 
+                       b.Date, b.TimeFrom, b.TimeTo, b.duration, 
+                       a.SNo, a.username,     
+                       o.name, o.contact,     
+                       p.TotalPrice, p.mode 
+                       FROM vehicle v
+                       JOIN bookingslot b ON v.VehicleID = b.BSlotID 
+                       JOIN admin a ON v.SNo = a.SNo 
+                       JOIN owner o ON v.SNo = o.SNo 
+                       JOIN payment p ON b.BSlotID = p.PaymentID 
+                       ORDER BY  b.Date DESC, 
+                       b.TimeFrom DESC LIMIT 1
+            '''
+            cursor.execute(fetch_query)
+            data = cursor.fetchone()
+            print(data)
+            if data is None:
+                print('No data')
+                flash('No data found', 'error')
+                return redirect(url_for('vehicle.AdminVehicle'))
 
-        VehicleID = data[0]
-        VehicleType = data[1]
-        VehicleNumber = data[2]
-        date = data[3]
-        TimeFrom = data[4]
-        TimeTo = data[5]
-        duration = data[6]
-        SNo = data[7]
-        username = data[8]
-        name = data[9]
-        contact = data[10]
-        TotalPrice = data[11]
-        mode = data[12]
-        
-        cursor.execute("SELECT SNo FROM vehicle WHERE VehicleID=%s")
-        db.commit()
-        SNo = cursor.fetchone()
-        S_No = SNo[0]
+            VehicleID = data[0]
+            VehicleType = data[1]
+            VehicleNumber = data[2]
+            date = data[3]
+            TimeFrom = data[4]
+            TimeTo = data[5]
+            duration = data[6]
+            SNo = data[7]
+            username = data[8]
+            name = data[9]
+            contact = data[10]
+            TotalPrice = data[11]
+            mode = data[12]
+            
+            cursor.execute("SELECT SNo FROM vehicle WHERE VehicleID=%s")
+            db.commit()
+            SNo = cursor.fetchone()
+            S_No = SNo[0]
+        except mysql.connector.Error as e:
+            print('fetch query wale except ke andar')
+            print(e)
+            flash('Error processing your payment', 'error')
+            db.rollback()
+            return redirect(url_for('auth.dashboard'))
 
         try:
             print('insert query wale try ke andar')
@@ -575,16 +587,11 @@ def AdminVehicle():
             print('insert query wale allotment ke andar')
             print(e)
             flash('Error adding allotment', 'error')
-            return redirect(url_for('vehicle.adminVehicleSlot'))
+            return redirect(url_for('vehicle.AdminVehicle'))
 
         return redirect(url_for('payment.Generate_Receipt',duration=duration, TotalPrice=TotalPrice, mode=mode, PaymentID=PaymentID))
 
-    except mysql.connector.Error as e:
-        print('fetch query wale except ke andar')
-        print(e)
-        flash('Error processing your payment', 'error')
-        db.rollback()
-        return redirect(url_for('index'))
+    
 
     return render_template('add/adminVehicleSlot.html', VID=VID)
 
