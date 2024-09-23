@@ -381,7 +381,7 @@ def AdminVehicle():
             durationStr = int(duration)
         except ValueError as ve:
             flash('duration must be a valid number', 'error')
-            return redirect(url_for('bookingslot.add_data'))
+            return redirect(url_for('bookingslot.AdminVehicle'))
 
         if not VehicleID:
             flash('An issue occurred. Please try after sometime','error')
@@ -575,16 +575,16 @@ def AdminVehicle():
             print('insert query wale allotment ke andar')
             print(e)
             flash('Error adding allotment', 'error')
-            return redirect(url_for('payment.adminVehicleSlot'))
+            return redirect(url_for('vehicle.adminVehicleSlot'))
 
         return redirect(url_for('payment.Generate_Receipt',duration=duration, TotalPrice=TotalPrice, mode=mode, PaymentID=PaymentID))
 
     except mysql.connector.Error as e:
         print('fetch query wale except ke andar')
         print(e)
-        db.rollback()
         flash('Error processing your payment', 'error')
-        return redirect(url_for('payment.add_data'))
+        db.rollback()
+        return redirect(url_for('index'))
 
     return render_template('add/adminVehicleSlot.html', VID=VID)
 

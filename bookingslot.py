@@ -80,7 +80,7 @@ def add_data():
         db.commit()
         SNo = cursor.fetchone()
         S_No = SNo[0]
-        
+        print(SNo, 'SNo in bookingslot')
         if not date:
             flash('Please enter date','error')
             return redirect(url_for('bookingslot.add_data', SNo=SNo))
