@@ -25,7 +25,7 @@
         <td>{{ row[1] }}</td>
         <td>{{ 'Rs ' ~ row[2] ~ '/hr'}}</td>
         <td>
-            <a class="edit-link" href="{{ url_for('Slots.edit_data', SlotID=row[0]) }}">Edit</a>
+            <a class="edit-link" href="{{ url_for('Slots.edit_data', SlotID=row[0]) }}">Edit</a><br>    
             <a class="delete-link" href="{{ url_for('Slots.delete_data', SlotID=row[0]) }}">Delete</a>
         </td>
     </tr>
