@@ -12,26 +12,12 @@
 
 </head>
 <body>
-    <div class="text-center">
-    </div>
-    <div class="text-center">
-        <img style="width:75%;height:600px; padding:10px; margin-top:30px;" class="rounded" src="static/ParkEasy2.jpeg"></div>
-        <!-- <a href="{{ url_for('vehicle.bookSlot') }}"><button type="submit" class="btn btn-primary" value="save">Book Slot</button></a> -->
-    <div class="text-center">
-        <br><br>
-        {% if not session['username'] %}
-            <a style="text-decoration: none; color: black" href="{{ url_for('vehicle.add_data') }}">Login to book your slot now: <button type="submit" class="btn btn-primary">Login</button>
-        {% else %} 
-            {% if session['role'] == 'user' %}
-                <a href="{{ url_for('vehicle.bookSlot') }}"><button type="submit" class="btn btn-primary" value="save">Book Slot</button></a>
-            {% else %}
-                <a href="{{ url_for('vehicle.AdminVehicle') }}"><button type="submit" class="btn btn-primary" value="save">Book Slot</button></a>
-            
-            {% endif %}
-        {% endif %}
-    <div class="container m-5 p-5">
-        <h3>Key Features</h3>
 
+    
+
+    <div class="text-center">
+        
+    <div class="container m-5 p-5">
         <div class="row row-cols-1 row-cols-md-4 g-4">
             <div class="col">
                 <div class="card border-0">
@@ -75,7 +61,21 @@
 
             </div>
         </div>
+        <!-- <br><br>
+        {% if not session['username'] %}
+            <a style="text-decoration: none; color: black" href="{{ url_for('vehicle.add_data') }}">Login to book your slot now: <button type="submit" class="btn btn-primary">Login</button>
+        {% else %} 
+            {% if session['role'] == 'user' %}
+                <a href="{{ url_for('vehicle.bookSlot') }}"><button type="submit" class="btn btn-primary" value="save">Book Slot</button></a>
+            {% else %}
+                <a href="{{ url_for('vehicle.AdminVehicle') }}"><button type="submit" class="btn btn-primary" value="save">Book Slot</button></a>
+            
+            {% endif %}
+        {% endif %} -->
+
+
     </div>
+
 
 
 
