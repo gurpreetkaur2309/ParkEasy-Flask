@@ -269,7 +269,7 @@ cursor.execute('SELECT COUNT(*) FROM allotment')
 history_count = cursor.fetchone()
 ####dashboard########
 @auth.route('/dashboard')
-def dashboard():
+def MyBookings():
     if 'role' in session:
         return render_template('dashboard.html',
                                slots_count = slots_count[0],
@@ -284,7 +284,7 @@ def dashboard():
         return redirect(url_for('auth.login_form'))
 
 @auth.route('/user/dashboard')
-def UserDashboard():
+def MyBookingsUser():
     print('Get request ke upar')
     if request.method == 'GET':
         print('fetch query ke upar')
@@ -331,3 +331,17 @@ def UserDashboard():
                                                  role = session['role']
                                                  )
 
+# @login_required
+# @requires_role('admin')
+# @auth.route('/admin/MyBookings')
+# def MyBookings():
+#     print('Mybookings k andar')
+#     if request.method == 'GET':
+#         fetch_query = '''
+#             SELECT a.username, o.name, o.address, o.contact
+#             FROM admin a 
+#             INNER JOIN owner o ON a.SNo = o.SNo
+#             INNER JOIN vehicle v ON v.SNo = o.SNo
+#             WHERE VehicleID=%s
+#         '''
+#         return render_template('view/MyBookings.html')
