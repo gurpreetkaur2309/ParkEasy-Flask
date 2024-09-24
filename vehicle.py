@@ -539,7 +539,7 @@ def AdminVehicle():
             '''
             cursor.execute(fetch_query)
             data = cursor.fetchone()
-            print(data)
+            print('admin data', data)
             if data is None:
                 print('No data')
                 flash('No data found', 'error')
