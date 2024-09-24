@@ -126,7 +126,7 @@ def add_data():
 
     if not availableSlots:
         flash('No slots found. Please try after sometime', 'error')
-        return redirect(url_for('auth.dashboard'))
+        return redirect(url_for('auth.MybookingsUser'))
 
     return render_template('add/vehicle.html', VID=VID, SNo=SNo)
 
@@ -204,7 +204,7 @@ def bookSlot():
 
     if not availableSlots:
         flash('No slots found. Please try after sometime', 'error')
-        return redirect(url_for('auth.dashboard'))
+        return redirect(url_for('auth.My'))
 
     return render_template('add/vehicle.html', VID=VID, SNo=SNo)
         
@@ -568,7 +568,7 @@ def AdminVehicle():
             print(e)
             flash('Error processing your payment', 'error')
             db.rollback()
-            return redirect(url_for('auth.dashboard'))
+            return redirect(url_for('auth.MyBookings'))
 
         try:
             print('insert query wale try ke andar')

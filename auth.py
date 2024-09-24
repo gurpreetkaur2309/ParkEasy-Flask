@@ -268,7 +268,7 @@ payment_count = cursor.fetchone()
 cursor.execute('SELECT COUNT(*) FROM allotment')
 history_count = cursor.fetchone()
 ####dashboard########
-@auth.route('/dashboard')
+@auth.route('/admin/Bookings')
 def MyBookings():
     if 'role' in session:
         return render_template('dashboard.html',
@@ -283,7 +283,8 @@ def MyBookings():
     else:
         return redirect(url_for('auth.login_form'))
 
-@auth.route('/user/dashboard')
+@auth.route('/user/Bookings')
+@login_required
 def MyBookingsUser():
     print('Get request ke upar')
     if request.method == 'GET':
@@ -331,17 +332,44 @@ def MyBookingsUser():
                                                  role = session['role']
                                                  )
 
-# @login_required
-# @requires_role('admin')
-# @auth.route('/admin/MyBookings')
-# def MyBookings():
-#     print('Mybookings k andar')
-#     if request.method == 'GET':
-#         fetch_query = '''
-#             SELECT a.username, o.name, o.address, o.contact
-#             FROM admin a 
-#             INNER JOIN owner o ON a.SNo = o.SNo
-#             INNER JOIN vehicle v ON v.SNo = o.SNo
-#             WHERE VehicleID=%s
-#         '''
-#         return render_template('view/MyBookings.html')
+@auth.route('/admin/dashboard')
+@login_required
+@requires_role('user')
+def dashboard():
+    if request.method == 'GET':
+        try:
+            fetch_query = '''
+                 SELECT u.username, o.name, o.contact, o.address  
+                 from user u  
+                 inner join owner o on o.SNo = u.SNo 
+                 inner join vehicle v on v.SNo = u.SNo 
+                 where VehicleID=%s
+            '''
+            cursor.execute(fetch_query)
+            db.commit()
+            data = cursor.fetchone()
+            username = data[0]
+            name = data[1]
+            contact = data[2]
+            address = data[3]
+            print(data)
+            if data is None:
+                print('Data in admin dashboard is None')
+                flash('Error fetching your data','error')
+                return redirect(url_for('index'))
+        except mysql.connector.Error as e:
+            print('except k andar')
+            db.rollback()
+            flash('An error occured. Please try after sometime','error')
+            return redirect(url_for('auth.Admin_dashboard'))
+    return render_template('view/Admin_dashboard.html', )
+
+
+
+
+
+
+
+
+
+
