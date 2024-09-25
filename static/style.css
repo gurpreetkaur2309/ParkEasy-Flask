@@ -213,6 +213,17 @@ InputCenter{
     text-align: center;
 }
 /*end*/
+.dashboard{
+    margin-left:200px;
+}
+table .info{
+    width:500px;
+
+/*    text-align: center;*/
+}
+table .tag{
+    width:300px;
+}
 
 
     

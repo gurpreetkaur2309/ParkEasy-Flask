@@ -332,22 +332,27 @@ def MyBookingsUser():
                                                  role = session['role']
                                                  )
 
-@auth.route('/admin/dashboard')
+@auth.route('/user/dashboard')
 @login_required
 @requires_role('user')
 def dashboard():
+    username = session.get('username')
+    print('username', username)
     if request.method == 'GET':
         try:
+            print('try mai gaya')
             fetch_query = '''
                  SELECT u.username, o.name, o.contact, o.address  
                  from user u  
-                 inner join owner o on o.SNo = u.SNo 
-                 inner join vehicle v on v.SNo = u.SNo 
-                 where VehicleID=%s
+                 inner join owner o on o.SNo = u.SNo  
+                 where username=%s
             '''
-            cursor.execute(fetch_query)
+            print('fetch query k niche')
+            cursor.execute(fetch_query,(username,))
             db.commit()
             data = cursor.fetchone()
+            print('data ke niche')
+            print(data)
             username = data[0]
             name = data[1]
             contact = data[2]
@@ -361,8 +366,8 @@ def dashboard():
             print('except k andar')
             db.rollback()
             flash('An error occured. Please try after sometime','error')
-            return redirect(url_for('auth.Admin_dashboard'))
-    return render_template('view/Admin_dashboard.html', )
+            return redirect(url_for('index'))
+    return render_template('userDashboard.html',username=username, name=name, contact=contact, address=address)
 
 
 

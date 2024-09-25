@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{{url_for('static','style.css')}}">
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width initial-scale=1.0">
+ {% endblock %}
+ {% block content %}
+ 	<h1 style="text-align: center;">Dashboard</h1>
+ 	<table class= "dashboard" border="2">
+	    <thead>
+		    </thead>
+		<tbody>
+		    <tr><td>Personal info</td></tr>
+		    <tr>
+		    	<td class="tag">username</td>
+		    	<td class="info">{{username}}</td>
+		    </tr>
+		    <tr>
+		    	<td class="tag">name</td>
+		    	<td class="info">{{name}}</td>
+		    </tr>
+		    <tr>
+		    	<td class="tag">contact</td>
+		    	<td class="info">{{contact}}</td>
+		    </tr>
+		    <tr>
+		    	<td class="tag">address</td>
+		    	<td class="info">{{address}}</td>
+		    </tr>
+		</tbody>
+	</table>
+{{usern}}
+{% endblock %}
+
