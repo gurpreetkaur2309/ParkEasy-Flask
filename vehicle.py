@@ -77,9 +77,7 @@ def add_data():
                 SELECT u.SNo FROM user u 
                 JOIN vehicle v on u.SNo = v.SNo
             '''
-        # cursor.execute(fetch_SNo, (VehicleID,))
-        # SNo = cursor.fetchone()
-        # print(SNo,'sno')
+
         S_No = SNo[0] if SNo else None  
 
         check_number_query = 'SELECT VehicleNumber FROM vehicle'
