@@ -62,23 +62,51 @@ def ValidNumber(VehicleNumber):
 @Vehicle.route('/vehicle/add', methods=['POST', 'GET'])
 @login_required
 def add_data():
-    SNo = request.args.get('SNo')  
-    print(SNo, 'SNo in vehicle;')
+    username = session.get('username')
+    print('username: ', username)
+    try:
+        SNo = 'SELECT SNo FROM user WHERE username=%s'
+        cursor.execute(SNo,(username))
+        S_No = cursor.fetchone()[0]
+        print('MAxSNo', MaxSNo)
+        db.commit()
+    except mysql.connector.Error as e:
+        db.rollback()
+        flash('An error occurred. Please try again later','error')
+        # return redirect(url_for('vehicle.add_data', SNo=SNo))
     if request.method == 'POST':
-        VehicleID = request.form.get('VehicleID')
-        if not VehicleID:
-            print('vehicle id ni h')
+     
+        if not username: 
+            print('username not found')
+            flash('No username','error')
+            return redirect(url_for('vehicle.add_data'))
+      
+
+        try:
+            VID = 'SELECT MAX(VehicleID) as VID FROM Vehicle'
+            cursor.execute(maxVID, (VehicleID,))
+            maxVID = cursor.fetchone()[0]
+            print('maxVID', maxVID)
+            db.commit()
+        except mysql.connector.Error as e:
+            db.rollback()
+            flash('An error occured. Please try again','error')
+            return redirect(url_for('vehicle.add_data', SNo = SNo))
+        VehicleID = maxVID + 1
+        if not VID:
             flash('Cannot continue without vehicleID', 'danger')
             return redirect(url_for('vehicle.add_data', SNo=SNo))  
         session['VehicleID'] = VehicleID
         VehicleType = request.form.get('VehicleType')
         VehicleNumber = request.form.get('VehicleNumber')
-        fetch_SNo = ''' 
-                SELECT u.SNo FROM user u 
-                JOIN vehicle v on u.SNo = v.SNo
-            '''
-
-        S_No = SNo[0] if SNo else None  
+        # fetch_SNo = ''' 
+        #         SELECT u.SNo FROM user u 
+        #         JOIN vehicle v on u.SNo = v.SNo
+        #     '''
+        # cursor.execute(fetch_SNo, (VehicleID,SNo))
+        # SNo = cursor.fetchone()
+        # print(SNo,'sno')
+        # S_No = SNo[0] if SNo else None  
 
         check_number_query = 'SELECT VehicleNumber FROM vehicle'
         cursor.execute(check_number_query)
@@ -100,12 +128,10 @@ def add_data():
             return redirect(url_for('vehicle.add_data', SNo=SNo))  
 
         try:
-            update_query = '''
-                    UPDATE vehicle
-                    SET VehicleType=%s, VehicleNumber=%s, SNo=%s
-                    WHERE VehicleID=%s
-                '''
-            cursor.execute(update_query, (VehicleType, VehicleNumber, SNo, VehicleID))
+            insert_query = '''
+                INSERT INTO vehicle (VehicleID, VehicleType, VehicleNumber, VehicleName, SNo) VALUES (%s, %s, %s, %s, %s) 
+            '''
+            cursor.execute(insert_query, (VehicleID, VehicleType, VehicleNumber, VehicleName, S_No,))
             db.commit()
 
         except mysql.connector.Error as e:
@@ -114,19 +140,12 @@ def add_data():
             flash('Error adding data', 'error')
             return redirect(url_for('vehicle.add_data', SNo=SNo)) 
 
-        return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, SNo=SNo))
+        return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, S_No=S_No))
 
-
-    cursor.execute("SELECT VehicleID FROM vehicle WHERE VehicleType = '' and VehicleNumber = '' ")
-    availableSlots = cursor.fetchone()
-    print(availableSlots, 'available slots')
-    VID = availableSlots[0] if availableSlots else None
-
-    if not availableSlots:
-        flash('No slots found. Please try after sometime', 'error')
-        return redirect(url_for('auth.MybookingsUser'))
-
-    return render_template('add/vehicle.html', VID=VID, SNo=SNo)
+    # if not availableSlots:
+    #     flash('No slots found. Please try after sometime', 'error')
+    #     return redirect(url_for('auth.MybookingsUser'))
+    return render_template('add/vehicle.html', SNo=SNo)
 
 @Vehicle.route('/vehicle/bookslot', methods=['GET','POST'])
 @login_required
@@ -645,4 +664,4 @@ def delete_data(VehicleID):
     if data is None:
         flash('Data not found')
         return redirect(url_for('vehicle.display'))
-    return render_template('delete/vehicle.html', data=data)
+    return render_template('delete/vehicle.html', data=data)    
