@@ -62,43 +62,55 @@ def ValidNumber(VehicleNumber):
 @Vehicle.route('/vehicle/add', methods=['POST', 'GET'])
 @login_required
 def add_data():
+    print('inside add_data function')
     username = session.get('username')
     print('username: ', username)
     try:
+        print('sNo fetch wale try mai gaya')
         SNo = 'SELECT SNo FROM user WHERE username=%s'
-        cursor.execute(SNo,(username))
+        cursor.execute(SNo,(username,))
         S_No = cursor.fetchone()[0]
-        print('MAxSNo', MaxSNo)
+        print('SNo: ', S_No)
         db.commit()
     except mysql.connector.Error as e:
+        print('sNo fetch wale except mai gaya')
+        print(e)
         db.rollback()
         flash('An error occurred. Please try again later','error')
         # return redirect(url_for('vehicle.add_data', SNo=SNo))
+    try:
+        print('VID fetch wale try mai gaya')
+        VID = 'SELECT max(VehicleID)+1 as VID FROM Vehicle'
+        cursor.execute(VID)
+        maxVID = cursor.fetchone()[0]
+        print('maxVID', maxVID)
+        db.commit()
+    except mysql.connector.Error as e:
+        print('VID fetch wale try except gaya')
+        print(e)
+        db.rollback()
+        flash('An error occured. Please try again','error')
+        return redirect(url_for('vehicle.add_data', SNo = S_No))
+    print('get method k andar sare try except k bahar')
+    VehicleID = maxVID
+
     if request.method == 'POST':
-     
+        print('post method mai gaya')
+        print('post methd ke niche', S_No)
         if not username: 
             print('username not found')
             flash('No username','error')
             return redirect(url_for('vehicle.add_data'))
-      
 
-        try:
-            VID = 'SELECT MAX(VehicleID) as VID FROM Vehicle'
-            cursor.execute(maxVID, (VehicleID,))
-            maxVID = cursor.fetchone()[0]
-            print('maxVID', maxVID)
-            db.commit()
-        except mysql.connector.Error as e:
-            db.rollback()
-            flash('An error occured. Please try again','error')
-            return redirect(url_for('vehicle.add_data', SNo = SNo))
-        VehicleID = maxVID + 1
+        print('VehicleID', VehicleID)
+        print('Vehicle ID k niche', S_No)
         if not VID:
             flash('Cannot continue without vehicleID', 'danger')
-            return redirect(url_for('vehicle.add_data', SNo=SNo))  
+            return redirect(url_for('vehicle.add_data', SNo=S_No))  
         session['VehicleID'] = VehicleID
         VehicleType = request.form.get('VehicleType')
         VehicleNumber = request.form.get('VehicleNumber')
+        VehicleName = request.form.get('VehicleName')
         # fetch_SNo = ''' 
         #         SELECT u.SNo FROM user u 
         #         JOIN vehicle v on u.SNo = v.SNo
@@ -109,6 +121,7 @@ def add_data():
         # S_No = SNo[0] if SNo else None  
 
         check_number_query = 'SELECT VehicleNumber FROM vehicle'
+        print('check query k niche', S_No)
         cursor.execute(check_number_query)
         db.commit()
         existing_number = cursor.fetchall()
@@ -116,36 +129,35 @@ def add_data():
         
         if existing_number == VehicleNumber:
             flash(f'A vehicle with this Registration number has already booked slot','error')
-            return redirect(url_for('vehicle.add_data', VehicleID=VehicleID, SNo=SNo))
+            return redirect(url_for('vehicle.add_data', SNo=S_No))
         
         if not S_No:
             print('not s no.')
             flash('An error occurred. Please try again after sometime', 'error')
-            return redirect(url_for('vehicle.add_data', SNo=SNo))  
+            return redirect(url_for('vehicle.add_data', SNo=S_No))  
         
         if not ValidNumber(VehicleNumber):
             flash('Registration Number is not valid')
-            return redirect(url_for('vehicle.add_data', SNo=SNo))  
-
+            return redirect(url_for('vehicle.add_data', SNo=S_No))  
+        print('if not validnumber k niche', S_No)
         try:
+            print('insert query wale try mai', S_No)
             insert_query = '''
                 INSERT INTO vehicle (VehicleID, VehicleType, VehicleNumber, VehicleName, SNo) VALUES (%s, %s, %s, %s, %s) 
             '''
             cursor.execute(insert_query, (VehicleID, VehicleType, VehicleNumber, VehicleName, S_No,))
             db.commit()
-
+            print('')
         except mysql.connector.Error as e:
+            print('insert query wale except k andar',S_No)
             print('The error is',e)
             db.rollback()
             flash('Error adding data', 'error')
-            return redirect(url_for('vehicle.add_data', SNo=SNo)) 
-
+            return redirect(url_for('vehicle.add_data', SNo=S_No)) 
+        print('sabse niche return redirect wale k upar', S_No)
         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, S_No=S_No))
 
-    # if not availableSlots:
-    #     flash('No slots found. Please try after sometime', 'error')
-    #     return redirect(url_for('auth.MybookingsUser'))
-    return render_template('add/vehicle.html', SNo=SNo)
+    return render_template('add/vehicle.html', SNo=S_No)
 
 @Vehicle.route('/vehicle/bookslot', methods=['GET','POST'])
 @login_required
@@ -611,6 +623,13 @@ def AdminVehicle():
     
 
     return render_template('add/adminVehicleSlot.html', VID=VID)
+
+
+@Vehicle.route('/user/vehicles')
+@login_required
+@requires_role('user')
+def ChooseVehicle():
+    print('ChooseVehicle function mai ga')
 
 
 @Vehicle.route('/vehicle/bookingslot/add/<int:VehicleID>', methods=['GET', 'POST'])
