@@ -629,7 +629,36 @@ def AdminVehicle():
 @login_required
 @requires_role('user')
 def ChooseVehicle():
-    print('ChooseVehicle function mai ga')
+    print('ChooseVehicle function mai gaya')
+    username = session.get('username')
+    try:
+        fetchSNo = '''
+            SELECT v.SNo FROM vehicle v
+            INNER JOIN user u ON u.SNo = v.SNo
+            WHERE username=%s
+            '''
+        cursor.execute(fetchSNo)
+        db.commit()
+        VehicleSNo = cursor.fetchall()
+    except mysql.connector.Error as e:
+        db.rollback()
+        flash('Server returns null response. Please try again later', 'error')
+        return redirect(url_for('vehicle.add_data', SNo=SNo))
+    if request.method == 'GET':
+        try:
+            fetch_query = '''
+                SELECT * FROM vehicle WHERE SNo=%s
+            '''
+            cursor.execute(fetch_query)
+            db.commit()
+            data = cursor.fetchall()
+            data1 = cursor.fetchall()[0]
+            data2 = curso
+        except mysql.connector.Error as e:
+            db.rollback()
+            flash('Server returned a null response. Please try again later','error')
+            return redirect(url_for('index'))
+
 
 
 @Vehicle.route('/vehicle/bookingslot/add/<int:VehicleID>', methods=['GET', 'POST'])
