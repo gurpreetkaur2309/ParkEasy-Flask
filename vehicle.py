@@ -632,32 +632,46 @@ def ChooseVehicle():
     print('ChooseVehicle function mai gaya')
     username = session.get('username')
     try:
+        print('fetchSNo wale try mai gaya')
         fetchSNo = '''
             SELECT v.SNo FROM vehicle v
             INNER JOIN user u ON u.SNo = v.SNo
-            WHERE username=%s
+            WHERE u.username=%s
             '''
         cursor.execute(fetchSNo)
         db.commit()
         VehicleSNo = cursor.fetchall()
     except mysql.connector.Error as e:
+        print('fetchSNo wale except mai gaya')
+        print(e)
         db.rollback()
         flash('Server returns null response. Please try again later', 'error')
-        return redirect(url_for('vehicle.add_data', SNo=SNo))
+        return redirect(url_for('vehicle.add_data'))
     if request.method == 'GET':
         try:
+            print('fetch_query wale try mai gaya')
             fetch_query = '''
                 SELECT * FROM vehicle WHERE SNo=%s
             '''
             cursor.execute(fetch_query)
             db.commit()
             data = cursor.fetchall()
-            data1 = cursor.fetchall()[0]
-            data2 = curso
+            vehicle1 = data[0]
+            vehicle2 = data[1]
+            vehicle3 = data[2]
+            vehicle4 = data[3]
+            vehicle5 = data[4]
+            vehicle6 = data[5]
+            vehicle7 = data[6]
+            vehicle8 = data[7]
+            vehicle9 = data[8]
+            vehicle10 = data[9]
         except mysql.connector.Error as e:
+            print('fetch query wale except mai gaya')
             db.rollback()
             flash('Server returned a null response. Please try again later','error')
             return redirect(url_for('index'))
+    return render_template('view/ChooseVehicle.html')
 
 
 
