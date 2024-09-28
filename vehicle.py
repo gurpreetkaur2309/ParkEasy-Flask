@@ -633,242 +633,48 @@ def ChooseVehicle():
     username = session.get('username')
     print('username in choosevehicle', username)
     try:
-        print('fetchSNo wale try mai gaya')
         fetchSNo = '''
             SELECT v.SNo FROM vehicle v
             INNER JOIN user u ON u.SNo = v.SNo
             WHERE u.username=%s
             '''
-        print(fetchSNo)
         cursor.execute(fetchSNo, (username,))
         db.commit()
         VehicleSNo = cursor.fetchone()
+        print('VehicleSNo', VehicleSNo)
+        SNo = VehicleSNo[0]
+        print('SNo',SNo)
     except mysql.connector.Error as e:
-        print('fetchSNo wale except mai gaya')
         print(e)
         db.rollback()
         flash('Server returns null response. Please try again later', 'error')
         return redirect(url_for('vehicle.add_data'))
     if request.method == 'GET':
         try:
-            print('fetch_query wale try mai gaya')
-            fetch_query = '''
-                SELECT * FROM vehicle WHERE SNo=%s
-            '''
-            cursor.execute(fetch_query, (VehicleSNo,))
+            print('count_query wale try mai')
+            cursor.execute('SELECT COUNT(*) FROM vehicle WHERE SNo=%s', (SNo,))
+
             db.commit()
-            data = cursor.fetchall()
-            print(data)
-            if data is None:
-                flash('Server returned a null response','error')
-                return redirect(url_for('index'))
-           
-            vehicle1 = data[0] if data else None
-            vehicle2 = data[1] if data else None
-            vehicle3 = data[2] if data else None 
-            vehicle4 = data[3] if data else None
-            vehicle5 = data[4] if data else None
-            vehicle6 = data[5] if data else None
-            vehicle7 = data[6] if data else None
-            vehicle8 = data[7] if data else None
-            vehicle9 = data[8] if data else None
-            vehicle10 = data[9]if data else None
-
-            if vehicle1:
-                print('vehicle1 mai gaya')
-                VehicleType = data[0][1]
-                VehicleNumber = data[0][2]
-                VehicleName = data[0][4]
-
-                if not VehicleType: 
-                    VehicleType = ' '
-                    flash('Server returned a null response','error')
-                    return redirect(url_for('index'))
-                if not VehicleNumber:
-                    VehicleNumber = ' '
-                    flash('Server returned a null response', 'error')
-                    return redirect(url_for('index'))
-                if not VehicleName:
-                    VehicleName = ' '
-                    flash('Server returned a null response','error')
-                return redirect(url_for('index'))
-
-            elif vehicle2:
-                print('vehicle2 mai gaya')
-                VehicleType = data[1][1]
-                VehicleNumber = data[1][2]
-                VehicleName = data[1][4]
-
-                if not VehicleType: 
-                    VehicleType = ' '
-                    flash('Server returned a null response','error')
-                    return redirect(url_for('index'))
-                if not VehicleNumber:
-                    VehicleNumber = ' '
-                    flash('Server returned a null response', 'error')
-                    return redirect(url_for('index'))
-                if not VehicleName:
-                    VehicleName = ' '
-                    flash('Server returned a null response','error')
-                return redirect(url_for('index'))
-
-            elif vehicle3:
-                print('Vehicle3 mai gaya')
-                VehicleType = data[2][1]
-                VehicleNumber = data[2][2]
-                VehicleName = data[2][4]
-
-                if not VehicleType: 
-                    VehicleType = ' '
-                    flash('Server returned a null response','error')
-                    return redirect(url_for('index'))
-                if not VehicleNumber:
-                    VehicleNumber = ' '
-                    flash('Server returned a null response', 'error')
-                    return redirect(url_for('index'))
-                if not VehicleName:
-                    VehicleName = ' '
-                    flash('Server returned a null response','error')
-                return redirect(url_for('index'))
-
-            elif vehicle4:
-                print('vehicle4 mai gaya')
-                VehicleType = data[3][1]
-                VehicleNumber = data[3][2]
-                VehicleName = data[3][4]
-
-                if not VehicleType: 
-                    VehicleType = ' '
-                    flash('Server returned a null response','error')
-                    return redirect(url_for('index'))
-                if not VehicleNumber:
-                    VehicleNumber = ' '
-                    flash('Server returned a null response', 'error')
-                    return redirect(url_for('index'))
-                if not VehicleName:
-                    VehicleName = ' '
-                    flash('Server returned a null response','error')
-                return redirect(url_for('index'))
-
-            elif vehicle5:
-                print('vehicle5 mai gaya')
-                VehicleType = data[4][1]
-                VehicleNumber = data[4][2]
-                VehicleName = data[4][4]
-
-                if not VehicleType: 
-                    VehicleType = ' '
-                    flash('Server returned a null response','error')
-                    return redirect(url_for('index'))
-                if not VehicleNumber:
-                    VehicleNumber = ' '
-                    flash('Server returned a null response', 'error')
-                    return redirect(url_for('index'))
-                if not VehicleName:
-                    VehicleName = ' '
-                    flash('Server returned a null response','error')
-                return redirect(url_for('index'))
-
-            elif vehicle6:
-                print('vehicle6 mai gaya')
-                VehicleType = data[5][1]
-                VehicleNumber = data[5][2]
-                VehicleName = data[5][4]
-
-                if not VehicleType: 
-                    VehicleType = ' '
-                    flash('Server returned a null response','error')
-                    return redirect(url_for('index'))
-                if not VehicleNumber:
-                    VehicleNumber = ' '
-                    flash('Server returned a null response', 'error')
-                    return redirect(url_for('index'))
-                if not VehicleName:
-                    VehicleName = ' '
-                    flash('Server returned a null response','error')
-                return redirect(url_for('index'))
-
-            elif vehicle7:
-                print('vehicle7 mai gaya')
-                VehicleType = data[6][1]
-                VehicleNumber = data[6][2]
-                VehicleName = data[6][4]
-
-                if not VehicleType: 
-                    VehicleType = ' '
-                    flash('Server returned a null response','error')
-                    return redirect(url_for('index'))
-                if not VehicleNumber:
-                    VehicleNumber = ' '
-                    flash('Server returned a null response', 'error')
-                    return redirect(url_for('index'))
-                if not VehicleName:
-                    VehicleName = ' '
-                    flash('Server returned a null response','error')
-                return redirect(url_for('index'))
-
-            elif vehicle8:
-                print('vehicle8 mai gaya')
-                VehicleType = data[3][1]
-                VehicleNumber = data[3][2]
-                VehicleName = data[3][4]
-
-                if not VehicleType: 
-                    VehicleType = ' '
-                    flash('Server returned a null response','error')
-                    return redirect(url_for('index'))
-                if not VehicleNumber:
-                    VehicleNumber = ' '
-                    flash('Server returned a null response', 'error')
-                    return redirect(url_for('index'))
-                if not VehicleName:
-                    VehicleName = ' '
-                    flash('Server returned a null response','error')
-                return redirect(url_for('index'))
-
-            elif vehicle9:
-                print('vehicle9 mai gaya')
-                VehicleType = data[8][1]
-                VehicleNumber = data[8][2]
-                VehicleName = data[8][4]
-
-                if not VehicleType: 
-                    VehicleType = ' '
-                    flash('Server returned a null response','error')
-                    return redirect(url_for('index'))
-                if not VehicleNumber:
-                    VehicleNumber = ' '
-                    flash('Server returned a null response', 'error')
-                    return redirect(url_for('index'))
-                if not VehicleName:
-                    VehicleName = ' '
-                    flash('Server returned a null response','error')
-                return redirect(url_for('index'))
-
-            elif vehicle10:
-                print('vehicle10 maia gaya')
-                VehicleType = data[9][1]
-                VehicleNumber = data[9][2]
-                VehicleName = data[9][4]
-
-                if not VehicleType: 
-                    VehicleType = ' '
-                    flash('Server returned a null response','error')
-                    return redirect(url_for('index'))
-                if not VehicleNumber:
-                    VehicleNumber = ' '
-                    flash('Server returned a null response', 'error')
-                    return redirect(url_for('index'))
-                if not VehicleName:
-                    VehicleName = ' '
-                    flash('Server returned a null response','error')
-                return redirect(url_for('index'))
-
-            else:
-                print('else mai gaya')
-        
-            print(vehicle1, vehicle2, vehicle3, vehicle4)
+            count = cursor.fetchone()
+            x = count[0]
+            print('x: ', x)
         except mysql.connector.Error as e:
+            print('count wale except m')
+            db.rollback()
+            print(e)
+            return redirect(url_for('index'))
+        try:
+            print('fetch query wale try mau')
+            fetch_query = 'SELECT * FROM vehicle WHERE SNo=%s'
+            cursor.execute(fetch_query, (SNo,))
+            db.commit()
+            for x in range(0,x):
+                data = cursor.fetchone()
+                print('data: ', data)
+
+
+        except mysql.connector.Error as e:
+            print(e)
             print('fetch query wale except mai gaya')
             db.rollback()
             flash('Server returned a null response. Please try again later','error')

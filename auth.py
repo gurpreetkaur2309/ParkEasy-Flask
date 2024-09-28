@@ -230,7 +230,7 @@ def logout():
     return render_template('index.html')
 
 
-# Login required for authentication
+
 def login_required(view):
     @wraps(view)
     def wrapped_view(*args, **kwargs):
