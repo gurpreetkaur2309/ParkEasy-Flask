@@ -669,6 +669,7 @@ def ChooseVehicle():
             fetch_query = 'SELECT * FROM vehicle WHERE SNo=%s'
             cursor.execute(fetch_query, (SNo,))
             db.commit()
+            x = request.form.get('x')
             for x in range(0,x):
                 data = cursor.fetchone()
                 if x == 1:
