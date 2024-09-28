@@ -623,13 +623,14 @@ def AdminVehicle():
     return render_template('add/adminVehicleSlot.html', VID=VID)
 
 
-@Vehicle.route('/user/vehicles')
+@Vehicle.route('/vehicles', methods=['GET','POST'])
 @login_required
 @requires_role('user')
 def ChooseVehicle():
     print('ChooseVehicle function mai gaya')
     username = session.get('username')
     print('username in choosevehicle', username)
+    print('get method chal rahi hai')
     try:
         VehicleType = request.args.get('VehicleType')
         VehicleNumber = request.args.get('VehicleNumber')
@@ -643,15 +644,20 @@ def ChooseVehicle():
         cursor.execute(fetchSNo, (username,))
         db.commit()
         VehicleSNo = cursor.fetchone()
+        if VehicleSNo[0] is None:
+            flash('Cannot continue without SNo','error')
+            return redirect(url_for('index'))
         print('VehicleSNo', VehicleSNo)
         SNo = VehicleSNo[0]
         print('SNo',SNo)
+   
     except mysql.connector.Error as e:
         print(e)
         db.rollback()
         flash('Server returns null response. Please try again later', 'error')
         return redirect(url_for('vehicle.add_data'))
-    if request.method == 'GET':
+    if request.method == 'POST':
+        print('post method k andar')
         try:
             print('count_query wale try mai')
             cursor.execute('SELECT COUNT(*) FROM vehicle WHERE SNo=%s', (SNo,))
@@ -664,12 +670,14 @@ def ChooseVehicle():
             db.rollback()
             print(e)
             return redirect(url_for('index'))
+
         try:
             print('fetch query wale try mau')
             fetch_query = 'SELECT * FROM vehicle WHERE SNo=%s'
             cursor.execute(fetch_query, (SNo,))
             db.commit()
-            x = request.form.get('x')
+            print('x: ', x)
+            request.form.get('x')
             for x in range(0,x):
                 data = cursor.fetchone()
                 if x == 1:

@@ -1,6 +1,22 @@
 {% extends "layout.html" %}
-{% block title %}Add vehicle details{% endblock %}
+{% block title %}Choose Vehicle{% endblock %}
 {% block stylesheet %} {% endblock %}
 {% block content %}
-
+    <h2>Choose Vehicle</h2>
+    
+    <form id="commonFormID" method="POST" action="{{ url_for('vehicle.ChooseVehicle') }}">
+        <div>
+            <label for="VehicleType">Vehicle Type:</label>
+            <input type="text" id="VehicleType" name="VehicleType" value="{{ VehicleType }}" required>
+        </div>
+        <div>
+            <label for="VehicleNumber">Vehicle Number:</label>
+            <input type="text" id="VehicleNumber" name="VehicleNumber" value="{{ VehicleNumber }}" required>
+        </div>
+        <div>
+            <label for="VehicleName">Vehicle Name:</label>
+            <input type="text" id="VehicleName" name="VehicleName" value="{{ VehicleName }}" required>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
 {% endblock %}
