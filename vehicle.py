@@ -620,8 +620,6 @@ def AdminVehicle():
 
         return redirect(url_for('payment.Generate_Receipt',duration=duration, TotalPrice=TotalPrice, mode=mode, PaymentID=PaymentID))
 
-    
-
     return render_template('add/adminVehicleSlot.html', VID=VID)
 
 
@@ -633,6 +631,10 @@ def ChooseVehicle():
     username = session.get('username')
     print('username in choosevehicle', username)
     try:
+        VehicleType = request.args.get('VehicleType')
+        VehicleNumber = request.args.get('VehicleNumber')
+        VehicleName = request.args.get('VehicleName')
+        print('fetched from url: ', VehicleType, VehicleNumber, VehicleName)
         fetchSNo = '''
             SELECT v.SNo FROM vehicle v
             INNER JOIN user u ON u.SNo = v.SNo
@@ -653,7 +655,6 @@ def ChooseVehicle():
         try:
             print('count_query wale try mai')
             cursor.execute('SELECT COUNT(*) FROM vehicle WHERE SNo=%s', (SNo,))
-
             db.commit()
             count = cursor.fetchone()
             x = count[0]
@@ -670,17 +671,83 @@ def ChooseVehicle():
             db.commit()
             for x in range(0,x):
                 data = cursor.fetchone()
-                print('data: ', data)
+                if x == 1:
+                    print('x=1')
+                    VehicleType = data[1]
+                    VehicleNumber = data[2]
+                    VehicleName = data[4]
+                    print(VehicleType, VehicleNumber, VehicleName)
+                elif x == 2:
+                    print('x=2')
+                    VehicleType = data[1]
+                    VehicleNumber = data[2]
+                    VehicleName = data[4]
+                    print(VehicleType, VehicleNumber, VehicleName)
+                elif x == 3:
+                    print('x=3')
+                    VehicleType = data[1]
+                    VehicleNumber = data[2]
+                    VehicleName = data[4]
+                    print(VehicleType, VehicleNumber, VehicleName)
+                elif x == 4:
+                    print('x=4')
+                    VehicleType = data[1]
+                    VehicleNumber = data[2]
+                    VehicleName = data[4]
+                    print(VehicleType, VehicleNumber, VehicleName)
+                elif x == 5:
+                    print('x=5')
+                    VehicleType = data[1]
+                    VehicleNumber = data[2]
+                    VehicleName = data[4]
+                    print(VehicleType, VehicleNumber, VehicleName)
+                elif x == 6:
+                    print('x=6')
+                    VehicleType = data[1]
+                    VehicleNumber = data[2]
+                    VehicleName = data[4]
+                    print(VehicleType, VehicleNumber, VehicleName)
+                elif x == 7:
+                    print('x=7')
+                    VehicleType = data[1]
+                    VehicleNumber = data[2]
+                    VehicleName = data[4]
+                    print(VehicleType, VehicleNumber, VehicleName)
+                elif x == 8:
+                    print('x=8')
+                    VehicleType = data[1]
+                    VehicleNumber = data[2]
+                    VehicleName = data[4]
+                    print(VehicleType, VehicleNumber, VehicleName)
+                elif x == 9:
+                    print('x=9')
+                    VehicleType = data[1]
+                    VehicleNumber = data[2]
+                    VehicleName = data[4]
+                    print(VehicleType, VehicleNumber, VehicleName)
+                elif x == 10:
+                    print('x=10')
+                    VehicleType = data[1]
+                    VehicleNumber = data[2]
+                    VehicleName = data[4]
+                    print(VehicleType, VehicleNumber, VehicleName)
 
 
         except mysql.connector.Error as e:
-            print(e)
             print('fetch query wale except mai gaya')
+            print(e)
             db.rollback()
             flash('Server returned a null response. Please try again later','error')
             return redirect(url_for('index'))
-    return render_template('view/ChooseVehicle.html', VehicleType=VehicleType, VehicleNumber=VehicleNumber, VehicleName=VehicleName)
-
+    if VehicleType and VehicleNumber and VehicleName:
+        print('if mai gaya')
+        # return redirect(url_for('vehicle.ChooseVehicle', SNo=SNo, VehicleType=VehicleType, VehicleNumber=VehicleNumber, VehicleName=VehicleName))
+        return render_template('view/ChooseVehicle.html', VehicleType=VehicleType, VehicleNumber=VehicleNumber, VehicleName=VehicleName)
+    else:
+        print('else mai gaya')
+        flash('No vehicles found. Please add a vehicle ', 'error')
+        return redirect(url_for('vehicle.add_data', SNo=SNo))
+    return render_template('view/ChooseVehicle.html')
 
 
 @Vehicle.route('/vehicle/bookingslot/add/<int:VehicleID>', methods=['GET', 'POST'])
