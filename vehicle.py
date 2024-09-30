@@ -62,6 +62,7 @@ def ValidNumber(VehicleNumber):
 @Vehicle.route('/vehicle/add', methods=['POST', 'GET'])
 @login_required
 def add_data():
+    print('vehicle wale add data mai gaya')
     print('inside add_data function')
     username = session.get('username')
     print('username: ', username)

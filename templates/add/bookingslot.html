@@ -12,8 +12,12 @@
             <div class="alert alert-danger">{{ msg }}</div>
         {% endfor %}
 </div>
+<br><br>
+    <label class="CAlign" for="Slot">Slot(Auto generated)</label><br>
+        <input class="CAlign" type="number" id="VehicleID" name="VehicleID" placeholder="BSlotID" value="{{ BSlotID }}" required maxlength="20" readonly><br><br>
+
     <input class="CAlign" placeholder="BSlotID" id="VehicleID" name="VehicleID" type="hidden" value="{{ VehicleID }}" readonly>
-    <br><br>
+
 
     <label class="CAlign" for="date">Date</label><br>
     <input class="CAlign" type="date" id="date" name="date">

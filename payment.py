@@ -32,29 +32,34 @@ def display():
 def add_data():
     print(session['username'])
     print('add_data ke andar')
+    VehicleID = request.args.get('VehicleID')
+    print('VehicleID in get method: ', VehicleID)
     if request.method == 'POST':
         print('post method k andar')
-        PaymentID = session.get('VehicleID')
+        PaymentID = session.get('BSlotID')
         print('paymentID', PaymentID)
-        VehicleID = session.get('VehicleID')
-        print('VehicleID', VehicleID)
+        VehicleID = request.form.get('VehicleID')
+        print('VehicleID in post: ', VehicleID)
         mode = request.form['mode']
         print('mode', mode)
         cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=%s', (VehicleID,))
         db.commit()
         SNo = cursor.fetchone()
         print('sno in payment', SNo)
+        if not SNo:
+
+            flash('S_No nahi mil raha bhai','error')
+            return redirect(url_for('payment.add_data', VehicleID=PaymentID))
+
         S_No = SNo[0]
-        # S_No = session.get('incrementedSNo')
-        # print('S_No: ', S_No)
         if not S_No:
             flash('S_No nahi mil raha bhai','error')
-            return redirect(url_for('payment.add_data', VehicleID=PaymentID, SNo = S_No))
+            return redirect(url_for('payment.add_data', VehicleID=PaymentID))
         try:
             fetchData = '''
                 SELECT v.VehicleType, b.duration FROM vehicle v 
                 JOIN bookingslot b ON v.VehicleID = b.BSlotID
-                WHERE VehicleID=%s
+                WHERE v.VehicleID=%s
                 '''
             cursor.execute(fetchData, (VehicleID,))
             v_data = cursor.fetchone();
@@ -68,6 +73,7 @@ def add_data():
             print(Duration, 'duration')
             print(VehicleType, 'VehicleType')
             rate = 0
+            print('rate=0 k upar')
             if VehicleType == 'car':
                 rate = 13
             elif VehicleType == '2-Wheeler':
@@ -84,10 +90,10 @@ def add_data():
             print('update query wale try ke andar')
             update_query = '''
                 UPDATE payment
-                SET TotalPrice=%s, mode=%s, SNo=%s
+                SET TotalPrice=%s, mode=%s, SNo=%s, VehicleID=%s
                 WHERE PaymentID=%s
             '''
-            cursor.execute(update_query, (TotalPrice, mode, S_No, PaymentID,))
+            cursor.execute(update_query, (TotalPrice, mode, S_No, VehicleID, PaymentID,))
             db.commit()
         except mysql.connector.Error as e:
             print('update query wale except ke andar')
@@ -95,7 +101,7 @@ def add_data():
             db.rollback()
             print(e)
             flash('Error adding your data','error')
-            return redirect(url_for('payment.add_data', PaymentID=PaymentID, SNo=SNo))
+            return redirect(url_for('payment.add_data', VehicleID=VehicleID, PaymentID=PaymentID, SNo=SNo))
        
         try:
             print('fetch query wale try ke andar')
@@ -119,7 +125,7 @@ def add_data():
             if data is None:
                 print('No data')
                 flash('No data found', 'error')
-                return redirect(url_for('payment.add_data'))
+                return redirect(url_for('payment.add_data', VehicleID=VehicleID, SNo=SNo, BSlotID=BSlotID))
 
             VehicleID = data[0]
             VehicleType = data[1]
@@ -134,6 +140,7 @@ def add_data():
             contact = data[10]
             TotalPrice = data[11]
             mode = data[12]
+            print(data)
             
             #debugging
             cursor.execute('SELECT TotalPrice, mode, SNo FROM payment WHERE PaymentID=%s',(PaymentID,))
@@ -172,7 +179,7 @@ def add_data():
 
     
     Amount = session.get('TotalPrice')
-    return render_template('add/payment.html', Amount = Amount)
+    return render_template('add/payment.html', Amount = Amount, VehicleID=VehicleID)
 
 
 
