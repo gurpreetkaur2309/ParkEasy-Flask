@@ -2,21 +2,35 @@
 {% block title %}Choose Vehicle{% endblock %}
 {% block stylesheet %} {% endblock %}
 {% block content %}
-    <h2>Choose Vehicle</h2>
-    
     <form id="commonFormID" method="POST" action="{{ url_for('vehicle.ChooseVehicle') }}">
-        <div>
-            <label for="VehicleType">Vehicle Type:</label>
-            <input type="text" id="VehicleType" name="VehicleType" value="{{ VehicleType }}" required>
+        <div class="row">
+            {% for vehicle in vehicles %}
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+
+                        <h5 class="card-title">Vehicle Name: {{ vehicle[3] }}</h5>
+                        <p class="card-text">
+                            <strong>Vehicle ID:</strong> {{ vehicle[0] }}<br>
+                            <strong>Vehicle Type:</strong> {{ vehicle[1] }}<br>
+                            <strong>Vehicle Number:</strong> {{ vehicle[2] }}<br>
+                            <strong>Other Details:</strong> {{ vehicle[4] }}
+                        </p>
+
+                        <div class="form-check">
+                            <!-- Changed name from SelectedID to VehicleID to match the backend code -->
+                            <input class="form-check-input" type="radio" name="VehicleID" id="vehicle{{ vehicle[0] }}" value="{{ vehicle[0] }}" required>
+                            <label class="form-check-label" for="vehicle{{ vehicle[0] }}">
+                                Select this vehicle
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
-        <div>
-            <label for="VehicleNumber">Vehicle Number:</label>
-            <input type="text" id="VehicleNumber" name="VehicleNumber" value="{{ VehicleNumber }}" required>
-        </div>
-        <div>
-            <label for="VehicleName">Vehicle Name:</label>
-            <input type="text" id="VehicleName" name="VehicleName" value="{{ VehicleName }}" required>
-        </div>
-        <button type="submit">Submit</button>
+
+        <!-- Removed href from the button, as it's not needed for a submit button -->
+        <button id="CAlign-ID" type="submit" class="btn btn-primary">Submit</button>
     </form>
 {% endblock %}

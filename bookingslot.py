@@ -69,9 +69,26 @@ def history():
 @login_required
 def add_data():
     print(session['username'])
+    VehicleID = request.args.get('VehicleID')
+    print('VehicleID: ', VehicleID)
+    VacantSlots = '''
+            SELECT b.BSlotID FROM bookingslot b 
+            WHERE b.TimeFrom = "00:00:00" and b.TimeTo = "00:00:00" and b.duration= '';
+        '''
+    cursor.execute(VacantSlots)
+    db.commit()
+    BSlotID = cursor.fetchone()[0]
+    print('BSlotID: ', BSlotID)
+    
+
     if request.method == 'POST':
         VehicleID = session.get('VehicleID')
-        BSlotID = session.get('VehicleID')
+        print('VehicleID: ', VehicleID)
+        if not VehicleID:
+            flash('An error occurred. Please try again later','error')
+            return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, SNo=SNo))
+        
+        print('BSlotID: ', BSlotID)
         date = request.form['date']
         TimeFrom = request.form['TimeFrom']
         duration = request.form['duration']
@@ -79,23 +96,26 @@ def add_data():
         db.commit()
         SNo = cursor.fetchone()
         S_No = SNo[0]
+        if not SNo:
+            flash('An error occurred. Please try again later','error')
+            return  redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, SNo=SNo))
         print(SNo, 'SNo in bookingslot')
         if not date:
             flash('Please enter date','error')
-            return redirect(url_for('bookingslot.add_data', SNo=SNo))
+            return redirect(url_for('bookingslot.add_data',VehicleID=VehicleID, SNo=SNo))
         if not TimeFrom:
             flash('Please enter time to continue','error')
-            return redirect(url_for('bookingslot.add_data', SNo=SNo))
+            return redirect(url_for('bookingslot.add_data',VehicleID=VehicleID, SNo=SNo))
         if not duration:
             flash('Please enter duration to continue','error')
-            return redirect(url_for('bookingslot.add_data', SNo=SNo))
+            return redirect(url_for('bookingslot.add_data',VehicleID=VehicleID, SNo=SNo))
         if not SNo:
             print('not s no.')
             flash('S_No nahi mil raha bhai','error')
-            return redirect(url_for('bookingslot.add_data', SNo=SNo))  
+            return redirect(url_for('bookingslot.add_data',VehicleID=VehicleID, SNo=SNo))  
         if not BSlotID:
             flash('Error fetching your BSlotID','error')
-            return redirect(url_for('bookingslot.add', SNo=SNo))  
+            return redirect(url_for('bookingslot.add',VehicleID=VehicleID, SNo=SNo))  
               
         try:
             durationStr = int(duration)
@@ -129,14 +149,17 @@ def add_data():
             flash('Error adding data')
             return render_template('add/bookingslot.html')
         return redirect(url_for('payment.add_data', VehicleID=BSlotID,SNo=S_No))
-    BSlotID = session.get('VehicleID')
-    print('BSlotID', BSlotID)
     cursor.execute("SELECT SNo FROM bookingslot WHERE BSlotID=%s", (BSlotID,))
     S = cursor.fetchone()
-    SNo = S[0]
     db.commit()
+    if S == None:
+        flash('An error occured. Please try again later.', 'error')
+        return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
+    SNo = S[0]
+
     SID = session.get('incrementedSNo')
     return render_template('add/bookingslot.html', SNo = S[0])
+
 
 @booking.route('/bookingslot/add/<int:BSlotID>')
 @login_required
@@ -151,6 +174,7 @@ def edit_data(BSlotID):
 
         TimeFrom = request.form['TimeFrom']
         TimeTo = request.form['TimeTo']
+
         try:
             formattedDate = datetime.strptime(date, '%Y-%m-%d').strftime('%a, %d %b')
             update_query = '''UPDATE bookingslot

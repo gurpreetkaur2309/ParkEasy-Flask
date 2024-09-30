@@ -69,9 +69,11 @@ def add_data():
         print('sNo fetch wale try mai gaya')
         SNo = 'SELECT SNo FROM user WHERE username=%s'
         cursor.execute(SNo,(username,))
-        S_No = cursor.fetchone()[0]
-        print('SNo: ', S_No)
         db.commit()
+        SNo = cursor.fetchone()
+        S_No = SNo[0]
+        print('SNo: ', S_No)
+
     except mysql.connector.Error as e:
         print('sNo fetch wale except mai gaya')
         print(e)
@@ -623,7 +625,7 @@ def AdminVehicle():
     return render_template('add/adminVehicleSlot.html', VID=VID)
 
 
-@Vehicle.route('/vehicles', methods=['GET','POST'])
+@Vehicle.route('/user/vehicles', methods=['GET','POST'])
 @login_required
 @requires_role('user')
 def ChooseVehicle():
@@ -631,11 +633,9 @@ def ChooseVehicle():
     username = session.get('username')
     print('username in choosevehicle', username)
     print('get method chal rahi hai')
+    VehicleID = session.get('VehicleID')
     try:
-        VehicleType = request.args.get('VehicleType')
-        VehicleNumber = request.args.get('VehicleNumber')
-        VehicleName = request.args.get('VehicleName')
-        print('fetched from url: ', VehicleType, VehicleNumber, VehicleName)
+
         fetchSNo = '''
             SELECT v.SNo FROM vehicle v
             INNER JOIN user u ON u.SNo = v.SNo
@@ -644,9 +644,10 @@ def ChooseVehicle():
         cursor.execute(fetchSNo, (username,))
         db.commit()
         VehicleSNo = cursor.fetchone()
-        if VehicleSNo[0] is None:
-            flash('Cannot continue without SNo','error')
-            return redirect(url_for('index'))
+        if VehicleSNo is None:
+            flash('No vehicles found. Please add a vehicle', 'success')
+            return redirect(url_for('vehicle.add_data'))
+
         print('VehicleSNo', VehicleSNo)
         SNo = VehicleSNo[0]
         print('SNo',SNo)
@@ -656,107 +657,50 @@ def ChooseVehicle():
         db.rollback()
         flash('Server returns null response. Please try again later', 'error')
         return redirect(url_for('vehicle.add_data'))
+    try:
+        print('fetch query wale try mau')
+        fetch_query = 'SELECT * FROM vehicle WHERE SNo=%s'
+        cursor.execute(fetch_query, (SNo,))
+        db.commit()
+        vehicles = cursor.fetchall()
+        vehicleList = [[vehicle[0], vehicle[1], vehicle[2], vehicle[3], vehicle[4]] for vehicle in vehicles]
+
+    except mysql.connector.Error as e:
+        print('fetch query wale except mai gaya')
+        print(e)
+        db.rollback()
+        flash('Server returned a null response. Please try again later','error')
+        return redirect(url_for('index'))
     if request.method == 'POST':
         print('post method k andar')
-        try:
-            print('count_query wale try mai')
-            cursor.execute('SELECT COUNT(*) FROM vehicle WHERE SNo=%s', (SNo,))
-            db.commit()
-            count = cursor.fetchone()
-            x = count[0]
-            print('x: ', x)
-        except mysql.connector.Error as e:
-            print('count wale except m')
-            db.rollback()
-            print(e)
-            return redirect(url_for('index'))
+        print('selectedid k upar')
+        SelectedID = request.form.get('VehicleID')
+        print('request.form selectedid k niche')
+        print('selectedID: ', SelectedID)
 
-        try:
-            print('fetch query wale try mau')
-            fetch_query = 'SELECT * FROM vehicle WHERE SNo=%s'
-            cursor.execute(fetch_query, (SNo,))
-            db.commit()
-            print('x: ', x)
-            request.form.get('x')
-            for x in range(0,x):
-                data = cursor.fetchone()
-                if x == 1:
-                    print('x=1')
-                    VehicleType = data[1]
-                    VehicleNumber = data[2]
-                    VehicleName = data[4]
-                    print(VehicleType, VehicleNumber, VehicleName)
-                elif x == 2:
-                    print('x=2')
-                    VehicleType = data[1]
-                    VehicleNumber = data[2]
-                    VehicleName = data[4]
-                    print(VehicleType, VehicleNumber, VehicleName)
-                elif x == 3:
-                    print('x=3')
-                    VehicleType = data[1]
-                    VehicleNumber = data[2]
-                    VehicleName = data[4]
-                    print(VehicleType, VehicleNumber, VehicleName)
-                elif x == 4:
-                    print('x=4')
-                    VehicleType = data[1]
-                    VehicleNumber = data[2]
-                    VehicleName = data[4]
-                    print(VehicleType, VehicleNumber, VehicleName)
-                elif x == 5:
-                    print('x=5')
-                    VehicleType = data[1]
-                    VehicleNumber = data[2]
-                    VehicleName = data[4]
-                    print(VehicleType, VehicleNumber, VehicleName)
-                elif x == 6:
-                    print('x=6')
-                    VehicleType = data[1]
-                    VehicleNumber = data[2]
-                    VehicleName = data[4]
-                    print(VehicleType, VehicleNumber, VehicleName)
-                elif x == 7:
-                    print('x=7')
-                    VehicleType = data[1]
-                    VehicleNumber = data[2]
-                    VehicleName = data[4]
-                    print(VehicleType, VehicleNumber, VehicleName)
-                elif x == 8:
-                    print('x=8')
-                    VehicleType = data[1]
-                    VehicleNumber = data[2]
-                    VehicleName = data[4]
-                    print(VehicleType, VehicleNumber, VehicleName)
-                elif x == 9:
-                    print('x=9')
-                    VehicleType = data[1]
-                    VehicleNumber = data[2]
-                    VehicleName = data[4]
-                    print(VehicleType, VehicleNumber, VehicleName)
-                elif x == 10:
-                    print('x=10')
-                    VehicleType = data[1]
-                    VehicleNumber = data[2]
-                    VehicleName = data[4]
-                    print(VehicleType, VehicleNumber, VehicleName)
+        if SelectedID:
+            print('if selectedid k andar')
+            flash('Vehicle selected successfully','success')
+            return redirect(url_for('bookingslot.add_data', VehicleID=SelectedID, SNo=SNo))
+        else:
+            print('else selectedid mai gaya')
+            flash('please select a vehicle to continue','error')
+            return redirect(url_for('vehicle.ChooseVehicle'))
 
 
-        except mysql.connector.Error as e:
-            print('fetch query wale except mai gaya')
-            print(e)
-            db.rollback()
-            flash('Server returned a null response. Please try again later','error')
-            return redirect(url_for('index'))
-    if VehicleType and VehicleNumber and VehicleName:
-        print('if mai gaya')
+        if not vehicleList:
+            print('if not vehicleList mai gaya')
+            print('No vehicles found.')
+            flash('No vehicles found. Please add a vehicle', 'error')
+            return redirect(url_for('vehicle.add_data', SNo=SNo))
         # return redirect(url_for('vehicle.ChooseVehicle', SNo=SNo, VehicleType=VehicleType, VehicleNumber=VehicleNumber, VehicleName=VehicleName))
         return render_template('view/ChooseVehicle.html', VehicleType=VehicleType, VehicleNumber=VehicleNumber, VehicleName=VehicleName)
-    else:
+    if not vehicleList:
         print('else mai gaya')
+
         flash('No vehicles found. Please add a vehicle ', 'error')
         return redirect(url_for('vehicle.add_data', SNo=SNo))
-    return render_template('view/ChooseVehicle.html')
+    return render_template('view/ChooseVehicle.html', vehicles = vehicleList)
 
 
 @Vehicle.route('/vehicle/bookingslot/add/<int:VehicleID>', methods=['GET', 'POST'])
