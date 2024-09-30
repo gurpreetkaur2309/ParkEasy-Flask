@@ -75,12 +75,16 @@ def add_data():
             rate = 0
             print('rate=0 k upar')
             if VehicleType == 'car':
+                print('car k andar')
                 rate = 13
             elif VehicleType == '2-Wheeler':
+                print('2-wheeler k andar')
                 rate = 8
             elif VehicleType == 'Heavy-Vehicle':
+                print('heavy-vehicle k andar')
                 rate = 15
             elif VehicleType == 'Luxury-Vehicle':
+                print('luxury vehicle k andar')
                 rate = 18
 
             TotalPrice = rate * Duration 
@@ -157,9 +161,9 @@ def add_data():
                 cursor.execute(insert_query, (VehicleID, S_No, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber))
                 db.commit()
 
-                if(TotalPrice==0):
-                    db.rollback()
-                    return "Server error" 
+                # if(TotalPrice==0):
+                #     db.rollback()
+                #     return "Server error" 
 
             except mysql.connector.Error as e:
                 print('insert query wale allotment ke andar')

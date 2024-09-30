@@ -203,7 +203,7 @@ def login():
                 else:
                     print('inside else')
                     print('user_data[2]', user_data[2])
-                    return redirect(url_for('vehicle.add_data', SNo=user_data[2]))
+                    return redirect(url_for('vehicle.ChooseVehicle', SNo=user_data[2]))
         else:
             print('inside the else condition')
             flash('Invalid username or password', 'error')
