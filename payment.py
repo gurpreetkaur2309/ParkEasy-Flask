@@ -68,12 +68,7 @@ def add_data():
             if not v_data:
                 flash('v_data not found','error')
                 return redirect(url_for('payment.add_data', PaymentID=PaymentID, VehicleID=VehicleID))
-        except mysql.connector.Error as e:
-            print('fetchdata wale except mai gaya')
-            db.rollback()
-            print(e)
-            flash('Error adding data', 'error')
-            return redirect(url_for('payment.add_data',SNo=S_No, VehicleID=VehicleID, PaymentID=PaymentID))
+        
             VehicleType = v_data[0]
             duration = v_data[1]
             Duration = int(duration)
@@ -98,6 +93,12 @@ def add_data():
             TotalPrice = float(TotalPrice)
             session['TotalPrice'] = TotalPrice
             print(TotalPrice, 'TotalPrice')
+        except mysql.connector.Error as e:
+            print('fetchdata wale except mai gaya')
+            db.rollback()
+            print(e)
+            flash('Error adding data', 'error')
+            return redirect(url_for('payment.add_data',SNo=S_No, VehicleID=VehicleID, PaymentID=PaymentID))
         try:
             update_query = '''
                 UPDATE payment
