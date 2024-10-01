@@ -13,11 +13,12 @@
         {% endfor %}
 </div>
 <br><br>
-    <label class="CAlign" for="Slot">Slot</label><br>
-        <input class="CAlign" type="number" id="VehicleID" name="VehicleID" placeholder="BSlotID" value="{{ BSlotID }}" required maxlength="20" readonly><br><br> 
+
+
+        <input class="CAlign" type="number" id="BSlotID" name="BSlotID" placeholder="BSlotID" value="{{ BSlotID }}" required maxlength="20" readonly><br><br> 
         <a style="text-decoration: none" class="CAlign" href="{{url_for('bookingslot.customSlot')}}">Change slot</a><br>
 
-    <input class="CAlign" placeholder="BSlotID" id="VehicleID" name="VehicleID" type="hidden" value="{{ VehicleID }}" readonly>
+        <input class="CAlign" placeholder="VehicleID" id="VehicleID" name="VehicleID" type="number" value="{{ VehicleID }}" readonly>
 
 
     <label class="CAlign" for="date">Date</label><br>
