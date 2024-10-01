@@ -124,7 +124,7 @@ def add_data():
                        o.name, o.contact,     
                        p.TotalPrice, p.mode 
                        FROM vehicle v
-                       JOIN bookingslot b ON v.VehicleID = b.BSlotID 
+                       JOIN bookingslot b ON v.SNo = b.SNo
                        JOIN user u ON v.SNo = u.SNo 
                        JOIN owner o ON u.SNo = o.SNo 
                        JOIN payment p ON b.BSlotID = p.PaymentID 

@@ -144,7 +144,7 @@ def AdminLogin():
             session['username'] = userData[0]
             session['role'] = userData[2]
             print(session['role'])
-            return redirect(url_for('auth.dashboard'))
+            return redirect(url_for('auth.MyBookings'))
         else:
             flash('Invalid username or password', 'danger')
     
