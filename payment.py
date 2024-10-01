@@ -72,8 +72,8 @@ def add_data():
             VehicleType = v_data[0]
             duration = v_data[1]
             Duration = int(duration)
-            print(Duration, 'duration')
-            print(VehicleType, 'VehicleType')
+            print(Duration, ': duration')
+            print(VehicleType, ': VehicleType')
             rate = 0
             print('rate=0 k upar')
             if VehicleType == 'car':

@@ -41,7 +41,7 @@
     <br><br>
 
     <label for="password"></label>
-    <input class="auth" type="password" id="password" name="password" placeholder="password" required minlength="6" maxlength="8">
+    <input class="auth" type="password" id="password" name="password" placeholder="password" required maxlength="15">
     <br><br>
     {% for slot in availableSlots %}
         <select class="auth" id="OwnerID" name="OwnerID">
@@ -51,7 +51,7 @@
     {% endfor %}
     <input class="auth" type="text" id="name" name="name" placeholder="Name" required maxlength="20"><br><br>
     <input class="auth" type="text" id="address" name="address" placeholder="address" required maxlength="25"><br><br>
-    <input class="auth" type="number" id="contact" name="contact" placeholder="Contact" required maxlength="12" onkeypress="if(this.value.length==12)return false"><br><br>
+    <input class="auth" type="number" id="contact" name="contact" placeholder="Contact" required maxlength="12" onkeypress="if(this.value.length==10)return false"><br><br>
     <input type="hidden" class="auth" id="SNo" name="SNo" value="{{incrementedSNo}}" placeholder="S_No"maxlength="10"><br><br>
 
 

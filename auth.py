@@ -17,10 +17,16 @@ def ValidUser(username):
     # pattern = "^[a-zA-Z][a-zA-Z\s'-]*$"
     pattern = "^[a-zA-Z0-9_.-]+$"
     return re.match(pattern, username)
+
 def ValidContact(contact):
     print('valid contact function works')
     pattern = "^(\+91[\-\s]?)?[0]?(91)?[789]\d{9}$"
     return re.match(pattern, contact)
+
+def ValidPassword(password):
+    print('Valid password function works')
+    pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+    return re.match(pattern, password)
 
 
 @auth.route('/register', methods=['GET', 'POST'])
@@ -37,12 +43,12 @@ def register():
         print(session)
         print(request.form)
 
-        if len(password) > 8:
-            flash('Password should not be more than 8 letters', 'error')
+        if len(password) > 15:
+            flash('Password is too long', 'error')
             return redirect(url_for('auth.register_form'))
 
         elif len(password) < 6:
-            flash('Password cannot be less than 6 letters', 'error')
+            flash('Password should include minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character', 'error')
             return redirect(url_for('auth.register_form'))
 
         if ' ' in username:
@@ -55,6 +61,10 @@ def register():
 
         if not ValidContact(contact):
             flash('Contact is not valid','error')
+            return redirect(url_for('auth.register_form'))
+
+        if not ValidPassword(password):
+            flash("Password should include minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character", "error")
             return redirect(url_for('auth.register_form'))
 
         check_user_query = 'SELECT username FROM user WHERE username=%s'
