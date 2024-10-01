@@ -47,11 +47,11 @@ def add_data():
         SNo = cursor.fetchone()
         print('sno in payment', SNo)
         if not SNo:
-
             flash('S_No nahi mil raha bhai','error')
             return redirect(url_for('payment.add_data', VehicleID=VehicleID, PaymentID=PaymentID))
 
         S_No = SNo[0]
+        print(f"VehicleID: {VehicleID}, PaymentID: {PaymentID}, mode: {mode}, S_No: {S_No}")
         if not S_No:
             flash('S_No nahi mil raha bhai','error')
             return redirect(url_for('payment.add_data', VehicleID=VehicleID, PaymentID=PaymentID))
@@ -71,7 +71,7 @@ def add_data():
         except mysql.connector.Error as e:
             print('fetchdata wale except mai gaya')
             db.rollback()
-            print()
+            print(e)
             flash('Error adding data', 'error')
             return redirect(url_for('payment.add_data', VehicleID=VehicleID, PaymentID=PaymentID))
             VehicleType = v_data[0]
