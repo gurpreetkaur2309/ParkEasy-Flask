@@ -13,13 +13,7 @@
     </div>
     <div class="CAligndiv">
 
-        <label class="CAlign" for="Slot">Slot(Auto generated)</label><br>
-        <input class="CAlign" type="number" id="VehicleID" name="VehicleID" placeholder="Enter Vehicle ID" value="{{ VehicleID }}" required maxlength="20" readonly><br><br>
-
-        <!-- <label class="CAlign">SNo</label><br> -->
         <input type="hidden" class="CAlign" id="S_No" name="S_No" placeholder="S_No" value="{{SNo}}" readonly>
-
-        <p style="margin-left:600px;">Don't like your slot. No worries, <a href="{{ url_for('vehicle.addCustomVehicle') }}">Change it</a></p>
 
         <label class="CAlign" for="Vehicle Type">Vehicle Type</label><br>
         <select style="height: 30px;" class="CAlign" id="VehicleType" name="VehicleType"  placeholder="VehicleType">

@@ -53,7 +53,7 @@ def history():
 #         INNER JOIN payment p ON b.BSlotID = p.PaymentID
 #         INNER JOIN vehicle v ON b.BSlotID = v.VehicleID
 #         INNER JOIN sensor s ON b.BSlotID = s.SensorID
-#         SET b.TimeFrom = '', b.TimeTo = '', b.duration = '', b.date = null,
+#         SET b.TimeFrom = '', b.TimeTo = '', b.duration = '', b.date = '00:00:00',
 #             p.TotalPrice = 0, p.mode = '',
 #             s.isParked=0
 #         WHERE b.date < %s OR b.TimeTo < %s
@@ -68,6 +68,8 @@ def history():
 @booking.route('/bookingslot/add', methods=['GET', 'POST'])
 @login_required
 def add_data():
+    vid = session.get('VehicleID')
+    print('Session wali vehicleID', vid)
     print('bookingslot wale add_data mai gaya')
     print(session['username'])
     VehicleID = request.args.get('VehicleID')
@@ -173,7 +175,111 @@ def add_data():
 
     SID = session.get('incrementedSNo')
     print('Final render_template k upar')
+    
     return render_template('add/bookingslot.html', SNo = S[0],VehicleID=VehicleID, BSlotID=BSlotID)
+
+@booking.route('/booking/customSlot', methods = ['GET', 'POST'])
+@login_required
+def customSlot(): 
+    VehicleID = session.get('VehicleID')
+    print('session wali vehicleid', VehicleID)
+    print('customslot ke andar')
+    print(session['username'])
+    # VehicleID = request.args.get('VehicleID')
+    # session['VehicleID'] = VehicleID
+    fetch_query = '''
+
+    '''
+    VacantSlots = '''
+        SELECT b.BSlotID FROM bookingslot b 
+        WHERE b.TimeFrom = "00:00:00" and b.TimeTo = "00:00:00" and b.duration= '';
+    '''
+    cursor.execute(VacantSlots)
+    db.commit()
+    vacantSlots = cursor.fetchall() 
+    BSlotID = [slot[0] for slot in vacantSlots]
+    session['BSlotID'] = BSlotID
+    print('BSlotID: ', BSlotID)
+    if not VehicleID:
+        print
+        print('if not vehicleID mai gaya')
+        flash('An error occurred. Please try again later', 'error')
+        # return redirect(url_for('bookingslot.customSlot', VehicleID=VehicleID, BSlotID=BSlotID))
+    Date = request.form.get('Date')
+    TimeFrom = request.form.get('TimeFrom')
+    duration = request.form.get('duration')
+    cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=%s', (VehicleID,))
+    db.commit()
+    SNo = cursor.fetchone()
+    S_No = SNo[0]
+    if request.method == 'POST':
+        print('post method k andar')
+        
+        if not Date:
+            flash('An error occurred. Please try again later', 'error')
+            return redirect(url_for('booking.customSlot', VehicleID=VehicleID, BSlotID=BSlotID))
+
+        if not TimeFrom:
+            flash('An error occurred. Please try again later', 'error')
+            return redirect(url_for('booking.customSlot', VehicleID=VehicleID, BSlotID=BSlotID))
+
+        if not duration:
+            flash('An error occurred. Please try again later', 'error')
+            return redirect(url_for('booking.customSlot', VehicleID=VehicleID, BSlotID=BSlotID))
+
+        if not SNo:
+            flash('An error occurred. Please try again later','error')
+            return  redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, SNo=SNo))
+
+        if not BSlotID:
+            flash('Error fetching your BSlotID','error')
+            return redirect(url_for('bookingslot.add',VehicleID=VehicleID, SNo=SNo)) 
+
+        try:
+            durationStr = int(duration)
+        except ValueError as ve:
+            flash('duration must be a valid number', 'error')
+            return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, SNo=SNo))
+
+        TimeFormat = '%H:%M'
+        timeFrom_dt = datetime.strptime(TimeFrom, TimeFormat)
+        timeTo_dt = timeFrom_dt + timedelta(hours=durationStr)
+        TimeTo = timeTo_dt.strftime(TimeFormat)
+        try:
+            print('update query wale try k andar')
+            update_query = '''
+                UPDATE bookingslot
+                SET date=%s, duration=%s, TimeFrom=%s, TimeTo=%s, SNo=%s, VehicleID=%s
+                WHERE BSlotID=%s
+            '''
+            cursor.execute(update_query, (date,  duration, TimeFrom, TimeTo, S_No, VehicleID, BSlotID,))
+            db.commit()
+            # return render_template('add/owner.html', VehicleID=BSlotID)
+            #debugging
+            data = cursor.fetchone()
+            #end
+            return redirect(url_for('payment.add_data', VehicleID=BSlotID, SNo=S_No))
+        except  mysql.connector.Error as e:
+            print('update query wale except k andar')
+            print(e)
+            db.rollback()
+            flash('Error adding data')
+            return render_template('add/bookingslot.html')
+        print('VehicleID: ', VehicleID)
+        return redirect(url_for('payment.add_data', VehicleID=BSlotID,SNo=S_No))
+    BSlotID = session.get('BSlotID')
+    cursor.execute("SELECT SNo FROM vehicle WHERE VehicleID=%s", (VehicleID,))
+    S = cursor.fetchone()
+    db.commit()
+    if S == None:
+        print('if not S k andar')
+        # flash('An error occured. Please try again later.', 'error')
+        return redirect(url_for('bookingslot.add_data'))
+    SNo = S[0]
+
+    SID = session.get('incrementedSNo')
+    print('Final render_template k upar')
+    return render_template('add/CustomVehicle.html', SNo = S[0], BSlotID=BSlotID)
 
 
 @booking.route('/bookingslot/add/<int:BSlotID>')

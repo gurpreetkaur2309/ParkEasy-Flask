@@ -14,11 +14,12 @@
         <input type="text" name="name" class="CAlign">
         
     {% endif %}
-	<select class="CAlign" name="VehicleID" id="VehicleID" required>
-                <option value="VehicleID">Available Slots</option> <!-- The option for selecting all slots -->
-                {% for slot in availableSlots %}
+	<select class="CAlign" name="BSlotID" id="BSlotID" required>
+                <option value="BSlotID">Available Slots</option> <!-- The option for selecting all slots -->
+                {% for slot in BSlotID %}
                     <option value="{{ slot }}">{{ slot }}</option>
                 {% endfor %}
+
     </select><br><br>
 
 

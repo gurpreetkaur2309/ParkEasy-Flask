@@ -10,6 +10,7 @@ from auth import auth
 # from apscheduler.schedulers.background import BackgroundScheduler
 import logging
 
+
 app = Flask(__name__)
 app.secret_key = 'kjasdfhoiuehsfowe9phif9824ye8972hwuiefohnsdfp'
 
@@ -29,6 +30,7 @@ def inject_user():
     username = session.get('username')
     SNo = session.get('SNo')
     return dict(username=username)
+app.config['UPLOADS'] = "/Users/yashvaishnav/Downloads/CAR DETAILS FROM CAR DEKHO.csv"
 
 
 # def configure_scheduler():

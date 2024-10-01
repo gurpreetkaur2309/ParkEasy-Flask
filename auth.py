@@ -218,7 +218,6 @@ def login_form():
     return render_template('auth/login.html')  
     # return render_template('auth/login.html')
 
-
 @auth.route('/logout')
 def logout():
     session.clear()

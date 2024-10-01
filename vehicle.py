@@ -8,6 +8,7 @@ from auth import login_required
 from utils import requires_role
 from flask_paginate import Pagination
 from utils import requires_role
+import csv
 Vehicle = Blueprint('vehicle', __name__)
 
 
@@ -62,6 +63,7 @@ def ValidNumber(VehicleNumber):
 @Vehicle.route('/vehicle/add', methods=['POST', 'GET'])
 @login_required
 def add_data():
+    data = []
     print('vehicle wale add data mai gaya')
     print('inside add_data function')
     username = session.get('username')
@@ -98,6 +100,16 @@ def add_data():
     VehicleID = maxVID
 
     if request.method == 'POST':
+        if request.files:
+            uploaded_file = request.files['filename']
+            filepath = os.path.join(app.config['FILE_UPLOADS'], uploaded_file.filename)
+            uploaded_file.save(filepath)
+            with open(filepath) as file:
+                csv_file = csv.reader(file)
+                for row in csv_file:
+                    data.append(row)
+            return redirect(request.url)
+
         print('post method mai gaya')
         print('post methd ke niche', S_No)
         if not username: 
@@ -111,6 +123,7 @@ def add_data():
             flash('Cannot continue without vehicleID', 'danger')
             return redirect(url_for('vehicle.add_data', SNo=S_No))  
         session['VehicleID'] = VehicleID
+        print(session['VehicleID'], 'session wali vehicleid')
         VehicleType = request.form.get('VehicleType')
         VehicleNumber = request.form.get('VehicleNumber')
         VehicleName = request.form.get('VehicleName')
@@ -157,11 +170,12 @@ def add_data():
             db.rollback()
             flash('Error adding data', 'error')
             return redirect(url_for('vehicle.add_data', SNo=S_No)) 
+        print(data, 'cars')
+
         print('sabse niche return redirect wale k upar', S_No)
         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, S_No=S_No))
 
-    return render_template('add/vehicle.html', SNo=S_No)
-
+    return render_template('add/vehicle.html', SNo=S_No, data=data)
 @Vehicle.route('/vehicle/bookslot', methods=['GET','POST'])
 @login_required
 def bookSlot():
