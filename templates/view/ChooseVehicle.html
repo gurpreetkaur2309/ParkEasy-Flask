@@ -3,7 +3,7 @@
 {% block stylesheet %} {% endblock %}
 {% block content %}
     <form id="commonFormID" method="POST" action="{{ url_for('vehicle.ChooseVehicle') }}">
-        <div class="row">
+        <div class="row" style="padding: 10px; margin:10px;">
             {% for vehicle in vehicles %}
             <div class="col-md-4">
                 <div class="card mb-4">
@@ -30,7 +30,8 @@
             {% endfor %}
         </div>
 
-        <!-- Removed href from the button, as it's not needed for a submit button -->
-        <button id="CAlign-ID" type="submit" class="btn btn-primary">Submit</button>
+        <a style="text-decoration: none; text-align:center; margin-left:600px;" href="{{url_for('vehicle.add_data') }}">Add vehicle</a><br><br>
+
+        <button style="margin-left: 600px;" id="CAlign-ID" type="submit" class="btn btn-primary">Submit</button>
     </form>
 {% endblock %}

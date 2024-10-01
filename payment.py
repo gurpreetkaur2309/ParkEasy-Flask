@@ -30,7 +30,6 @@ def display():
 @payment.route('/payment/add', methods=['GET', 'POST'])
 @login_required
 def add_data():
-    print(session['username'])
     print('add_data ke andar')
     VehicleID = request.args.get('VehicleID')
     print('VehicleID in get method: ', VehicleID)
@@ -179,7 +178,7 @@ def add_data():
                 flash('Error adding allotment', 'error')
                 return redirect(url_for('payment.add_data'))
 
-            return redirect(url_for('payment.Generate_Receipt',duration=duration, TotalPrice=TotalPrice, mode=mode, PaymentID=PaymentID))
+            return redirect(url_for('payment.Generate_Receipt',VehicleID=VehicleID, duration=duration, TotalPrice=TotalPrice, mode=mode, PaymentID=PaymentID))
             # return render_template('add/payment.html',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID)
 
         except mysql.connector.Error as e:
@@ -191,7 +190,8 @@ def add_data():
 
     
     Amount = session.get('TotalPrice')
-    return render_template('add/payment.html', Amount = Amount, VehicleID=VehicleID)
+    print('VehicleID: ', VehicleID)
+    return render_template('add/payment.html', Amount=Amount, VehicleID=VehicleID)
 
 
 
@@ -257,7 +257,7 @@ def Generate_Receipt(PaymentID):
             SELECT v.SNo, v.VehicleType, v.VehicleNumber, b.date, p.PaymentID, p.TotalPrice, p.Mode, b.TimeFrom, b.TimeTo
             FROM payment p 
             JOIN bookingslot b ON p.PaymentID = b.BSlotID 
-            JOIN vehicle v  ON p.PaymentID = v.VehicleID
+            JOIN vehicle v  ON p.SNo = v.SNo
             WHERE p.PaymentID=%s
         '''
         cursor.execute(fetch_query, (PaymentID,))
