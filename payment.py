@@ -59,10 +59,10 @@ def add_data():
             print('fetchdata wale try mai gaya')
             fetchData = '''
                 SELECT v.VehicleType, b.duration FROM vehicle v 
-                JOIN bookingslot b ON v.VehicleID = b.BSlotID
-                WHERE v.SNo=%s and VehicleID=%s
+                JOIN bookingslot b ON v.SNo = b.SNo
+                WHERE v.SNo=%s and v.VehicleID=%s
                 '''
-            cursor.execute(fetchData, (SNo, VehicleID,))
+            cursor.execute(fetchData, (S_No, VehicleID,))
             v_data = cursor.fetchone();
             print(v_data)
             if not v_data:
@@ -73,7 +73,7 @@ def add_data():
             db.rollback()
             print(e)
             flash('Error adding data', 'error')
-            return redirect(url_for('payment.add_data', VehicleID=VehicleID, PaymentID=PaymentID))
+            return redirect(url_for('payment.add_data',SNo=S_No, VehicleID=VehicleID, PaymentID=PaymentID))
             VehicleType = v_data[0]
             duration = v_data[1]
             Duration = int(duration)
