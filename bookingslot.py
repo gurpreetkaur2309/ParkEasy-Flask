@@ -284,7 +284,7 @@ def customSlot():
     SNo = S[0]
 
     print('Final render_template k upar')
-    return render_template('add/CustomVehicle.html', SNo = S[0], slots=slots)
+    return render_template('add/CustomVehicle.html', SNo = S[0], slots=slots, VehicleID=VehicleID)
 
 
 @booking.route('/booking/another_slot')
