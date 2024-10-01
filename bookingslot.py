@@ -155,7 +155,7 @@ def add_data():
             #debugging
             data = cursor.fetchone()
             #end
-            return redirect(url_for('payment.add_data', VehicleID=BSlotID, SNo=S_No))
+            return redirect(url_for('payment.add_data', VehicleID=VehicleID, SNo=S_No))
         except  mysql.connector.Error as e:
             print('update query wale except k andar')
             print(e)
@@ -193,10 +193,12 @@ def customSlot():
     '''
     cursor.execute(VacantSlots)
     db.commit()
-    vacantSlots = cursor.fetchall() 
-    availableSlots = [slot[0] for slot in vacantSlots]
+    availableSlots = cursor.fetchall()
+    print('available slots: ', availableSlots)
+    slots = [slot[0] for slot in availableSlots]
+    print('slots: ', slots)
+    print('vacantslots k niche')
     if not VehicleID:
-        print
         print('if not vehicleID mai gaya')
         flash('An error occurred. Please try again later', 'error')
         # return redirect(url_for('bookingslot.customSlot', VehicleID=VehicleID, BSlotID=BSlotID))
@@ -204,51 +206,74 @@ def customSlot():
     db.commit()
     SNo = cursor.fetchone()
     S_No = SNo[0]
+    print('get mai sabse niche post k bahar')
     if request.method == 'POST':
-        print('post method k andar')
+        print('******************POST METHOD KE ANDAR******************************')
+        print('post method k niche VehicleID: ', VehicleID)
         BSlotID = request.form.get('BSlotID')
-        print('BSlotID: ', BSlotID)
+        print('BSlotID: ',BSlotID)
+        print('get bookingslot k niche')
+        VehicleID = request.form.get('VehicleID')
+        print('VehicleID: ', VehicleID)
         Date = request.form.get('Date')
+        print('get date k niche')
+        print('VehicleID: ', VehicleID)
         TimeFrom = request.form.get('TimeFrom')
+        print('get timefrom k niche')
+        print('VehicleID: ', VehicleID)
         duration = request.form.get('duration')
+        print('get duration k niche')
+        print('VehicleID: ', VehicleID)
 
         if not Date:
+            print('VehicleID: ', VehicleID)
             print('if not date')
             flash('An error occurred. Please try again later', 'error')
             return redirect(url_for('bookingslot.customSlot', VehicleID=VehicleID, BSlotID=BSlotID))
 
         if not TimeFrom:
+            print('VehicleID: ', VehicleID)
             print('if not timefrom')
             flash('An error occurred. Please try again later', 'error')
             return redirect(url_for('bookingslot.customSlot', VehicleID=VehicleID, BSlotID=BSlotID))
 
         if not duration:
+            print('VehicleID: ', VehicleID)
             print('if not duration')
             flash('An error occurred. Please try again later', 'error')
             return redirect(url_for('bookingslot.customSlot', VehicleID=VehicleID, BSlotID=BSlotID))
 
         if not SNo:
+            print('VehicleID: ', VehicleID)
             print('if not SNo')
             flash('An error occurred. Please try again later','error')
             return  redirect(url_for('bookingslot.customSlot', VehicleID=VehicleID, SNo=SNo))
 
         if not BSlotID:
+            print('VehicleID: ', VehicleID)
             print('if not BSlotID')
             flash('Error fetching your BSlotID','error')
             return redirect(url_for('bookingslot.customSlot',VehicleID=VehicleID, SNo=SNo)) 
-
+        print('VehicleID: ', VehicleID)
+        print('sare if k niche duration str try k upar')
         try:
+            print('VehicleID: ', VehicleID)
+            print('durationstr wale try mai')
             durationStr = int(duration)
         except ValueError as ve:
+            print('VehicleID: ', VehicleID)
+            print('durationstr wale valueerror mai')
             flash('duration must be a valid number', 'error')
             return redirect(url_for('bookingslot.customSlot', VehicleID=VehicleID, SNo=SNo))
-
+        print('durationstr wale except k niche')
         TimeFormat = '%H:%M'
         timeFrom_dt = datetime.strptime(TimeFrom, TimeFormat)
         timeTo_dt = timeFrom_dt + timedelta(hours=durationStr)
+        print('timeto k upar, timeto_dt k niche')
         TimeTo = timeTo_dt.strftime(TimeFormat)
-        print(f"VehicleID: {VehicleID}, BSlotID: {BSlotID}, Date: {Date}, TimeFrom: {TimeFrom}, duration: {duration}, TimeTo: {TimeTo}, SNo: {S_No}")
-
+        print('timeto k niche')
+        print(f"VehicleID: {VehicleID}, Date: {Date}, TimeFrom: {TimeFrom}, duration: {duration}, TimeTo: {TimeTo}, SNo: {S_No}")
+        print('update query wale try k upar')
         try:
             print('update query wale try k andar')
             update_query = '''
@@ -256,13 +281,11 @@ def customSlot():
                 SET date=%s, duration=%s, TimeFrom=%s, TimeTo=%s, SNo=%s, VehicleID=%s
                 WHERE BSlotID=%s
             '''
-            cursor.execute(update_query, (Date,  duration, TimeFrom, TimeTo, S_No, VehicleID, BSlotID,))
+            cursor.execute(update_query, (Date,  duration, TimeFrom, TimeTo, S_No, VehicleID,))
             db.commit()
-            # return render_template('add/owner.html', VehicleID=BSlotID)
-            #debugging
             data = cursor.fetchone()
-            #end
-            return redirect(url_for('payment.add_data', VehicleID=BSlotID, SNo=S_No))
+            print('data cursor.fetchone k niche')
+            return redirect(url_for('payment.add_data', VehicleID=VehicleID, SNo=S_No))
         except  mysql.connector.Error as e:
             print('update query wale except k andar')
             print(e)
@@ -270,9 +293,12 @@ def customSlot():
             flash('Error adding data')
             # return render_template('add/bookingslot.html')
             return redirect(url_for('bookingslot.customSlot', VehicleID=VehicleID))
+        print('update query wale except k bahar')
         print('VehicleID: ', VehicleID)
-        return redirect(url_for('payment.add_data', VehicleID=BSlotID,SNo=S_No))
+        return redirect(url_for('payment.add_data', VehicleID=VehicleID,SNo=S_No))
+    print('post method k bahar')
     BSlotID = session.get('BSlotID')
+    print('BslotID k niche: ', BSlotID)
     cursor.execute("SELECT SNo FROM vehicle WHERE VehicleID=%s", (VehicleID,))
     S = cursor.fetchone()
     db.commit()
@@ -282,15 +308,14 @@ def customSlot():
         return redirect(url_for('bookingslot.add_data'))
     SNo = S[0]
 
-    SID = session.get('incrementedSNo')
     print('Final render_template k upar')
-    return render_template('add/CustomVehicle.html', SNo = S[0], BSlotID=BSlotID)
+    return render_template('add/CustomVehicle.html', SNo = S[0], slots=slots)
 
 
 @booking.route('/bookingslot/add/<int:BSlotID>')
 @login_required
 def payment(BSlotID):
-    return render_template('add/owner.html', VehicleID=BSlotID, SNo=SNo)
+    return render_template('add/owner.html', VehicleID=VehicleID, SNo=SNo)
 
 @booking.route('/bookingslot/edit/<int:BSlotID>', methods=['GET','POST'])
 @login_required

@@ -674,8 +674,8 @@ def ChooseVehicle():
         return redirect(url_for('vehicle.add_data'))
     try:
         print('fetch query wale try mau')
-        fetch_query = 'SELECT * FROM vehicle WHERE SNo=%s'
-        cursor.execute(fetch_query, (SNo,))
+        fetch_query = 'SELECT * FROM vehicle v INNER JOIN user u on u.SNo=v.SNo WHERE u.SNo=%s AND u.username=%s'
+        cursor.execute(fetch_query, (SNo, username,))
         db.commit()
         vehicles = cursor.fetchall()
         vehicleList = [[vehicle[0], vehicle[1], vehicle[2], vehicle[3], vehicle[4]] for vehicle in vehicles]

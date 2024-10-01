@@ -49,24 +49,31 @@ def add_data():
         if not SNo:
 
             flash('S_No nahi mil raha bhai','error')
-            return redirect(url_for('payment.add_data', VehicleID=PaymentID))
+            return redirect(url_for('payment.add_data', VehicleID=VehicleID, PaymentID=PaymentID))
 
         S_No = SNo[0]
         if not S_No:
             flash('S_No nahi mil raha bhai','error')
-            return redirect(url_for('payment.add_data', VehicleID=PaymentID))
+            return redirect(url_for('payment.add_data', VehicleID=VehicleID, PaymentID=PaymentID))
         try:
+            print('fetchdata wale try mai gaya')
             fetchData = '''
                 SELECT v.VehicleType, b.duration FROM vehicle v 
                 JOIN bookingslot b ON v.VehicleID = b.BSlotID
-                WHERE v.VehicleID=%s
+                WHERE v.SNo=%s and VehicleID=%s
                 '''
-            cursor.execute(fetchData, (VehicleID,))
+            cursor.execute(fetchData, (SNo, VehicleID,))
             v_data = cursor.fetchone();
             print(v_data)
             if not v_data:
                 flash('v_data not found','error')
-                return redirect(url_for('payment.add_data'))
+                return redirect(url_for('payment.add_data', PaymentID=PaymentID, VehicleID=VehicleID))
+        except mysql.connector.Error as e:
+            print('fetchdata wale except mai gaya')
+            db.rollback()
+            print()
+            flash('Error adding data', 'error')
+            return redirect(url_for('payment.add_data', VehicleID=VehicleID, PaymentID=PaymentID))
             VehicleType = v_data[0]
             duration = v_data[1]
             Duration = int(duration)
@@ -91,7 +98,7 @@ def add_data():
             TotalPrice = float(TotalPrice)
             session['TotalPrice'] = TotalPrice
             print(TotalPrice, 'TotalPrice')
-            print('update query wale try ke andar')
+        try:
             update_query = '''
                 UPDATE payment
                 SET TotalPrice=%s, mode=%s, SNo=%s, VehicleID=%s
