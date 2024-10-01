@@ -25,7 +25,7 @@ def ValidContact(contact):
 
 def ValidPassword(password):
     print('Valid password function works')
-    pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+    pattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
     return re.match(pattern, password)
 
 
