@@ -163,7 +163,7 @@ def add_data():
             flash('Error adding data')
             return render_template('add/bookingslot.html')
         print('VehicleID: ', VehicleID)
-        return redirect(url_for('payment.add_data', VehicleID=BSlotID,SNo=S_No))
+        return redirect(url_for('payment.add_data', SNo=S_No, VehicleID=VehicleID))
     cursor.execute("SELECT SNo FROM bookingslot WHERE BSlotID=%s", (BSlotID,))
     S = cursor.fetchone()
     db.commit()
