@@ -207,11 +207,11 @@ def customSlot():
     if request.method == 'POST':
         print('post method k andar')
         BSlotID = request.form.get('BSlotID')
-        session['BSlotID'] = BSlotID
+        print('BSlotID: ', BSlotID)
         Date = request.form.get('Date')
         TimeFrom = request.form.get('TimeFrom')
         duration = request.form.get('duration')
-            
+
         if not Date:
             print('if not date')
             flash('An error occurred. Please try again later', 'error')
@@ -247,6 +247,8 @@ def customSlot():
         timeFrom_dt = datetime.strptime(TimeFrom, TimeFormat)
         timeTo_dt = timeFrom_dt + timedelta(hours=durationStr)
         TimeTo = timeTo_dt.strftime(TimeFormat)
+        print(f"VehicleID: {VehicleID}, BSlotID: {BSlotID}, Date: {Date}, TimeFrom: {TimeFrom}, duration: {duration}, TimeTo: {TimeTo}, SNo: {S_No}")
+
         try:
             print('update query wale try k andar')
             update_query = '''
@@ -254,7 +256,7 @@ def customSlot():
                 SET date=%s, duration=%s, TimeFrom=%s, TimeTo=%s, SNo=%s, VehicleID=%s
                 WHERE BSlotID=%s
             '''
-            cursor.execute(update_query, (date,  duration, TimeFrom, TimeTo, S_No, VehicleID, BSlotID,))
+            cursor.execute(update_query, (Date,  duration, TimeFrom, TimeTo, S_No, VehicleID, BSlotID,))
             db.commit()
             # return render_template('add/owner.html', VehicleID=BSlotID)
             #debugging
@@ -267,9 +269,10 @@ def customSlot():
             db.rollback()
             flash('Error adding data')
             # return render_template('add/bookingslot.html')
-            return redirect(url_for('bookingslot.customSlot', VehicleID=VehicleID, BSlotID=BSlotID, SNo=SNo))
+            return redirect(url_for('bookingslot.customSlot', VehicleID=VehicleID))
         print('VehicleID: ', VehicleID)
-        return redirect(url_for('payment.add_data', VehicleID=BSlotID,SNo=S_No, BSlotID=BSlotID))
+        return redirect(url_for('payment.add_data', VehicleID=BSlotID,SNo=S_No))
+    BSlotID = session.get('BSlotID')
     cursor.execute("SELECT SNo FROM vehicle WHERE VehicleID=%s", (VehicleID,))
     S = cursor.fetchone()
     db.commit()
@@ -278,8 +281,7 @@ def customSlot():
         # flash('An error occured. Please try again later.', 'error')
         return redirect(url_for('bookingslot.add_data'))
     SNo = S[0]
-    BSlotID = session.get('customID')
-    print('customID: ', BSlotID)
+
     SID = session.get('incrementedSNo')
     print('Final render_template k upar')
     return render_template('add/CustomVehicle.html', SNo = S[0], BSlotID=BSlotID)
