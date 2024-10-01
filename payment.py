@@ -251,7 +251,8 @@ def delete_data(PaymentID):
 @login_required
 
 def Generate_Receipt(PaymentID):
-
+    VehicleID = session.get('VehicleID')
+    print('VehicleID: ', VehicleID)
     try:
         fetch_query = '''
             SELECT v.SNo, v.VehicleType, v.VehicleNumber, b.date, p.PaymentID, p.TotalPrice, p.Mode, b.TimeFrom, b.TimeTo
