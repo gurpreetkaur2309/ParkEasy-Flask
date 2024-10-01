@@ -261,7 +261,7 @@ def bookSlot():
 def addCustomVehicle():
     if request.method == 'POST':
         print('inside post method')
-        VehicleID = request.form['VehicleID']
+        # VehicleID = request.form['VehicleID']
         print(VehicleID, 'VehicleID')
 
         session['VehicleID'] = VehicleID
