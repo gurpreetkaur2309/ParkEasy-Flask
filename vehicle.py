@@ -493,6 +493,37 @@ def ChooseVehicle():
 def bookingslot(VehicleID):
     return render_template('add/bookingslot.html', VehicleID=VehicleID, SNo=SNo)
 
+@Vehicle.route('/user/vehicle/edit/<int:VehicleID>', methods=['GET','POST'])
+@login_required
+def edit_vehicle(VehicleID):
+    if request.method == 'POST':
+        VehicleType = request.form['VehicleType']
+        VehicleNumber = request.form['VehicleNumber']
+        VehicleName = request.form['VehicleName']
+        try:
+            update_query = '''
+                UPDATE vehicle
+                SET VehicleType=%s, VehicleNumber=%s, VehicleName=%s 
+                WHERE VehicleID=%s
+            '''
+            cursor.execute(update_query, (VehicleType, VehicleNumber, VehicleName, VehicleID))
+            db.commit()
+            flash('Data updated successfully', 'success')
+            return redirect(url_for('vehicle.ChooseVehicle'))
+        except mysql.connector.Error as e:
+            db.rollback()
+            flash('An error occurred. Please try again later', 'error')
+            return redirect(url_for('vehicle.ChooseVehicle'))
+    fetch_query = 'SELECT VehicleID, VehicleType, VehicleNumber, VehicleName from vehicle where VehicleID=%s'
+    cursor.execute(fetch_query, (VehicleID,))
+    db.commit()
+    data = cursor.fetchone()
+    print('data in vehicle is: ', data)
+    if data is None:
+        flash('No data found')
+        return redirect(url_for('vehicle.display'))
+    return render_template('edit/ChooseVehicle.html', data=data)
+
 @Vehicle.route('/vehicle/edit/<int:VehicleID>', methods=['GET', 'POST'])
 @login_required
 def edit_data(VehicleID):
@@ -500,8 +531,8 @@ def edit_data(VehicleID):
         VehicleType = request.form['VehicleType']
         VehicleNumber = request.form['VehicleNumber']
         try:
-            update_query = '''Update vehicle
-            set VehicleType=%s, VehicleNumber=%s
+            update_query = '''UPDATE vehicle
+            SET VehicleType=%s, VehicleNumber=%s
             where VehicleID=%s
             '''
             cursor.execute(update_query, (VehicleType, VehicleNumber, VehicleID))
@@ -520,6 +551,25 @@ def edit_data(VehicleID):
         return redirect(url_for('vehicle.display'))
     return render_template('edit/vehicle.html', data=data)
 
+@Vehicle.route('/vehicle/delete/vehicle/<int:VehicleID>', methods=['GET','POST'])
+@login_required
+def delete_vehicle(VehicleID):
+    if request.method == 'POST':
+        try:
+            delete_query = '''DELETE FROM vehicle WHERE VehicleID=%s'''
+            cursor.execute(delete_query, (VehicleID,))
+            flash('Data deleted successfully')
+            return redirect(url_for('vehicle.ChooseVehicle'))
+        except mysql.connector.Error as e:
+            db.rollback()
+            flash('Error deleting data')
+    fetch_query = "SELECT VehicleID, VehicleType, VehicleNumber FROM vehicle WHERE VehicleID=%s"
+    cursor.execute(fetch_query, (VehicleID,))
+    data = cursor.fetchone()
+    if data is None:
+        flash('Data not found')
+        return redirect(url_for('vehicle.ChooseVehicle'))
+    return render_template('delete/ChooseVehicle.html', data=data) 
 
 @Vehicle.route('/vehicle/delete/<int:VehicleID>', methods=['GET', 'POST'])
 @login_required
@@ -533,9 +583,10 @@ def delete_data(VehicleID):
         except mysql.connector.Error as e:
             db.rollback()
             flash('Error deleting data')
-    fetch_query = "SELECT VehicleID, VehicleType, VehicleNumber FROM vehicle WHERE VehicleID=%s"
+    fetch_query = "SELECT VehicleID, VehicleType, VehicleNumber, VehicleName FROM vehicle WHERE VehicleID=%s"
     cursor.execute(fetch_query, (VehicleID,))
     data = cursor.fetchone()
+    print(data,'daya')
     if data is None:
         flash('Data not found')
         return redirect(url_for('vehicle.display'))
