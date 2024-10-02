@@ -299,80 +299,65 @@ def MyBookingsUser():
     print('Get request ke upar')
     if request.method == 'GET':
         print('fetch query ke upar')
-        VehicleID = session.get('VehicleID')
         username = session.get('username')
         
-        if not VehicleID:
-            print('VehicleID not found')
-            flash('An error ocurred. Please try again later', 'error')
-            return redirect(url_for('index'))
+        # if not VehicleID:
+        #     print('VehicleID not found')
+        #     flash('An error ocurred. Please try again later', 'error')
+        #     return redirect(url_for('index'))
         
         if not username:
             print('username not found')
             flash('An error ocurred. Please try again later', 'error')
             return redirect(url_for('index'))
         
-        try:
-            cursor.execute('SELECT SNo FROM user WHERE username=%s')
-            db.commit()
-            S_No = cursor.fetchone()
-            if not SNo:
-                print('SNo not found')
-                flash('An error ocurred. Please try again later', 'error')
-                return redirect(url_for('index'))
-            SNo = S_No[0]
-            if not SNo:
-                print('VehicleID not found')
-                flash('An error ocurred. Please try again later', 'error')
-                return redirect(url_for('index'))
-        except mysql.connector.Error as e:
-            db.rollback()
-            print(e)
-            flash('An error ocurred. Please try again later.', 'error')
 
-
-        fetch_query = '''
-            SELECT o.name, o.contact, 
-            v.VehicleType, v.VehicleNumber,
-            b.Date, b.TimeFrom, b.TimeTo, b.duration,o.address,
-            b.BSlotID as slot
-            FROM owner o 
-            INNER JOIN vehicle v ON o.SNo = v.SNo
-            INNER JOIN bookingslot b on o.SNo = b.SNo
-            -- WHERE o.OwnerID=%s;
-
-        '''
-
-        cursor.execute(fetch_query)
+        cursor.execute('SELECT SNo FROM user WHERE username=%s', (username,))
         db.commit()
-        data = cursor.fetchone()
+        S_No = cursor.fetchone()
+        print('SNo:',S_No)
+        if not S_No:
+            print('SNo not found')
+            flash('An error ocurred. Please try again later', 'error')
+            # return redirect(url_for('index'))
+        SNo = S_No[0]
+        if not SNo:
+            print('SNo not found')
+            flash('An error ocurred. Please try again later', 'error')
+            # return redirect(url_for('index'))
 
-        OwnerName = data[0]
-        print(OwnerName)
-        OwnerContact = data[1]
-        VehicleType = data[2]
-        VehicleNumber = data[3]
-        Date = data[4]
-        TimeFrom = data[5]
-        TimeTo = data[6]
-        duration = data[7]
-        address = data[8]
-        Slot = data[9]
 
-        print(OwnerName, OwnerContact, VehicleType, VehicleNumber, Date, TimeFrom, TimeTo, duration, address, Slot)
+        try:
+            fetch_query = '''
+                SELECT o.name, o.contact, 
+                v.VehicleType, v.VehicleNumber,
+                b.Date, b.TimeFrom, b.TimeTo, b.duration,o.address,
+                b.BSlotID as slot
+                FROM owner o 
+                INNER JOIN vehicle v ON o.SNo = v.SNo
+                INNER JOIN bookingslot b on o.SNo = b.SNo
+                INNER JOIN user u ON o.SNo=u.SNo
+                WHERE u.SNo=%s
+            '''
+
+            cursor.execute(fetch_query,(SNo,))
+            db.commit()
+            data = cursor.fetchall()
+            data_list = [[dashboard[0], dashboard[1], dashboard[2], dashboard[3], dashboard[4], dashboard[5], dashboard[6], dashboard[7], dashboard[8], dashboard[9]] for dashboard in data]
+            print(data)
+        except mysql.connector.Error as e:
+            print(e)
+            print('fetch query wale except mai gaya')
+            db.rollback()
+            flash('An error occurred. Please try again later', 'error')
+            return redirect(url_for('index'))
+
+
+
     if 'role' in session:
-        return render_template('dashboard.html', OwnerName = data[0], 
-                                                 OwnerContact=data[1],
-                                                 VehicleType=data[2], 
-                                                 VehicleNumber=data[3], 
-                                                 Date=data[4], 
-                                                 TimeFrom=data[5], 
-                                                 TimeTo=data[6], 
-                                                 duration=data[7], 
-                                                 address=data[8], 
-                                                 Slot=data[9], 
+        return render_template('dashboard.html', data=data_list,
                                                  role = session['role']
-                                                 )
+                                                )
 
 @auth.route('/user/dashboard')
 @login_required
