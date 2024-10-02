@@ -23,6 +23,31 @@
 
     {% if session['role'] == 'user' %}
         <h1 class="text-center mb-4">Your Bookings</h1>
+                    <h3 style="text-align: center;">Current Bookings</h3>
+
+        <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
+            {% for booking in data %}
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Receipt</h5>
+                            <p><strong>Name:</strong> {{ booking[0] }}</p>
+                            <p><strong>Contact:</strong> {{ booking[1] }}</p>
+                            <p><strong>Vehicle Type:</strong> {{ booking[2] }}</p>
+                            <p><strong>Reg. No:</strong> {{ booking[3] }}</p>
+                            <p><strong>Date:</strong> {{ booking[4] }}</p>
+                            <p><strong>From:</strong> {{ booking[5] }}</p>
+                            <p><strong>To:</strong> {{ booking[6] }}</p>
+                            <p><strong>Duration:</strong> {{ booking[7] }}</p>
+                            <p><strong>Address:</strong> {{ booking[8] }}</p>
+                            <p><strong>Slot:</strong> {{ booking[9] }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div><br>
+
+        <h3 style="text-align: center;">Past Bookings</h3>
         <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
             {% for dashboard in data %}
                 <div class="col">

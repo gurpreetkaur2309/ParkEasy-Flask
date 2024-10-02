@@ -337,7 +337,7 @@ def MyBookingsUser():
                 INNER JOIN vehicle v ON o.SNo = v.SNo
                 INNER JOIN bookingslot b on o.SNo = b.SNo
                 INNER JOIN user u ON o.SNo=u.SNo
-                WHERE u.SNo=%s ORDER BY DATE DESC
+                WHERE u.SNo=%s and b.Date<curdate() ORDER BY DATE DESC
             '''
 
             cursor.execute(fetch_query,(SNo,))
@@ -351,11 +351,47 @@ def MyBookingsUser():
             db.rollback()
             flash('An error occurred. Please try again later', 'error')
             return redirect(url_for('index'))
-
+        try:
+            fetch_current = '''
+                SELECT 
+                        o.name, 
+                        o.contact, 
+                        v.VehicleType, 
+                        v.VehicleNumber,
+                        b.Date, 
+                        b.TimeFrom, 
+                        b.TimeTo, 
+                        b.duration, 
+                        o.address,
+                        b.BSlotID AS slot
+                    FROM 
+                        owner o 
+                    INNER JOIN 
+                        vehicle v ON o.SNo = v.SNo
+                    INNER JOIN 
+                        bookingslot b ON o.SNo = b.SNo
+                    INNER JOIN 
+                        user u ON o.SNo = u.SNo
+                    WHERE 
+                        u.SNo = 230
+                        AND (
+                            b.Date > CURDATE() 
+                            OR (b.Date = CURDATE() AND b.TimeTo > CURTIME())
+                        )
+                    ORDER BY 
+                        b.Date DESC, 
+                        b.TimeTo DESC;
+            '''
+        except mysql.connector.Error as e:
+            db.rollback()
+            print(e)
+            flash('An error occured.Please try again later','error')
+        data = cursor.fetchall()
+        datalist = [[booking[0], booking[1], booking[2], booking[3], booking[4], booking[5], booking[6], booking[7], booking[8], booking[9]] for booking in data]
 
 
     if 'role' in session:
-        return render_template('dashboard.html', data=data_list,
+        return render_template('dashboard.html', data=data_list, booking = datalist,
                                                  role = session['role']
                                                 )
 
