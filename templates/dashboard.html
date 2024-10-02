@@ -16,14 +16,78 @@
         {% endfor %}
     </div>
 
+    
     {% if session['role'] == 'admin' %}
-        <!-- Admin Dashboard Content -->
-        <!-- (Your existing admin dashboard code) -->
+    <div class="row row-cols-1 row-cols-md-4 g-4 ms-6" style="margin-left:150px;">
+        <div class="col m-4">
+            <div class="card bg-light">
+                <div class="card-header">Owner</div>
+                <div class="card-body">
+                    <p class="card-text">No. of owners: {{ owner_count }}</p>
+                    <a class="btn btn-primary" href="{{ url_for('owner.display') }}">View Owners</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col m-4">
+            <div class="card bg-light" style="width:350px;">
+                <div class="card-header">Slots Booked</div>
+                <div class="card-body">
+                    <p class="card-text">No. of slots booked: {{ bookingslot_count }}</p>
+                    <a class="btn btn-primary" href="{{ url_for('bookingslot.display') }}">View Slots</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col m-4">
+            <div class="card bg-light" style="width:350px;">
+                <div class="card-header">Vehicles</div>
+                <div class="card-body">
+                    <p class="card-text">No. of vehicles: {{ vehicle_count }}</p>
+                    <a class="btn btn-primary" href="{{ url_for('vehicle.display') }}">View Vehicles</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row row-cols-1 row-cols-md-4 g-4 ms-6" style="margin-left:150px;">
+
+        <div class="col m-4">
+            <div class="card bg-light" style="width:350px;">
+                <div class="card-header">Payment</div>
+                <div class="card-body">
+                    <p class="card-text">No. of payments: {{ payment_count }}</p>
+                    <a class="btn btn-primary" href="{{ url_for('payment.display') }}">View Payments</a>
+                </div>
+            </div>
+        </div>
+            <div class="col m-4">
+                <div class="card" style="width:350px;">
+                    <div class="card-header">History</div>
+                    <div class="card-body">
+                        <p class="card-text">No. of vehicles booked: {{ history_count }}</p>
+                        <a class="btn btn-primary" href="{{ url_for('bookingslot.history') }}">View Bookings</a>
+                    </div>
+                </div>
+            </div>
+        <div class="col m-4">
+            <div class="card" style="width:350px;">
+                <div class="card-header">Slots(Only for admin)</div>
+                <div class="card-body">
+                    <p class="card-text">No. of sensor: {{ slots_count }}</p>
+                    <a class="btn btn-primary" href="{{ url_for('Slots.display') }}">View Slots</a>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+       <p style="display: flex; justify-content: center; text-align: center; border: 2px solid grey;"><a href="{{ url_for('vehicle.AdminVehicle') }}"><button type="submit" class="btn btn-primary">Book Slot</button></a></p>
+
     {% endif %}
 
     {% if session['role'] == 'user' %}
         <h1 class="text-center mb-4">Your Bookings</h1>
-        {% if booking %}
+        {% if booking %}    
         <h3 style="text-align: center;">Current Bookings</h3>
         <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
             
