@@ -337,7 +337,7 @@ def MyBookingsUser():
                 INNER JOIN vehicle v ON o.SNo = v.SNo
                 INNER JOIN bookingslot b on o.SNo = b.SNo
                 INNER JOIN user u ON o.SNo=u.SNo
-                WHERE u.SNo=%s
+                WHERE u.SNo=%s ORDER BY DATE DESC
             '''
 
             cursor.execute(fetch_query,(SNo,))
