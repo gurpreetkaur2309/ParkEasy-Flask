@@ -344,7 +344,7 @@ def MyBookingsUser():
             db.commit()
             data = cursor.fetchall()
             data_list = [[dashboard[0], dashboard[1], dashboard[2], dashboard[3], dashboard[4], dashboard[5], dashboard[6], dashboard[7], dashboard[8], dashboard[9]] for dashboard in data]
-            print(data)
+            print('past booking: ', data_list)
         except mysql.connector.Error as e:
             print(e)
             print('fetch query wale except mai gaya')
@@ -373,29 +373,24 @@ def MyBookingsUser():
                     INNER JOIN 
                         user u ON o.SNo = u.SNo
                     WHERE 
-                        u.SNo = 230
-                        AND (
-                            b.Date > CURDATE() 
-                            OR (b.Date = CURDATE() AND b.TimeTo > CURTIME())
-                        )
-                    ORDER BY 
-                        b.Date DESC, 
-                        b.TimeTo DESC;
+                        u.SNo = %s AND (b.Date > CURDATE() OR (b.Date = CURDATE() AND b.TimeTo > CURTIME()))ORDER BY b.Date DESC, b.TimeTo DESC;
             '''
+            print('SNo: ', SNo)
+            cursor.execute(fetch_current,(SNo,))
+            data = cursor.fetchall()
+            datalist = [[booking[0], booking[1], booking[2], booking[3], booking[4], booking[5], booking[6], booking[7], booking[8], booking[9]] for booking in data]
+            print('current Booking', datalist)
+            if not datalist:
+                flash('No current bookings', 'success')
         except mysql.connector.Error as e:
             db.rollback()
             print(e)
             flash('An error occured.Please try again later','error')
-        data = cursor.fetchall()
-        datalist = [[booking[0], booking[1], booking[2], booking[3], booking[4], booking[5], booking[6], booking[7], booking[8], booking[9]] for booking in data]
-        print('datalist', datalist)
-        if not datalist:
-            flash('No current bookings', 'success')
+        
 
     if 'role' in session:
         return render_template('dashboard.html', data=data_list, booking = datalist,
-                                                 role = session['role']
-                                                )
+                                                 role = session['role'])
 
 @auth.route('/user/dashboard')
 @login_required
