@@ -154,7 +154,7 @@ def AdminLogin():
             session['username'] = userData[0]
             session['role'] = userData[2]
             print(session['role'])
-            return redirect(url_for('auth.MyBookings'))
+            return redirect(url_for('auth.admin_dashboard'))
         else:
             flash('Invalid username or password', 'danger')
     
@@ -277,8 +277,9 @@ payment_count = cursor.fetchone()
 cursor.execute('SELECT COUNT(*) FROM allotment')
 history_count = cursor.fetchone()
 ####dashboard########
-@auth.route('/admin/Bookings')
-def MyBookings():
+@auth.route('/admin')
+@requires_role('admin')
+def admin_dashboard():
     if 'role' in session:
         return render_template('dashboard.html',
                                slots_count = slots_count[0],
@@ -298,14 +299,46 @@ def MyBookingsUser():
     print('Get request ke upar')
     if request.method == 'GET':
         print('fetch query ke upar')
+        VehicleID = session.get('VehicleID')
+        username = session.get('username')
+        
+        if not VehicleID:
+            print('VehicleID not found')
+            flash('An error ocurred. Please try again later', 'error')
+            return redirect(url_for('index'))
+        
+        if not username:
+            print('username not found')
+            flash('An error ocurred. Please try again later', 'error')
+            return redirect(url_for('index'))
+        
+        try:
+            cursor.execute('SELECT SNo FROM user WHERE username=%s')
+            db.commit()
+            S_No = cursor.fetchone()
+            if not SNo:
+                print('SNo not found')
+                flash('An error ocurred. Please try again later', 'error')
+                return redirect(url_for('index'))
+            SNo = S_No[0]
+            if not SNo:
+                print('VehicleID not found')
+                flash('An error ocurred. Please try again later', 'error')
+                return redirect(url_for('index'))
+        except mysql.connector.Error as e:
+            db.rollback()
+            print(e)
+            flash('An error ocurred. Please try again later.', 'error')
+
+
         fetch_query = '''
             SELECT o.name, o.contact, 
             v.VehicleType, v.VehicleNumber,
             b.Date, b.TimeFrom, b.TimeTo, b.duration,o.address,
             b.BSlotID as slot
             FROM owner o 
-            INNER JOIN vehicle v ON o.OwnerID = v.VehicleID
-            INNER JOIN bookingslot b on o.OwnerID = b.BSlotID
+            INNER JOIN vehicle v ON o.SNo = v.SNo
+            INNER JOIN bookingslot b on o.SNo = b.SNo
             -- WHERE o.OwnerID=%s;
 
         '''

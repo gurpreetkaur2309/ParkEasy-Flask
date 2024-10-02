@@ -32,7 +32,7 @@
                             <h5 class="card-title">Dashboard</h5>
                             <p class="card-text">Manage your bookings</p>
                             {% if session['role'] == 'user' %}
-                                <a href="{{url_for('auth.MyBookingsUser')}}" class="btn btn-primary">Dashboard</a>
+                                <a href="{{url_for('auth.dashboard')}}" class="btn btn-primary">Dashboard</a>
                             {% elif session['role'] == 'admin' %}
                                 <a href="{{ url_for(auth.MyBookings) }}" class="btn btn-primary">Dashboard</a>
                             {% else %}
@@ -67,7 +67,7 @@
                             {% if session['role'] == 'user' %}
                                 <a href="{{url_for('auth.MyBookingsUser')}}" class="btn btn-primary">Dashboard</a>
                             {% elif session['role'] == 'admin' %}
-                                <a href="{{ url_for('auth.MyBookings') }}" class="btn btn-primary">Dashboard</a>
+                                <a href="{{ url_for('auth.admin_dashboard') }}" class="btn btn-primary">Dashboard</a>
                             {% else %}
                                 <a href="{{url_for('auth.MyBookingsUser')}}" class="btn btn-primary">Dashboard</a>
                             {% endif %}

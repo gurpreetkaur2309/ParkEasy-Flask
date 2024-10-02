@@ -36,7 +36,7 @@
                         
                           <li class="nav-item active">
                             {% if session['role'] == 'admin' %}
-                              <a class="nav-link active" aria-current="page" href="{{url_for('auth.MyBookings')}}" style="color:white;">Dashboard</a>
+                              <a class="nav-link active" aria-current="page" href="{{url_for('auth.admin_dashboard')}}" style="color:white;">Dashboard</a>
                             {% endif %}
                             
                           </li>
