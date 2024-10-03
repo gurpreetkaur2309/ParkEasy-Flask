@@ -12,6 +12,11 @@
 
 </head>
 <body>
+    <div class="flash-messages">
+        {% for msg in get_flashed_messages() %}
+         <div class="alert alert-danger">{{ msg }}</div>
+        {% endfor %}
+        </div>
 {% if session['username'] %}
     <div class="container m-5 p-5">
         <div class="row row-cols-1 row-cols-md-2 g-4">

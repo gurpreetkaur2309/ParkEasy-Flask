@@ -129,6 +129,7 @@ def add_data():
                        JOIN payment p ON b.BSlotID = p.PaymentID 
                        ORDER BY  b.Date DESC, 
                        b.TimeFrom DESC LIMIT 1
+                       WHERE b.SNo=%s
             '''
             cursor.execute(fetch_query)
             data = cursor.fetchone()
@@ -163,12 +164,13 @@ def add_data():
                     INSERT INTO allotment(VehicleID, SNo, username, date, TimeFrom, TimeTo, duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber) 
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)                '''
                 # cursor.execute(insert_query, (VehicleID, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber))
-                cursor.execute(insert_query, (VehicleID, S_No, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber))
+                cursor.execute(insert_query, (VehicleID, S_No, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber, S_No))
                 db.commit()
 
-                # if(TotalPrice==0):
-                #     db.rollback()
-                #     return "Server error" 
+                if(TotalPrice==0):
+                    db.rollback()
+                    flash('An error occurred. Please try again later','error')
+                    return redirect(url_for('index'))
 
             except mysql.connector.Error as e:
                 print('insert query wale allotment ke andar')
