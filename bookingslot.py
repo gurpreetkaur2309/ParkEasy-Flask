@@ -113,6 +113,17 @@ def add_data():
         db.commit()
         SNo = cursor.fetchone()
         S_No = SNo[0]
+        if date < datetime.today().strftime('%Y-%m-%d'):
+            flash('You cannot book for past dates','error')
+            return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID,SNo=SNo))
+
+        if len(date) != 8:  # Length must be 8
+            flash('Date is not valid','error')
+            return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID,SNo=SNo))
+        if len(TimeFrom) > 4:
+            flash('time is not valid','error')
+            return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID,SNo=SNo))
+
         if not SNo:
             # flash('An error occurred. Please try again later','error')
             return  redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, SNo=SNo))
