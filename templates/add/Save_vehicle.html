@@ -15,7 +15,7 @@
 
         <input type="hidden" class="CAlign" id="S_No" name="S_No" placeholder="S_No" value="{{SNo}}" readonly>
 
-        <label class="CAlign" for="Vehicle Type">Vehicle Type</label><br>
+        
         <select style="height: 30px;" class="CAlign" id="VehicleType" name="VehicleType"  placeholder="VehicleType">
             <option value="car">Car</option>
             <option value="2-Wheeler">2-Wheeler</option>
@@ -23,9 +23,10 @@
         </select>
         <br><br>
 
-        <select style="height: 30px;" class="CAlign" id="VehicleType" name="VehicleType"  placeholder="VehicleType">
+        <label class="CAlign" for="Vehicle Type">Vehicle Name</label><br>
+        <select style="height: 30px;" class="CAlign" id="VehicleName" name="VehicleName"  placeholder="VehicleName">
             {% for i in first_elements %}
-                <option value="i">{{i}}</option>
+                <option value="{{i}}">{{i}}</option>
             {% endfor %}
         </select>
 
@@ -40,8 +41,8 @@
             <option value="Heavy-Vehicle">Heavy-Vehicle</option>
         </select> --> 
 
-        <label class="CAlign" for="Car">Car</label><br>
-        <input class="CAlign" type="Text" id="VehicleName" name="VehicleName" placeholder="Vehicle Name" required maxlength="30"><br><br>
+   <!--      <label class="CAlign" for="Car">Car</label><br>
+        <input class="CAlign" type="Text" id="VehicleName" name="VehicleName" placeholder="Vehicle Name" required maxlength="30"><br><br> -->
 
         <div class="CAlign">
             <button type="submit" name="action" value="save_vehicle" class="btn btn-primary">Save Vehicle</button>
