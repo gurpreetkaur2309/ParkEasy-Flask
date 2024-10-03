@@ -117,10 +117,10 @@ def add_data():
             flash('You cannot book for past dates','error')
             return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID,SNo=SNo))
 
-        if len(date) != 8:  # Length must be 8
+        if len(date) != 10:  # Length must be 8
             flash('Date is not valid','error')
             return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID,SNo=SNo))
-        if len(TimeFrom) > 4:
+        if len(TimeFrom) > 5:
             flash('time is not valid','error')
             return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID,SNo=SNo))
 
@@ -129,6 +129,7 @@ def add_data():
             return  redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, SNo=SNo))
         print(SNo, 'SNo in bookingslot')
         if not date:
+            print('if not date mai gaya')
             flash('Date is not valid','error')
             return redirect(url_for('bookingslot.add_data',VehicleID=VehicleID, SNo=SNo))
         if not TimeFrom:
@@ -162,17 +163,17 @@ def add_data():
             print('check booking wale try mai gaya')
             check_booking_query = '''
                 SELECT * FROM bookingslot
-                WHERE VehicleID=%s AND date=%s AND (TimeFrom ) AND (TimeTo > %s OR TimeTo = %s)
+                WHERE VehicleID=%s AND date=%s AND (TimeFrom < %s) AND (TimeTo > %s)
             '''
             cursor.execute(check_booking_query, (VehicleID, date, TimeFrom, TimeTo,))
             db.commit()
-            check_booking = cursor.fetchall()
+            check_booking = cursor.fetchone()
             print('check booking: ', check_booking)
             if check_booking is not None:
                 print('check booking wale if mai gaya')
                 flash('You already have a booking with this vehicle in the time frame', 'error')
                 return redirect(url_for('index'))
-            else:
+            if check_booking is None:
                 print('check booking wale else mai gaya')
                 try:
                     print('update query wale try k andar')

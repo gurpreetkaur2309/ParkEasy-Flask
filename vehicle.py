@@ -65,8 +65,7 @@ def ValidNumber(VehicleNumber):
 def add_data():
     with open("static/DataSet.csv") as f:
         lines = list(csv.reader(f))
-    elements = [row[0] for row in lines if row]
-    first_elements = elements.sort()
+    first_elements = [row[0] for row in lines if row]
     data = []
     print('vehicle wale add data mai gaya')
     print('inside add_data function')
