@@ -44,26 +44,31 @@ def history():
     data = cursor.fetchall()
     return render_template('view/history.html', data=data)
 
-# def clearExpiredBookings():
-#     try:
-#         current_date = date.today()
-#         current_time = datetime.now().time()
-#         update_query = '''
-#         UPDATE bookingslot b 
-#         INNER JOIN payment p ON b.BSlotID = p.PaymentID
-#         INNER JOIN vehicle v ON b.BSlotID = v.VehicleID
-#         INNER JOIN sensor s ON b.BSlotID = s.SensorID
-#         SET b.TimeFrom = '', b.TimeTo = '', b.duration = '', b.date = '00:00:00',
-#             p.TotalPrice = 0, p.mode = '',
-#             s.isParked=0
-#         WHERE b.date < %s OR b.TimeTo < %s
-#         '''
-#         cursor.execute(update_query, (current_date, current_time))
-#         db.commit()
-#         print(f'{cursor.rowcount} expired bookings updated at {datetime.now()}')
-#     except mysql.connector.Error as e:
-#         db.rollback()
-#         print(f'Error updating expired bookings')
+def clearExpiredBookings():
+    try:
+        print('clearExpiredBookings wale try mai gaya')
+        current_date = date.today()
+        current_time = datetime.now().time()
+        print('current date: ', current_date)
+        print('current time', current_time)
+        update_query = '''
+        UPDATE bookingslot b 
+        INNER JOIN payment p ON b.BSlotID = p.PaymentID
+        INNER JOIN vehicle v ON b.SNo = v.SNo
+        INNER JOIN sensor s ON b.BSlotID = s.SensorID
+        SET b.TimeFrom = '00:00:00', b.TimeTo = '00:00:00', b.duration = '', b.date = '2004-11-14',
+            p.TotalPrice = 0, p.mode = '',
+            s.isParked=0
+        WHERE b.date < %s OR b.TimeTo < %s
+        '''
+        cursor.execute(update_query, (current_date, current_time))
+        db.commit()
+        print(f'{cursor.rowcount} expired bookings updated at {datetime.now()}')
+    except mysql.connector.Error as e:
+        db.rollback()
+        print(e)
+        print('clearExpiredBookings wale except mai gaya')
+        print(f'Error updating expired bookings')
 
 @booking.route('/bookingslot/add', methods=['GET', 'POST'])
 @login_required

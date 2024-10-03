@@ -364,16 +364,12 @@ def MyBookingsUser():
                         b.duration, 
                         o.address,
                         b.BSlotID AS slot
-                    FROM 
-                        owner o 
-                    INNER JOIN 
-                        vehicle v ON o.SNo = v.SNo
-                    INNER JOIN 
-                        bookingslot b ON o.SNo = b.SNo
-                    INNER JOIN 
-                        user u ON o.SNo = u.SNo
+                    FROM owner o 
+                    INNER JOIN vehicle v ON o.SNo = v.SNo
+                    INNER JOIN bookingslot b ON o.SNo = b.SNo
+                    INNER JOIN user u ON o.SNo = u.SNo
                     WHERE 
-                        u.SNo = %s AND (b.Date > CURDATE() OR (b.Date = CURDATE() AND b.TimeTo > CURTIME()))ORDER BY b.Date DESC, b.TimeTo DESC;
+                        u.SNo = %s AND (b.Date > CURDATE() OR (b.Date = CURDATE() AND b.TimeTo > CURTIME()))ORDER BY DATE DESC;
             '''
             print('SNo: ', SNo)
             cursor.execute(fetch_current,(SNo,))
@@ -389,7 +385,7 @@ def MyBookingsUser():
         
 
     if 'role' in session:
-        return render_template('dashboard.html', data=data_list, booking = datalist,
+        return render_template('dashboard.html', data=data_list, datalist = datalist,
                                                  role = session['role'])
 
 @auth.route('/user/dashboard')

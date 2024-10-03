@@ -87,11 +87,11 @@
 
     {% if session['role'] == 'user' %}
         <h1 class="text-center mb-4">Your Bookings</h1>
-        {% if booking %}    
+        {% if datalist %}    
         <h3 style="text-align: center;">Current Bookings</h3>
         <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
             
-            {% for booking in data %}
+            {% for booking in datalist %}
                 <div class="col">
                     <div class="card h-100">
                         <div class="card-body">
@@ -114,6 +114,7 @@
         </div><br>
         <h3 style="text-align: center;">Past Bookings</h3>
         <div class="row row-cols-1 row-cols-md-2 g-4 justify-content-center">
+            {% if data %}
             {% for dashboard in data %}
                 <div class="col">
                     <div class="card h-100">
@@ -133,6 +134,7 @@
                     </div>
                 </div>
             {% endfor %}
+            {% endif %}
         </div>
     {% endif %}
 </div>

@@ -161,6 +161,7 @@ def add_data():
                         
             try:
                 print('insert query wale try ke andar')
+                print(f"VehicleID")
                 insert_query = '''
                     INSERT INTO allotment(VehicleID, SNo, username, date, TimeFrom, TimeTo, duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber) 
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)                '''

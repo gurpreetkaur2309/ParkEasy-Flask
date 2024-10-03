@@ -6,8 +6,8 @@ from sensor import sensor
 from bookingslot import booking
 from payment import payment
 from auth import auth
-# from bookingslot import clearExpiredBookings
-# from apscheduler.schedulers.background import BackgroundScheduler
+from bookingslot import clearExpiredBookings
+from apscheduler.schedulers.background import BackgroundScheduler
 import logging
 
 
@@ -33,14 +33,14 @@ def inject_user():
 app.config['UPLOADS'] = "/Users/yashvaishnav/Downloads/CAR DETAILS FROM CAR DEKHO.csv"
 
 
-# def configure_scheduler():
-#     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-#     scheduler = BackgroundScheduler()
-#     scheduler.add_job(func=clearExpiredBookings, trigger="interval", minutes=5)
-#     scheduler.start()
-#     logging.info("Scheduler started to clear expired bookings every 5 minutes.")
+def configure_scheduler():
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(func=clearExpiredBookings, trigger="interval", minutes=5)
+    scheduler.start()
+    logging.info("Scheduler started to clear expired bookings every 5 minutes.")
 
-# configure_scheduler()
+configure_scheduler()
 if __name__ == '__main__':
     app.run(debug=True, port='5000')
 
