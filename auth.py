@@ -196,24 +196,26 @@ def login():
                 return redirect(url_for('auth.dashboard'))
             else:
                 fetch_query = '''
-                    SELECT p.PaymentID FROM Payment p
+                    SELECT p.mode FROM Payment p
                     INNER JOIN user u ON p.SNo = u.SNo 
-                    WHERE u.username = %s
+                    WHERE u.username = %s and p.mode <> ''
                 '''
                 cursor.execute(fetch_query, (username,))
                 db.commit()
                 data = cursor.fetchone()
                 print('outside if data')
                 print('user_data', user_data[2])
-                if data:
+                if data is not None:
                     print('inside if data condition')
                     print('user_data[2]', user_data[2])
                     print(session['username'])
-                    return redirect(url_for('payment.Generate_Receipt',PaymentID=data[0], SNo=user_data[2]))  
+                    # return redirect(url_for('payment.Generate_Receipt',PaymentID=data[0], SNo=user_data[2]))  
+                    return  redirect(url_for('index'))
                 else:
                     print('inside else')
                     print('user_data[2]', user_data[2])
-                    return redirect(url_for('vehicle.ChooseVehicle', SNo=user_data[2]))
+                    # return redirect(url_for('vehicle.ChooseVehicle', SNo=user_data[2]))
+                    return redirect(url_for('index'))
         else:
             print('inside the else condition')
             flash('Invalid username or password', 'error')
