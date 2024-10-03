@@ -8,7 +8,7 @@
  {% endblock %}
  {% block content %}
  	<h1 style="text-align: center;">Dashboard</h1>
- 	<table class= "dashboard" border="2">
+ 	<table class="dashboard" border="2" style="margin-left: 400px;">
 	    <thead>
 		    </thead>
 		<tbody>
@@ -31,7 +31,39 @@
 		    </tr>
 		</tbody>
 	</table>
-	        <a s href="{{url_for('auth.MyBookingsUser')}}"><button class="btn btn-primary">Your Bookings</button></a>
+	<div style="margin-left:650px;">
+		<a s href="{{url_for('auth.MyBookingsUser')}}"><button class="btn btn-primary">View Bookings</button></a><br><br>
+		<h4>Your vehicles</h4>
+	</div>
+	<div class="row" style="padding: 10px; margin:10px;">
+            {% for vehicle in vehicles %}
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+
+                        <h5 class="card-title">Vehicle Name: {{ vehicle[4] }}</h5>
+                        <p class="card-text">
+                            <strong>Vehicle ID:</strong> {{ vehicle[0] }}<br>
+                            <strong>Vehicle Type:</strong> {{ vehicle[1] }}<br>
+                            <strong>Vehicle Number:</strong> {{ vehicle[2] }}<br>
+                            <a href="{{url_for('vehicle.edit_vehicle', VehicleID=vehicle[0])}}" style="text-decoration:none">Edit</a>
+                            <a href="{{url_for('vehicle.delete_vehicle', VehicleID=vehicle[0])}}" style="text-decoration:none">Delete</a>
+
+                        </p>
+
+                        <div class="form-check">
+                            <!-- Changed name from SelectedID to VehicleID to match the backend code -->
+                            <input class="form-check-input" type="radio" name="VehicleID" id="vehicle{{ vehicle[0] }}" value="{{ vehicle[0] }}" required>
+                            <label class="form-check-label" for="vehicle{{ vehicle[0] }}">
+                                Select this vehicle
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+	        
 
 
 {% endblock %}

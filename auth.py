@@ -425,7 +425,34 @@ def dashboard():
             db.rollback()
             flash('An error occured. Please try after sometime','error')
             return redirect(url_for('index'))
-    return render_template('userDashboard.html',username=username, name=name, contact=contact, address=address)
+
+        try:
+            cursor.execute('SELECT SNo FROM user WHERE username=%s', (username,))
+            db.commit()
+            SNo = cursor.fetchone()[0]
+            if SNo is None:
+                flash('An error occured. Please try again later', 'error')
+                return redirect(url_for('index'))
+        except mysql.connector.Error as e:
+            db.rollback()
+            flash('Server failed')
+            return redirect(url_for('auth.dashboard'))
+
+        try:
+            print('fetch query wale try mau')
+            fetch_query = 'SELECT * FROM vehicle v INNER JOIN user u on u.SNo=v.SNo WHERE u.SNo=%s AND u.username=%s'
+            cursor.execute(fetch_query, (SNo, username,))
+            db.commit()
+            vehicles = cursor.fetchall()
+            vehicleList = [[vehicle[0], vehicle[1], vehicle[2], vehicle[3], vehicle[4]] for vehicle in vehicles]
+
+        except mysql.connector.Error as e:
+            print('fetch query wale except mai gaya')
+            print(e)
+            db.rollback()
+            flash('Server returned a null response. Please try again later','error')
+            return redirect(url_for('index'))
+    return render_template('userDashboard.html',username=username, name=name, contact=contact, address=address, vehicles=vehicleList)
 
 
 
