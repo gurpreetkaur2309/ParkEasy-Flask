@@ -100,15 +100,7 @@ def add_data():
     VehicleID = maxVID
 
     if request.method == 'POST':
-        if request.files:
-            uploaded_file = request.files['filename']
-            filepath = os.path.join(app.config['FILE_UPLOADS'], uploaded_file.filename)
-            uploaded_file.save(filepath)
-            with open(filepath) as file:
-                csv_file = csv.reader(file)
-                for row in csv_file:
-                    data.append(row)
-            return redirect(request.url)
+        
 
         print('post method mai gaya')
         print('post methd ke niche', S_No)
@@ -126,15 +118,7 @@ def add_data():
         print(session['VehicleID'], 'session wali vehicleid')
         VehicleType = request.form.get('VehicleType')
         VehicleNumber = request.form.get('VehicleNumber')
-        VehicleName = request.form.get('VehicleName')
-        # fetch_SNo = ''' 
-        #         SELECT u.SNo FROM user u 
-        #         JOIN vehicle v on u.SNo = v.SNo
-        #     '''
-        # cursor.execute(fetch_SNo, (VehicleID,SNo))
-        # SNo = cursor.fetchone()
-        # print(SNo,'sno')
-        # S_No = SNo[0] if SNo else None  
+        VehicleName = request.form.get('VehicleName') 
 
         check_number_query = 'SELECT VehicleNumber FROM vehicle'
         print('check query k niche', S_No)
@@ -143,9 +127,9 @@ def add_data():
         existing_number = cursor.fetchall()
         print(existing_number, 'existing number')
         
-        if existing_number == VehicleNumber:
-            flash(f'A vehicle with this Registration number has already booked slot','error')
-            return redirect(url_for('vehicle.add_data', SNo=S_No))
+        if VehicleNumber in existing_number:
+            flash(f'This vehicle is already saved. Please select this vehicle','error')
+            return redirect(url_for('vehicle.ChooseVehicle'))
         
         if not S_No:
             print('not s no.')
@@ -583,25 +567,18 @@ def add_vehicle():
         VehicleName = request.form.get('VehicleName')
         action = request.form.get('action')
         print('action: ',action)
-        # fetch_SNo = ''' 
-        #         SELECT u.SNo FROM user u 
-        #         JOIN vehicle v on u.SNo = v.SNo
-        #     '''
-        # cursor.execute(fetch_SNo, (VehicleID,SNo))
-        # SNo = cursor.fetchone()
-        # print(SNo,'sno')
-        # S_No = SNo[0] if SNo else None  
-
+       
         check_number_query = 'SELECT VehicleNumber FROM vehicle'
         print('check query k niche', S_No)
         cursor.execute(check_number_query)
         db.commit()
-        existing_number = cursor.fetchall()
-        print(existing_number, 'existing number')
+        Reg_Number = cursor.fetchall()
+        existing_number = [vehicle[0] for vehicle in Reg_Number]
+        print(existing_number, 'existing number')   
         
-        if existing_number == VehicleNumber:
-            flash(f'A vehicle with this Registration number has already booked slot','error')
-            return redirect(url_for('vehicle.add_data', SNo=S_No))
+        if VehicleNumber in existing_number:
+            flash('This vehicle is already saved. Please select this vehicle','error')
+            return redirect(url_for('vehicle.ChooseVehicle'))
         
         if not S_No:
             print('not s no.')

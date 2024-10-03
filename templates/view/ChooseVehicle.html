@@ -4,6 +4,11 @@
 {% block content %}
 <h2 style="text-align: center;">SELECT A VEHICLE </h2>
     <form id="commonFormID" method="POST" action="{{ url_for('vehicle.ChooseVehicle') }}">
+        <div class="flash-messages">
+        {% for msg in get_flashed_messages() %}
+         <div class="alert alert-danger">{{ msg }}</div>
+        {% endfor %}
+        </div>
         <div class="row" style="padding: 10px; margin:10px;">
             {% for vehicle in vehicles %}
             <div class="col-md-4">

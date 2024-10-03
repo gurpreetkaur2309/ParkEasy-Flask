@@ -151,13 +151,9 @@ def add_data():
             contact = data[10]
             TotalPrice = data[11]
             mode = data[12]
-            print(data)
+            print('sare data k niche ')
             
-            #debugging
-            cursor.execute('SELECT TotalPrice, mode, SNo FROM payment WHERE PaymentID=%s',(PaymentID,))
-            db.commit()
-            data1 = cursor.fetchone()
-            #end
+        
             print('allotment table mai jane wala data')
             print(f"VehicleID: {VehicleID}, SNo: {SNo}, username: {username}, date: {date}, TimeFrom: {TimeFrom}, TimeTo: {TimeTo}, duration: {duration}, name: {name}, contact: {contact}, TotalPrice: {TotalPrice}, mode: {mode}, VehicleType: {VehicleType}, VehicleNumber: {VehicleNumber}")                        
             try:
