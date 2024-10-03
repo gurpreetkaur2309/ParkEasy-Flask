@@ -23,9 +23,22 @@
         </select>
         <br><br>
 
+        <select style="height: 30px;" class="CAlign" id="VehicleType" name="VehicleType"  placeholder="VehicleType">
+            {% for i in first_elements %}
+                <option value="i">{{i}}</option>
+            {% endfor %}
+        </select>
+
         <label class="CAlign" for="Reg. No">Reg. No</label><br>
         <input class="CAlign" type="text" id="VehicleNumber" name="VehicleNumber"placeholder="Reg. Number" required maxlength="10">
         <br><br>
+
+
+        <!-- select style="height: 30px;" class="CAlign" id="VehicleType" name="VehicleType" value="ve" pla<ceholder="VehicleType"> -->
+            <!-- <option value="car">Car</option>
+            <option value="2-Wheeler">2-Wheeler</option>
+            <option value="Heavy-Vehicle">Heavy-Vehicle</option>
+        </select> --> 
 
         <label class="CAlign" for="Car">Car</label><br>
         <input class="CAlign" type="Text" id="VehicleName" name="VehicleName" placeholder="Vehicle Name" required maxlength="30"><br><br>
@@ -37,6 +50,7 @@
         </div>
 
     </div>
+
 
 </form>
 

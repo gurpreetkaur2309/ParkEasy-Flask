@@ -63,6 +63,9 @@ def ValidNumber(VehicleNumber):
 @Vehicle.route('/vehicle/add', methods=['POST', 'GET'])
 @login_required
 def add_data():
+    with open(" /Users/yashvaishnav/project/parking/static/DataSet.csv ") as f:
+        lines = list(csv.reader(f))
+        print('lines: ', lines)
     data = []
     print('vehicle wale add data mai gaya')
     print('inside add_data function')
@@ -511,7 +514,14 @@ def edit_vehicle(VehicleID):
 @Vehicle.route('/user/vehicle/Add',methods=['GET','POST'])
 @login_required
 def add_vehicle():
+    with open("static/DataSet.csv") as f:
+        lines = list(csv.reader(f))
+    first_elements = [row[0] for row in lines if row]
+    print('first_elements: ', first_elements)
+
+
     data = []
+
     print('inside vehicle function')
     username = session.get('username')
     print('username: ', username)
@@ -612,7 +622,7 @@ def add_vehicle():
 
            
 
-    return render_template('add/Save_vehicle.html', SNo=S_No, data=data)
+    return render_template('add/Save_vehicle.html', SNo=S_No, data=data, first_elements=first_elements)
 
 
 @Vehicle.route('/vehicle/edit/<int:VehicleID>', methods=['GET', 'POST'])
@@ -660,7 +670,7 @@ def delete_vehicle(VehicleID):
     if data is None:
         flash('Data not found')
         return redirect(url_for('vehicle.ChooseVehicle'))
-    return render_template('delete/ChooseVehicle.html', data=data) 
+    return render_template('delete/ChooseVehicle.html', data=data, vehicle_types=first_elements) 
 
 @Vehicle.route('/vehicle/delete/<int:VehicleID>', methods=['GET', 'POST'])
 @login_required

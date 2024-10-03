@@ -333,7 +333,6 @@ def MyBookingsUser():
             fetch_query = '''
                 SELECT * from allotment WHERE username=%s
             '''
-
             cursor.execute(fetch_query,(username,))
             db.commit()
             data = cursor.fetchall()
