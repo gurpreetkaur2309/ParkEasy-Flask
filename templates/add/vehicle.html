@@ -27,8 +27,12 @@
         <input class="CAlign" type="text" id="VehicleNumber" name="VehicleNumber"placeholder="Reg. Number" required maxlength="10">
         <br><br>
 
-        <label class="CAlign" for="Car">Car</label><br>
-        <input class="CAlign" type="Text" id="VehicleName" name="VehicleName" placeholder="Vehicle Name" required maxlength="30"><br><br>
+        <label class="CAlign" for="Vehicle Type">Vehicle Name</label><br>
+        <select style="height: 30px;" class="CAlign" id="VehicleName" name="VehicleName"  placeholder="VehicleName">
+            {% for i in first_elements %}
+                <option value="{{i}}">{{i}}</option>
+            {% endfor %}
+        </select>
 
         <button type="submit" style="margin-left:620px" class="btn btn-primary">Submit</button>
 

@@ -167,10 +167,10 @@ def add_data():
                 cursor.execute(insert_query, (VehicleID, SNo, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber))
                 db.commit()
 
-                if(TotalPrice==0):
-                    db.rollback()
-                    flash('An error occurred. Please try again later','error')
-                    return redirect(url_for('index'))
+                # if(TotalPrice==0):
+                #     db.rollback()
+                #     flash('An error occurred. Please try again later','error')
+                #     return redirect(url_for('index'))
 
             except mysql.connector.Error as e:
                 print('insert query wale allotment ke andar')

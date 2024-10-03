@@ -176,7 +176,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        if len(password) > 10:
+        if len(password) > 25:
             flash('Password should not be more than 8 characters', 'error')
             return redirect(url_for('auth.login'))
 
@@ -331,12 +331,12 @@ def MyBookingsUser():
 
         try:
             fetch_query = '''
-                SELECT * from allotment WHERE username=%s
+                SELECT * from allotment WHERE username=%s AND TimeTo<curtime()
             '''
             cursor.execute(fetch_query,(username,))
             db.commit()
             data = cursor.fetchall()
-            data_list = [[dashboard[0], dashboard[1], dashboard[2], dashboard[3], dashboard[4], dashboard[5], dashboard[6], dashboard[7], dashboard[8], dashboard[9]] for dashboard in data]
+            data_list = [[dashboard[0], dashboard[1], dashboard[2], dashboard[3], dashboard[4], dashboard[5], dashboard[6], dashboard[7], dashboard[8], dashboard[9], dashboard[10], dashboard[11], dashboard[12], dashboard[13]] for dashboard in data]
             print('past booking: ', data_list)
             if not data_list:
                 flash('No past bookings', 'success')

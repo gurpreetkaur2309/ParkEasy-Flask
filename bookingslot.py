@@ -118,7 +118,7 @@ def add_data():
             return  redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, SNo=SNo))
         print(SNo, 'SNo in bookingslot')
         if not date:
-            flash('Please enter date','error')
+            flash('Date is not valid','error')
             return redirect(url_for('bookingslot.add_data',VehicleID=VehicleID, SNo=SNo))
         if not TimeFrom:
             flash('Please enter time to continue','error')

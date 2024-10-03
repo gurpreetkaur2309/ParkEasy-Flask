@@ -63,9 +63,9 @@ def ValidNumber(VehicleNumber):
 @Vehicle.route('/vehicle/add', methods=['POST', 'GET'])
 @login_required
 def add_data():
-    with open(" /Users/yashvaishnav/project/parking/static/DataSet.csv ") as f:
+    with open("static/DataSet.csv") as f:
         lines = list(csv.reader(f))
-        print('lines: ', lines)
+    first_elements = [row[0] for row in lines if row]
     data = []
     print('vehicle wale add data mai gaya')
     print('inside add_data function')
@@ -162,7 +162,7 @@ def add_data():
         print('sabse niche return redirect wale k upar', S_No)
         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, S_No=S_No))
 
-    return render_template('add/vehicle.html', SNo=S_No, data=data)
+    return render_template('add/vehicle.html', SNo=S_No, data=data, first_elements=first_elements)
 
 @Vehicle.route('/vehicle/admin/add', methods=['GET','POST'])
 @login_required
