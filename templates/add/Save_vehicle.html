@@ -4,7 +4,7 @@
 {% block stylesheet %} {% endblock %}
 {% block content %}
 <h1>Add vehicle details</h1>
-<form id="commonFormID" method="POST" action="{{ url_for('vehicle.add_data') }}?SNo={{ SNo }}">
+<form id="commonFormID" method="POST" action="{{ url_for('vehicle.add_vehicle') }}?SNo={{ SNo }}">
 
     <div class="flash messages">
         {% for msg in get_flashed_messages() %}
@@ -32,7 +32,7 @@
 
         <div class="CAlign">
             <button type="submit" name="action" value="save_vehicle" class="btn btn-primary">Save Vehicle</button>
-            <button type="submit" name="action" value="book_slot" class="btn btn-primary">Save Vehicle</button>
+            <button type="submit" name="action" value="book_slot" class="btn btn-primary" style="margin-left:20px;">Book slot</button>
 
         </div>
 
