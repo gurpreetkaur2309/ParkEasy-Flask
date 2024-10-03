@@ -345,6 +345,8 @@ def MyBookingsUser():
             data = cursor.fetchall()
             data_list = [[dashboard[0], dashboard[1], dashboard[2], dashboard[3], dashboard[4], dashboard[5], dashboard[6], dashboard[7], dashboard[8], dashboard[9]] for dashboard in data]
             print('past booking: ', data_list)
+            if not data_list:
+                flash('No past bookings', 'success')
         except mysql.connector.Error as e:
             print(e)
             print('fetch query wale except mai gaya')
