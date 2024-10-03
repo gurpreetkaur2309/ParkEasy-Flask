@@ -126,7 +126,7 @@ def add_data():
                 JOIN user u ON v.SNo = u.SNo 
                 JOIN owner o ON u.SNo = o.SNo 
                 JOIN payment p ON b.BSlotID = p.PaymentID 
-                WHERE v.SNo = %s  -- WHERE clause must come before ORDER BY
+                WHERE v.SNo = %s  
                 ORDER BY b.Date DESC, b.TimeTo DESC 
                 LIMIT 1
                        
