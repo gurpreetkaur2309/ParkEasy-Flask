@@ -158,7 +158,8 @@ def add_data():
             db.commit()
             data1 = cursor.fetchone()
             #end
-                        
+            print('allotment table mai jane wala data')
+            print(f"VehicleID: {VehicleID}, SNo: {SNo}, username: {username}, date: {date}, TimeFrom: {TimeFrom}, TimeTo: {TimeTo}, duration: {duration}, name: {name}, contact: {contact}, TotalPrice: {TotalPrice}, mode: {mode}, VehicleType: {VehicleType}, VehicleNumber: {VehicleNumber}")                        
             try:
                 print('insert query wale try ke andar')
                 print(f"VehicleID")

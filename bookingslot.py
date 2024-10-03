@@ -206,7 +206,7 @@ def anotherSlot():
     if not SNo:
         flash('An error occurred. Please try again', 'error')
         return redirect(url_for('bookingslot.anotherSlot', VehicleID=VehicleID))
-    S_No = SNo[0]
+    S_No  = SNo[0]
 
     if request.method == 'POST':
         VehicleID = request.form.get('VehicleID')
@@ -220,7 +220,7 @@ def anotherSlot():
         TimeTo = timeTo_dt.strftime(TimeFormat)
 
         try:
-            durationStr = int(duration)
+            durationtr = int(duration)
 
         except ValueError as ve:
             flash('duration must be a valid number', 'error')
@@ -228,7 +228,7 @@ def anotherSlot():
 
         if not VehicleID:
             flash('An error occurred. Please try again.','error')
-            return redirect(url_for('bookingslot.anotherSlot', VehicleID=VehicleID))
+            # return redirect(url_for('bookingslot.anotherSlot', VehicleID=VehicleID))
 
         if not BSlotID:
             flash('An error occurred. Please try again.','error')
@@ -265,8 +265,8 @@ def anotherSlot():
     db.commit()
     if S == None:
         # flash('An error occured. Please try again later.', 'error')
-        return redirect(url_for('bookingslot.anotherSlot', VehicleID=VehicleID))
-    SNo = S[0]
+        # return redirect(url_for('bookingslot.anotherSlot', VehicleID=VehicleID))
+            SNo = S[0]
 
     print('Final render_template k upar')
     return render_template('add/anotherSlot.html', SNo = S[0], slots=slots)
