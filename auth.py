@@ -379,7 +379,7 @@ def MyBookingsUser():
             datalist = [[booking[0], booking[1], booking[2], booking[3], booking[4], booking[5], booking[6], booking[7], booking[8], booking[9]] for booking in data]
             print('current Booking', datalist)
             if not datalist:
-                flash('No current bookings', 'success')
+                flash('No future bookings', 'success')
         except mysql.connector.Error as e:
             db.rollback()
             print(e)

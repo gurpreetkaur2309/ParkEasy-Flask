@@ -148,25 +148,47 @@ def add_data():
 
         print('update query wale try k upar')
         try:
-            print('update query wale try k andar')
-            update_query = '''
-                UPDATE bookingslot
-                SET date=%s, duration=%s, TimeFrom=%s, TimeTo=%s, SNo=%s, VehicleID=%s
-                WHERE BSlotID=%s
+            print('check booking wale try mai gaya')
+            check_booking_query = '''
+                SELECT * FROM bookingslot
+                WHERE VehicleID=%s AND date=%s AND (TimeFrom < %s OR TimeFrom = %s) AND (TimeTo > %s OR TimeTo = %s)
             '''
-            cursor.execute(update_query, (date,  duration, TimeFrom, TimeTo, S_No, VehicleID, BSlotID,))
+            cursor.execute(check_booking_query, (VehicleID, date, TimeFrom, TimeFrom, TimeTo, TimeTo,))
             db.commit()
-            # return render_template('add/owner.html', VehicleID=BSlotID)
-            #debugging
-            data = cursor.fetchone()
-            #end
-            return redirect(url_for('payment.add_data', VehicleID=VehicleID, SNo=S_No))
-        except  mysql.connector.Error as e:
-            print('update query wale except k andar')
+            check_booking = cursor.fetchone()
+            print('check booking: ', check_booking)
+            if check_booking is not None:
+                print('check booking wale if mai gaya')
+                flash('You already have a booking with this vehicle', 'error')
+                return redirect(url_for('index'))
+            else:
+                print('check booking wale else mai gaya')
+                try:
+                    print('update query wale try k andar')
+                    update_query = '''
+                        UPDATE bookingslot
+                        SET date=%s, duration=%s, TimeFrom=%s, TimeTo=%s, SNo=%s, VehicleID=%s
+                        WHERE BSlotID=%s
+                    '''
+                    cursor.execute(update_query, (date,  duration, TimeFrom, TimeTo, S_No, VehicleID, BSlotID,))
+                    db.commit()
+                    # return render_template('add/owner.html', VehicleID=BSlotID)
+                    #debugging
+                    data = cursor.fetchone()
+                    #end
+                    return redirect(url_for('payment.add_data', VehicleID=VehicleID, SNo=S_No))
+                except  mysql.connector.Error as e:
+                    print('update query wale except k andar')
+                    print(e)
+                    db.rollback()
+                    flash('Error adding data')
+                    return render_template('add/bookingslot.html')
+        except mysql.connector.Error as e:
+            print('check booking wale except mai gaya')
             print(e)
             db.rollback()
-            flash('Error adding data')
-            return render_template('add/bookingslot.html')
+            flash('Server failed','error')
+            return redirect(url_for('index'))
         print('VehicleID: ', VehicleID)
         return redirect(url_for('payment.add_data', SNo=S_No, VehicleID=VehicleID))
     cursor.execute("SELECT SNo FROM bookingslot WHERE BSlotID=%s", (BSlotID,))
@@ -241,23 +263,41 @@ def anotherSlot():
         if not duration:
             flash('An error occurred. Please try again.', 'error')
             return redirect(url_for('bookingslot.anotherSlot'))
-        
         try:
-            update_query = '''
-                UPDATE bookingslot
-                SET date=%s, duration=%s, TimeFrom=%s, TimeTo=%s, SNo=%s, VehicleID=%s
-                WHERE BSlotID=%s
+            print('check booking wale try mai gaya')
+            check_booking_query = '''
+                SELECT * FROM bookingslot
+                WHERE VehicleID=%s AND date=%s AND (TimeFrom < %s OR TimeFrom = %s) AND (TimeTo > %s OR TimeTo = %s)
             '''
-            cursor.execute(update_query, (Date,  duration, TimeFrom, TimeTo, S_No, VehicleID,BSlotID))
+            cursor.execute(check_booking_query, (VehicleID, date, TimeFrom, TimeTo,))
             db.commit()
-            data = cursor.fetchone()
-            return redirect(url_for('payment.add_data', VehicleID=VehicleID, SNo=S_No))
-        except  mysql.connector.Error as e:
-            print(e)
+            check_booking = cursor.fetchall()
+            print('check booking: ', check_booking)
+            if check_booking:
+                flash('You already have a booking with this vehicle.','error')
+                return redirect(url_for('auth.MyBookingsUser'))
+            if not check_booking:
+                try:
+                    update_query = '''
+                        UPDATE bookingslot
+                        SET date=%s, duration=%s, TimeFrom=%s, TimeTo=%s, SNo=%s, VehicleID=%s
+                        WHERE BSlotID=%s
+                    '''
+                    cursor.execute(update_query, (Date,  duration, TimeFrom, TimeTo, S_No, VehicleID,BSlotID))
+                    db.commit()
+                    data = cursor.fetchone()
+                    return redirect(url_for('payment.add_data', VehicleID=VehicleID, SNo=S_No))
+                except  mysql.connector.Error as e:
+                    print(e)
+                    db.rollback()
+                    flash('Error adding data')
+                    # return render_template('add/bookingslot.html')
+                    return redirect(url_for('bookingslot.customSlot', VehicleID=VehicleID))
+        except mysql.connector.Error as e:
+            print('check booking wale excpet ami gaya')
             db.rollback()
-            flash('Error adding data')
-            # return render_template('add/bookingslot.html')
-            return redirect(url_for('bookingslot.customSlot', VehicleID=VehicleID))
+            flash('Server failed','error')
+            return redirect(url_for('index'))
         return redirect(url_for('payment.add_data', VehicleID=VehicleID,SNo=S_No))
     BSlotID = session.get('BSlotID')
     cursor.execute("SELECT SNo FROM vehicle WHERE VehicleID=%s", (VehicleID,))
