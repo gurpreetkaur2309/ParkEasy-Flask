@@ -76,7 +76,7 @@ def register():
             return redirect(url_for('auth.register_form'))
 
 
-        print('insert_query executed')
+
         try:
             maxSNo = 'SELECT MAX(SNo) FROM user'
             cursor.execute(maxSNo)

@@ -25,7 +25,7 @@
                         <!-- <img src="path_to_image1.jpg" class="card-img-top" alt="Book Slot Image"> -->
                         <div class="card-body">
                             <h5 class="card-title">Book Slot</h5>
-                            <p class="card-text">Reserve your parking slot now.</p>
+                            <p class="card-text">Reserve your parking slot.</p>
                             <a href= "{{url_for('vehicle.ChooseVehicle')}}" class="btn btn-primary">Book Now</a>
                         </div>
                     </div>
@@ -35,7 +35,7 @@
                         <!-- <img src="path_to_image2.jpg" class="card-img-top" alt="Dashboard Image"> -->
                         <div class="card-body">
                             <h5 class="card-title">Dashboard</h5>
-                            <p class="card-text">Manage your bookings</p>
+                            <p class="card-text">Manage your bookings and vehicles</p>
                             {% if session['role'] == 'user' %}
                                 <a href="{{url_for('auth.dashboard')}}" class="btn btn-primary">Dashboard</a>
                             {% elif session['role'] == 'admin' %}
@@ -43,7 +43,6 @@
                             {% else %}
                                 <a href="{{url_for('auth.MyBookingsUser')}}" class="btn btn-primary">Dashboard</a>
                             {% endif %}
-
                         </div>
                     </div>
             </div>
