@@ -15,16 +15,14 @@
             {% endif %}
         {% endwith %}
     </div>
-{VehicleID} {{VehicleID}}
-{mode} {{mode}}
-{BSlotID} {{BSlotID}}
-{PaymentID} {{PaymentID}}
-{SNo} {{SNo}}
+
     <input class="CAlign" type="hidden" id="VehicleID" name="VehicleID" value="{{ VehicleID }}"><br><br>
     
     <select class="CAlign" id="mode" name="mode">
         <option value="UPI">UPI</option>
-        
+        <option value="Cash">Cash</option>
+        <option value="Card">Card</option>
+        <option value="Net-Banking">Net-Banking</option>
     </select>
     
     <button style="margin-left: 650px; margin-top:30px;" id="CAlignID" type="submit" class="btn btn-primary">Generate Receipt</button>

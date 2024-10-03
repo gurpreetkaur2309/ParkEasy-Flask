@@ -65,7 +65,8 @@ def ValidNumber(VehicleNumber):
 def add_data():
     with open("static/DataSet.csv") as f:
         lines = list(csv.reader(f))
-    first_elements = [row[0] for row in lines if row]
+    elements = [row[0] for row in lines if row]
+    first_elements = elements.sort()
     data = []
     print('vehicle wale add data mai gaya')
     print('inside add_data function')
@@ -670,7 +671,7 @@ def delete_vehicle(VehicleID):
     if data is None:
         flash('Data not found')
         return redirect(url_for('vehicle.ChooseVehicle'))
-    return render_template('delete/ChooseVehicle.html', data=data, vehicle_types=first_elements) 
+    return render_template('delete/ChooseVehicle.html', data=data) 
 
 @Vehicle.route('/vehicle/delete/<int:VehicleID>', methods=['GET', 'POST'])
 @login_required

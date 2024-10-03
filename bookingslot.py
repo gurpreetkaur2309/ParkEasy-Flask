@@ -151,15 +151,15 @@ def add_data():
             print('check booking wale try mai gaya')
             check_booking_query = '''
                 SELECT * FROM bookingslot
-                WHERE VehicleID=%s AND date=%s AND (TimeFrom < %s OR TimeFrom = %s) AND (TimeTo > %s OR TimeTo = %s)
+                WHERE VehicleID=%s AND date=%s AND (TimeFrom ) AND (TimeTo > %s OR TimeTo = %s)
             '''
-            cursor.execute(check_booking_query, (VehicleID, date, TimeFrom, TimeFrom, TimeTo, TimeTo,))
+            cursor.execute(check_booking_query, (VehicleID, date, TimeFrom, TimeTo,))
             db.commit()
-            check_booking = cursor.fetchone()
+            check_booking = cursor.fetchall()
             print('check booking: ', check_booking)
             if check_booking is not None:
                 print('check booking wale if mai gaya')
-                flash('You already have a booking with this vehicle', 'error')
+                flash('You already have a booking with this vehicle in the time frame', 'error')
                 return redirect(url_for('index'))
             else:
                 print('check booking wale else mai gaya')
