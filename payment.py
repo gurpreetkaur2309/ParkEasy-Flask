@@ -12,7 +12,6 @@ payment = Blueprint('payment', __name__)
 @login_required
 @requires_role('admin')
 def display():
-
     fetch_query = '''
         SELECT p.PaymentID, if(p.TotalPrice = 0, '', p.TotalPrice) as formatted_Price, p.mode 
         FROM payment p
@@ -122,16 +121,17 @@ def add_data():
                        u.SNo, u.username,     
                        o.name, o.contact,     
                        p.TotalPrice, p.mode 
-                       FROM vehicle v
-                       JOIN bookingslot b ON v.SNo = b.SNo
-                       JOIN user u ON v.SNo = u.SNo 
-                       JOIN owner o ON u.SNo = o.SNo 
-                       JOIN payment p ON b.BSlotID = p.PaymentID 
-                       ORDER BY  b.Date DESC, 
-                       b.TimeFrom DESC LIMIT 1
-                       WHERE b.SNo=%s
+                FROM vehicle v
+                JOIN bookingslot b ON v.SNo = b.SNo
+                JOIN user u ON v.SNo = u.SNo 
+                JOIN owner o ON u.SNo = o.SNo 
+                JOIN payment p ON b.BSlotID = p.PaymentID 
+                WHERE v.SNo = %s  -- WHERE clause must come before ORDER BY
+                ORDER BY b.Date DESC, b.TimeTo DESC 
+                LIMIT 1
+                       
             '''
-            cursor.execute(fetch_query)
+            cursor.execute(fetch_query, (SNo))
             data = cursor.fetchone()
             print('user data: ', data)
             if data is None:
@@ -164,7 +164,7 @@ def add_data():
                     INSERT INTO allotment(VehicleID, SNo, username, date, TimeFrom, TimeTo, duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber) 
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)                '''
                 # cursor.execute(insert_query, (VehicleID, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber))
-                cursor.execute(insert_query, (VehicleID, S_No, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber, S_No))
+                cursor.execute(insert_query, (VehicleID, SNo, username, date, TimeFrom, TimeTo, Duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber))
                 db.commit()
 
                 if(TotalPrice==0):

@@ -331,18 +331,10 @@ def MyBookingsUser():
 
         try:
             fetch_query = '''
-                SELECT o.name, o.contact, 
-                v.VehicleType, v.VehicleNumber,
-                b.Date, b.TimeFrom, b.TimeTo, b.duration,o.address,
-                b.BSlotID as slot
-                FROM owner o 
-                INNER JOIN vehicle v ON o.SNo = v.SNo
-                INNER JOIN bookingslot b on o.SNo = b.SNo
-                INNER JOIN user u ON o.SNo=u.SNo
-                WHERE u.SNo=%s and b.Date<curdate() ORDER BY DATE DESC
+                SELECT * from allotment WHERE username=%s
             '''
 
-            cursor.execute(fetch_query,(SNo,))
+            cursor.execute(fetch_query,(username,))
             db.commit()
             data = cursor.fetchall()
             data_list = [[dashboard[0], dashboard[1], dashboard[2], dashboard[3], dashboard[4], dashboard[5], dashboard[6], dashboard[7], dashboard[8], dashboard[9]] for dashboard in data]
