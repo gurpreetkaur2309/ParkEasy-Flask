@@ -71,8 +71,7 @@ def clearExpiredBookings():
 
 @booking.route('/bookingslot/add', methods=['GET', 'POST'])
 @login_required
-def add_data():
-    vid = session.get('VehicleID')
+def add_data(): 
     VehicleID = request.args.get('VehicleID')
     session['VehicleID'] = VehicleID
     VacantSlots = '''
@@ -138,7 +137,7 @@ def add_data():
         timeFrom_dt = datetime.strptime(TimeFrom, TimeFormat)
         timeTo_dt = timeFrom_dt + timedelta(hours=durationStr)
         TimeTo = timeTo_dt.strftime(TimeFormat)
-
+        print('VehicleID: ', VehicleID)
         try:
             check_booking_query = '''
                 SELECT * FROM bookingslot
@@ -147,10 +146,12 @@ def add_data():
             cursor.execute(check_booking_query, (VehicleID, date, TimeFrom, TimeTo,))
             db.commit()
             check_booking = cursor.fetchone()
-            if check_booking is not None:
-                flash('You already have a booking with this vehicle in the time frame', 'error')
-                return redirect(url_for('index'))
-            if check_booking is None:
+            print('check_booking: ', check_booking)
+            if check_booking:
+                if (VehicleID == check_booking[6]):
+                    flash('You already have a booking with this vehicle in the time frame', 'error')
+                    return redirect(url_for('index'))
+            if not check_booking:
                 try:
                     update_query = '''
                         UPDATE bookingslot
@@ -167,7 +168,7 @@ def add_data():
                 except  mysql.connector.Error as e:
                     db.rollback()
                     flash('Error adding data')
-                    return render_template('add/bookingslot.html')
+                    return redirect(url_for(''))
         except mysql.connector.Error as e:
             db.rollback()
             flash('Server failed','error')
@@ -243,4 +244,3 @@ def delete_data(BSlotID):
         flash('No data found')
         return redirect(url_for('bookingslot.display'))
     return render_template('delete/bookingslot.html', data=data)
-

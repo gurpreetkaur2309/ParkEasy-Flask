@@ -222,19 +222,18 @@ def delete_data(PaymentID):
 
 @payment.route('/payment/generate_receipt/<int:PaymentID>', methods=['GET', 'POST'])
 @login_required
-@requires_role('user')
 def Generate_Receipt(PaymentID):
-    VehicleID = session.get('VehicleID')
+    VehicleID = request.args.get('VehicleID')
     print('VehicleID: ', VehicleID)
     try:
         fetch_query = '''
-            SELECT v.SNo, v.VehicleType, v.VehicleNumber, b.date, p.PaymentID, p.TotalPrice, p.Mode, b.TimeFrom, b.TimeTo
+            SELECT v.SNo, v.VehicleType, v.VehicleNumber, b.date, p.PaymentID, p.TotalPrice, p.Mode, b.TimeFrom, b.TimeTo, v.VehicleID
             FROM payment p 
             JOIN bookingslot b ON p.PaymentID = b.BSlotID 
             JOIN vehicle v  ON p.SNo = v.SNo
-            WHERE p.PaymentID=%s
+            WHERE p.PaymentID=%s and v.VehicleID=%s
         '''
-        cursor.execute(fetch_query, (PaymentID,))
+        cursor.execute(fetch_query, (PaymentID,VehicleID,))
         db.commit()
         data = cursor.fetchone()
         print(data)
