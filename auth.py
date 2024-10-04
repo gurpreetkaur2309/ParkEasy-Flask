@@ -287,6 +287,8 @@ def admin_dashboard():
 @auth.route('/user/Bookings')
 @login_required
 def MyBookingsUser():
+    VehicleID = session.get('VehicleID')
+    print('VehicleID: ', VehicleID)
     if request.method == 'GET':
         username = session.get('username')
         
@@ -309,12 +311,13 @@ def MyBookingsUser():
 
         try:
             fetch_query = '''
-                SELECT * from allotment WHERE username=%s AND TimeTo<curtime()
+                SELECT * from allotment WHERE username=%s AND TimeTo>curtime()
             '''
             cursor.execute(fetch_query,(username,))
             db.commit()
             data = cursor.fetchall()
             data_list = [[dashboard[0], dashboard[1], dashboard[2], dashboard[3], dashboard[4], dashboard[5], dashboard[6], dashboard[7], dashboard[8], dashboard[9], dashboard[10], dashboard[11], dashboard[12], dashboard[13]] for dashboard in data]
+            print('data_list past: ', data_list)
             if not data_list:
                 flash('No past bookings', 'success')
         except mysql.connector.Error as e:
@@ -339,12 +342,12 @@ def MyBookingsUser():
                     INNER JOIN bookingslot b ON o.SNo = b.SNo
                     INNER JOIN user u ON o.SNo = u.SNo
                     WHERE 
-                        u.SNo = %s AND (b.Date > CURDATE() OR (b.Date = CURDATE() AND b.TimeTo > CURTIME()))ORDER BY DATE DESC;
+                        u.SNo = %s AND VehicleID=%s AND (b.Date > CURDATE() OR (b.Date = CURDATE() AND b.TimeTo > CURTIME()))ORDER BY DATE DESC;
             '''
             cursor.execute(fetch_current,(SNo,))
             data = cursor.fetchall()
             datalist = [[booking[0], booking[1], booking[2], booking[3], booking[4], booking[5], booking[6], booking[7], booking[8], booking[9]] for booking in data]
-
+            print('datalist: ', datalist)
             if not datalist:
                 flash('No future bookings', 'success')
         except mysql.connector.Error as e:
