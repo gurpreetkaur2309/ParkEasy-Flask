@@ -37,8 +37,19 @@
 
     <!-- password -->
     <label for="password"></label>
-    <input class="auth" type="password" id="password" name="password" placeholder="password" required maxlength = "15">
-    <br><br>
+    <input class="auth" type="password" id="myInput" name="password" placeholder="password" required maxlength = "15">
+    <br>
+    <input class="auth" type="checkbox" name="password" onclick="myFunction()">Show Password<br><br>
+    <script>
+        function myFunction(){
+        var x = document.getElementById("myInput");
+        if(x.type === "password"){
+          x.type = "text";
+        } 
+        else{
+            x.type = "password";
+            }}
+    </script>
 
 {#    <input id="auth" type="submit" value="Login">#}
     <button id="auth" type="submit" class="btn btn-primary">Submit</button>

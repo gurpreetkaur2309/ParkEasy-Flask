@@ -16,7 +16,7 @@
                 {% for message in messages %}
                     {% if error %}
                         <div class="alert alert-danger">{{ message }}</div>
-                    {% else %}
+                    {% elif success %}
                     <div class="alert alert-success">{{ message }}</div>
                     {% endif %}
                 {% endfor %}
@@ -41,7 +41,18 @@
     <br><br>
 
     <label for="password"></label>
-    <input class="auth" type="password" id="password" name="password" placeholder="password" required maxlength="15">
+    <input class="auth" type="password" id="myInput" name="password" placeholder="password" required maxlength="15">
+    <input type="checkbox" name="password" onclick="myFunction()">Show Password
+    <script>
+        function myFunction() {
+        var x = document.getElementById("myInput");
+        if (x.type === "password") {
+          x.type = "text";
+        } 
+        else{
+            x.type = "password";
+            }}
+    </script>
     <br><br>
     {% for slot in availableSlots %}
         <select class="auth" id="OwnerID" name="OwnerID">

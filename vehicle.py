@@ -526,7 +526,6 @@ def add_vehicle():
             db.rollback()
             flash('Error adding data', 'error')
             return redirect(url_for('vehicle.add_data', SNo=S_No)) 
-           
 
     return render_template('add/Save_vehicle.html', SNo=S_No, data=data, first_elements=first_elements)
 
