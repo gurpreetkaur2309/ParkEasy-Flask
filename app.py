@@ -30,8 +30,7 @@ def inject_user():
     username = session.get('username')
     SNo = session.get('SNo')
     return dict(username=username)
-
-
+            
 def configure_scheduler():
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     scheduler = BackgroundScheduler()
