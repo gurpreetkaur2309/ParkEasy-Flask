@@ -1,60 +1,94 @@
-
 {% extends "layout.html" %}
-{% block title %}Add vehicle details{% endblock %}
-{% block stylesheet %} {% endblock %}
+{% block title %}Add Vehicle Details{% endblock %}
+{% block stylesheet %} 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Style for the dropdown and its options */
+        .dropdown-menu {
+            max-height: 200px; /* Set a max height for the dropdown */
+            overflow-y: auto;  /* Enable scrolling */
+        }
+    </style>
+{% endblock %}
 {% block content %}
-<h1>Add vehicle details</h1>
-<form id="commonFormID" method="POST" action="{{ url_for('vehicle.add_vehicle') }}?SNo={{ SNo }}">
+<h1>Add Vehicle Details</h1>
+
+<form id="commonFormID" method="POST" action="{{ url_for('vehicle.add_data') }}?SNo={{ SNo }}">
 
     <div class="flash messages">
         {% for msg in get_flashed_messages() %}
-         <div class="alert alert-danger">{{ msg }}</div>
+            <div class="alert alert-danger">{{ msg }}</div>
         {% endfor %}
     </div>
+
     <div class="CAligndiv">
 
-        <input type="hidden" class="CAlign" id="S_No" name="S_No" placeholder="S_No" value="{{SNo}}" readonly>
+        <input type="hidden" class="CAlign" id="S_No" name="S_No" value="{{ SNo }}" readonly>
 
-        
-        <select style="height: 30px;" class="CAlign" id="VehicleType" name="VehicleType"  placeholder="VehicleType">
+        <!-- Vehicle Type Dropdown -->
+        <label class="CAlign" for="VehicleType">Vehicle Type</label><br>
+        <select style="height: 30px;" class="CAlign" id="VehicleType" name="VehicleType" required>
             <option value="car">Car</option>
             <option value="2-Wheeler">2-Wheeler</option>
             <option value="Heavy-Vehicle">Heavy-Vehicle</option>
         </select>
         <br><br>
 
-        <label class="CAlign" for="Vehicle Type">Vehicle Name</label><br>
-        <select style="height: 30px;" class="CAlign" id="VehicleName" name="VehicleName"  placeholder="VehicleName">
-            {% for i in first_elements %}
-                <option value="{{i}}">{{i}}</option>
-            {% endfor %}
-        </select>
-
-        <label class="CAlign" for="Reg. No">Reg. No</label><br>
-        <input class="CAlign" type="text" id="VehicleNumber" name="VehicleNumber"placeholder="Reg. Number" required maxlength="10">
+        <!-- Vehicle Name Dropdown with Search Functionality -->
+        <label class="CAlign" for="VehicleName">Vehicle Name</label><br>
+        <div class="dropdown">
+            <button style="margin-left: 600px;" class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                Select Vehicle Name
+            </button>
+            <ul class="dropdown-menu pt-0" aria-labelledby="dropdownMenuButton1">
+                <input type="text" class="form-control border-0 border-bottom shadow-none mb-2" placeholder="Search..." id="searchInput" oninput="filterOptions()">
+                <li><a class="dropdown-item" href="#" data-value="">Select a Vehicle</a></li>
+                {% for i in first_elements %}
+                    <li><a class="dropdown-item" href="#" data-value="{{ i }}">{{ i }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <input type="hidden" name="VehicleName" id="VehicleName" required> <!-- Hidden field to store selected value -->
         <br><br>
 
+        <!-- Registration Number -->
+        <label class="CAlign" for="VehicleNumber">Reg. No</label><br>
+        <input class="CAlign" type="text" id="VehicleNumber" name="VehicleNumber" placeholder="Reg. Number" required maxlength="10">
+        <br><br>
 
-        <!-- select style="height: 30px;" class="CAlign" id="VehicleType" name="VehicleType" value="ve" pla<ceholder="VehicleType"> -->
-            <!-- <option value="car">Car</option>
-            <option value="2-Wheeler">2-Wheeler</option>
-            <option value="Heavy-Vehicle">Heavy-Vehicle</option>
-        </select> --> 
-
-   <!--      <label class="CAlign" for="Car">Car</label><br>
-        <input class="CAlign" type="Text" id="VehicleName" name="VehicleName" placeholder="Vehicle Name" required maxlength="30"><br><br> -->
-
+        <!-- Action Buttons -->
         <div class="CAlign">
             <button type="submit" name="action" value="save_vehicle" class="btn btn-primary">Save Vehicle</button>
-            <button type="submit" name="action" value="book_slot" class="btn btn-primary" style="margin-left:20px;">Book slot</button>
-
+            <button type="submit" name="action" value="book_slot" class="btn btn-primary" style="margin-left: 20px;">Book Slot</button>
         </div>
 
     </div>
-
-
 </form>
 
+<script>
+    // Filter dropdown options based on search input
+    function filterOptions() {
+        const searchInput = document.getElementById('searchInput').value.toLowerCase();
+        const dropdownItems = document.querySelectorAll('.dropdown-item');
 
+        dropdownItems.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(searchInput)) {
+                item.style.display = 'block'; // Show matching item
+            } else {
+                item.style.display = 'none'; // Hide non-matching item
+            }
+        });
+    }
+
+    // Set selected value and close dropdown on item click
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', function () {
+            const selectedValue = this.getAttribute('data-value');
+            document.getElementById('VehicleName').value = selectedValue; // Set hidden input value
+            document.getElementById('dropdownMenuButton1').innerText = selectedValue || 'Select Vehicle Name'; // Update button text
+        });
+    });
+</script>
 
 {% endblock %}
