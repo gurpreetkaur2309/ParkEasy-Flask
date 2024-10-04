@@ -222,7 +222,7 @@ def delete_data(PaymentID):
 
 @payment.route('/payment/generate_receipt/<int:PaymentID>', methods=['GET', 'POST'])
 @login_required
-
+@requires_role('user')
 def Generate_Receipt(PaymentID):
     VehicleID = session.get('VehicleID')
     print('VehicleID: ', VehicleID)
@@ -238,8 +238,7 @@ def Generate_Receipt(PaymentID):
         db.commit()
         data = cursor.fetchone()
         print(data)
-        print (session['role'])
-        # VehicleType, VehicleNumber, ReceiptID, Price, date, Mode, TimeFrom, TimeTo = data
+        print(session['role'])
         if data is None:
             flash('Slot not booked. Please book the slot to generate receipt', 'danger')
             return redirect(url_for('payment.display'))

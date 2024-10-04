@@ -348,7 +348,7 @@ def AdminVehicle():
 
 @Vehicle.route('/user/vehicles', methods=['GET','POST'])
 @login_required
-@requires_role('user')
+# @requires_role('user')≥÷
 def ChooseVehicle():
     username = session.get('username')
     VehicleID = session.get('VehicleID')
