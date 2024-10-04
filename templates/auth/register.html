@@ -16,7 +16,7 @@
                 {% for message in messages %}
                     {% if error %}
                         <div class="alert alert-danger">{{ message }}</div>
-                    {% elif success %}
+                    {% else %}
                     <div class="alert alert-success">{{ message }}</div>
                     {% endif %}
                 {% endfor %}

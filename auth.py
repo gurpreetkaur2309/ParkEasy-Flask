@@ -16,7 +16,7 @@ def register_form():
 
 #regex for valid username
 def ValidUser(username):
-    pattern = "^[a-zA-Z0-9_.-]+$"
+    pattern = "^[A-z|0-9]"
     return re.match(pattern, username)
 
 #regex for valid contact
@@ -28,6 +28,16 @@ def ValidContact(contact):
 def ValidPassword(password):
     pattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
     return re.match(pattern, password)
+
+#regex for valid name
+def ValidName(name):
+    pattern = "^[A-z]"
+    return re.match(pattern, name)
+
+#regex for valid address
+def ValidAddress(address):
+    pattern = "[0-9|A-z]"
+    return re.match(pattern, address)
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
@@ -53,7 +63,7 @@ def register():
             return redirect(url_for('auth.register_form'))
 
         if not ValidUser(username):
-            flash('Username cannot start with numbers')
+            flash('Username cannot contain special characters','error')
             return redirect(url_for('auth.register_form'))
 
         if not ValidContact(contact):
@@ -62,6 +72,14 @@ def register():
 
         if not ValidPassword(password):
             flash("Password should include minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character", "error")
+            return redirect(url_for('auth.register_form'))
+
+        if not ValidName(name):
+            flash("Name should not contain special characters.", 'error')
+            return redirect(url_for('auth.register_form'))
+
+        if not ValidAddress(address):
+            flash("Address should not contain special characters","error")
             return redirect(url_for('auth.register_form'))
 
         #checks if user is already logged in
