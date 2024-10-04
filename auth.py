@@ -41,8 +41,9 @@ def ValidAddress(address):
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST ':
+    if request.method == 'POST':
         username = request.form['username']
+        session['username'] = username
         password = request.form['password']
         name = request.form['name']
         address = request.form['address']
@@ -122,7 +123,7 @@ def register():
             cursor.execute(update_query, (name, address, contact, incrementedSNo))
             db.commit()
 
-            return redirect(url_for('auth.dashboard'))
+            return redirect(url_for('auth.login'))
 
         except mysql.connector.Error as e:
             print(e)
@@ -211,7 +212,6 @@ def login():
             return redirect(url_for('auth.login'))
 
     return render_template('auth/login.html')
-
 
 @auth.route('/login')
 def login_form():
