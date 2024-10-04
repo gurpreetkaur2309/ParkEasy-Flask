@@ -41,7 +41,7 @@ def ValidAddress(address):
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
+    if request.method == 'POST ':
         username = request.form['username']
         password = request.form['password']
         name = request.form['name']
