@@ -8,11 +8,11 @@
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 
-CREATE TABLE `allotment` (
+ CREATE TABLE `allotment` (
   `AllotmentID` int NOT NULL AUTO_INCREMENT,
   `VehicleID` int NOT NULL,
   `SNo` int NOT NULL,
-  `username` int NOT NULL,
+  `username` varchar(100) NOT NULL,
   `date` date NOT NULL,
   `TimeFrom` time NOT NULL,
   `TimeTo` time NOT NULL,
@@ -24,22 +24,18 @@ CREATE TABLE `allotment` (
   `VehicleType` varchar(40) NOT NULL,
   `VehicleNumber` varchar(40) NOT NULL,
   PRIMARY KEY (`AllotmentID`),
-  KEY `fk_sno` (`SNo`),
-  CONSTRAINT `fk_bookingslot` FOREIGN KEY (`AllotmentID`) REFERENCES `bookingslot` (`BSlotID`),
-  CONSTRAINT `fk_payment` FOREIGN KEY (`AllotmentID`) REFERENCES `payment` (`PaymentID`),
-  CONSTRAINT `fk_sno` FOREIGN KEY (`SNo`) REFERENCES `user` (`SNo`),
-  CONSTRAINT `fk_vehicle` FOREIGN KEY (`AllotmentID`) REFERENCES `vehicle` (`VehicleID`),
-  CONSTRAINT `owner_fk` FOREIGN KEY (`AllotmentID`) REFERENCES `owner` (`OwnerID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci 
+  KEY `fk_sno` (`SNo`)
+) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 
-CREATE TABLE `bookingslot` (
+ CREATE TABLE `bookingslot` (
   `BSlotID` int NOT NULL AUTO_INCREMENT,
   `Date` date DEFAULT NULL,
   `TimeFrom` time DEFAULT NULL,
   `TimeTo` time DEFAULT NULL,
   `duration` varchar(30) DEFAULT NULL,
   `SNo` int NOT NULL DEFAULT '1',
+  `VehicleID` int NOT NULL,
   PRIMARY KEY (`BSlotID`),
   CONSTRAINT `bookingslot_ibfk_1` FOREIGN KEY (`BSlotID`) REFERENCES `slots` (`SlotID`),
   CONSTRAINT `bookingslot_ibfk_2` FOREIGN KEY (`BSlotID`) REFERENCES `vehicle` (`VehicleID`),
@@ -47,7 +43,7 @@ CREATE TABLE `bookingslot` (
 ) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 
-CREATE TABLE `owner` (
+ CREATE TABLE `owner` (
   `OwnerID` int NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   `address` varchar(100) DEFAULT NULL,
@@ -55,7 +51,7 @@ CREATE TABLE `owner` (
   `SNo` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`OwnerID`),
   CONSTRAINT `owner_ibfk_1` FOREIGN KEY (`OwnerID`) REFERENCES `user` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=150 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB AUTO_INCREMENT=220 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 
  CREATE TABLE `payment` (
@@ -63,13 +59,14 @@ CREATE TABLE `owner` (
   `TotalPrice` int DEFAULT NULL,
   `mode` varchar(30) DEFAULT NULL,
   `SNo` int NOT NULL,
+  `VehicleID` int NOT NULL,
   PRIMARY KEY (`PaymentID`),
   CONSTRAINT `payment_ibfk_1` FOREIGN KEY (`PaymentID`) REFERENCES `user` (`UserID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `payment_ibfk_2` FOREIGN KEY (`PaymentID`) REFERENCES `bookingslot` (`BSlotID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci 
 
 
-CREATE TABLE `sensor` (
+ CREATE TABLE `sensor` (
   `SensorID` int NOT NULL AUTO_INCREMENT,
   `isParked` tinyint DEFAULT NULL,
   PRIMARY KEY (`SensorID`),
@@ -77,15 +74,15 @@ CREATE TABLE `sensor` (
 ) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
 
-CREATE TABLE `slots` (
+ CREATE TABLE `slots` (
   `SlotID` int NOT NULL AUTO_INCREMENT,
   `space` varchar(30) DEFAULT NULL,
   `price` int DEFAULT NULL,
   PRIMARY KEY (`SlotID`)
-) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci 
 
 
-CREATE TABLE `user` (
+ CREATE TABLE `user` (
   `UserID` int NOT NULL AUTO_INCREMENT,
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
@@ -93,16 +90,14 @@ CREATE TABLE `user` (
   `SNo` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`UserID`),
   UNIQUE KEY `SNo` (`SNo`)
-) ENGINE=InnoDB AUTO_INCREMENT=206 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB AUTO_INCREMENT=245 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci 
 
 
-CREATE TABLE `vehicle` (
+ CREATE TABLE `vehicle` (
   `VehicleID` int NOT NULL AUTO_INCREMENT,
   `VehicleType` varchar(40) DEFAULT NULL,
   `VehicleNumber` varchar(40) DEFAULT NULL,
   `SNo` int NOT NULL,
-  PRIMARY KEY (`VehicleID`),
-  CONSTRAINT `vehicle_ibfk_1` FOREIGN KEY (`VehicleID`) REFERENCES `slots` (`SlotID`),
-  CONSTRAINT `vehicle_ibfk_2` FOREIGN KEY (`VehicleID`) REFERENCES `user` (`UserID`),
-  CONSTRAINT `vehicle_ibfk_3` FOREIGN KEY (`VehicleID`) REFERENCES `owner` (`OwnerID`)
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+  `VehicleName` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`VehicleID`)
+) ENGINE=InnoDB AUTO_INCREMENT=147 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci

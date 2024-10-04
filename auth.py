@@ -8,30 +8,29 @@ import re
 from utils import requires_role
 
 auth = Blueprint('auth', __name__)
+
+#renders the register form
 @auth.route('/register')
 def register_form():
     return render_template('auth/register.html')
 
+#regex for valid username
 def ValidUser(username):
-    print('valid user function works')
-    # pattern = "^[a-zA-Z][a-zA-Z\s'-]*$"
     pattern = "^[a-zA-Z0-9_.-]+$"
     return re.match(pattern, username)
 
+#regex for valid contact
 def ValidContact(contact):
-    print('valid contact function works')
     pattern = "^(\+91[\-\s]?)?[0]?(91)?[789]\d{9}$"
     return re.match(pattern, contact)
 
+#regex for valid password
 def ValidPassword(password):
-    print('Valid password function works')
     pattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
     return re.match(pattern, password)
 
-
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
-    print('register function initiated')
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -40,8 +39,6 @@ def register():
         contact = request.form['contact']
         S_No = request.form['SNo']
         # session['SNo'] = S_No
-        print(session)
-        print(request.form)
 
         if len(password) > 15:
             flash('Password is too long', 'error')
@@ -67,6 +64,7 @@ def register():
             flash("Password should include minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character", "error")
             return redirect(url_for('auth.register_form'))
 
+        #checks if user is already logged in
         check_user_query = 'SELECT username FROM user WHERE username=%s'
         cursor.execute(check_user_query,(username,))
         db.commit()
@@ -74,8 +72,6 @@ def register():
         if existing_user:
             flash('Username is already taken. Please try a different username', 'error')
             return redirect(url_for('auth.register_form'))
-
-
 
         try:
             maxSNo = 'SELECT MAX(SNo) FROM user'
@@ -85,7 +81,6 @@ def register():
             maxS_No = result[0]
             incrementedSNo = maxS_No + 1
             session['incrementedSNo'] = incrementedSNo
-
             hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
             insert_query = '''
                 INSERT INTO user(username, password, role, SNo) VALUES (%s, %s, 'user', %s)
@@ -93,9 +88,7 @@ def register():
             user_data = (username, hashed_password, incrementedSNo)
             cursor.execute(insert_query, user_data)
             db.commit()
-            print('insert query wale try mai gaya')
         except mysql.connector.Error as e:
-            print('insert query wale except mai gaya')
             db.rollback()
             print('Error: ', e)
             flash('Error inserting user','error')
@@ -103,27 +96,20 @@ def register():
 
         try:
             incrementedSNo = session.get('incrementedSNo')
-            print('incrementedSNo: ', incrementedSNo)
             # print('update wale try mai')
             update_query = '''
                 INSERT INTO owner (name, address, contact, SNo) 
                 VALUES(%s, %s, %s, %s)
             '''
-            print('update query ke niche cursor.execute ke upar')
             cursor.execute(update_query, (name, address, contact, incrementedSNo))
-            print('db.commit ke upar')
             db.commit()
-            print('mydata', name, address, contact, incrementedSNo)
-            print('Owner data added successfully')
 
             return redirect(url_for('auth.dashboard'))
 
         except mysql.connector.Error as e:
-            print('Update wale except mai')
             print(e)
             db.rollback()
             flash('Error adding owner data','danger')
-    print('in get method of refgister')
     return render_template('auth/register.html')
 
 
@@ -145,15 +131,12 @@ def AdminLogin():
         db.commit()
         userData = cursor.fetchone()
 
-        print('user data: ', userData)
-
         if len(password) > 8:
             flash('Password should not be more than 8 letters', 'error')
 
         if userData and password: 
             session['username'] = userData[0]
             session['role'] = userData[2]
-            print(session['role'])
             return redirect(url_for('auth.admin_dashboard'))
         else:
             flash('Invalid username or password', 'danger')
@@ -164,15 +147,12 @@ def AdminLogin():
     # cursor.execute('SELECT SNo FROM allotment where username=%s')
     db.commit()
     S_No = cursor.fetchone()
-    print('S_No: ', S_No)
     return render_template('auth/adminlogin.html')
-
 
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        print('inside post method')
         username = request.form['username']
         password = request.form['password']
 
@@ -183,9 +163,8 @@ def login():
         fetch_query = "SELECT username, password, SNo FROM user WHERE username=%s"
         cursor.execute(fetch_query, (username,))
         user_data = cursor.fetchone()
-        print(user_data, 'user_data, SNo')
         db.commit()
-        print('doneeeeee', user_data)
+
 
         if user_data and check_password_hash(user_data[1], password):
             print('inside the if statement')
@@ -203,25 +182,16 @@ def login():
                 cursor.execute(fetch_query, (username,))
                 db.commit()
                 data = cursor.fetchone()
-                print('outside if data')
-                print('user_data', user_data[2])
                 if data is not None:
-                    print('inside if data condition')
-                    print('user_data[2]', user_data[2])
-                    print(session['username'])
                     # return redirect(url_for('payment.Generate_Receipt',PaymentID=data[0], SNo=user_data[2]))  
                     return  redirect(url_for('index'))
                 else:
-                    print('inside else')
-                    print('user_data[2]', user_data[2])
                     # return redirect(url_for('vehicle.ChooseVehicle', SNo=user_data[2]))
                     return redirect(url_for('index'))
         else:
-            print('inside the else condition')
             flash('Invalid username or password', 'error')
             return redirect(url_for('auth.login'))
 
-    print('inside get method')
     return render_template('auth/login.html')
 
 
@@ -241,7 +211,7 @@ def logout():
     return render_template('index.html')
 
 
-
+#this ensures that there is no access to website without login
 def login_required(view):
     @wraps(view)
     def wrapped_view(*args, **kwargs):
@@ -278,7 +248,8 @@ payment_count = cursor.fetchone()
 
 cursor.execute('SELECT COUNT(*) FROM allotment')
 history_count = cursor.fetchone()
-####dashboard########
+
+
 @auth.route('/admin')
 @requires_role('admin')
 def admin_dashboard():
@@ -298,33 +269,22 @@ def admin_dashboard():
 @auth.route('/user/Bookings')
 @login_required
 def MyBookingsUser():
-    print('Get request ke upar')
     if request.method == 'GET':
-        print('fetch query ke upar')
         username = session.get('username')
         
-        # if not VehicleID:
-        #     print('VehicleID not found')
-        #     flash('An error ocurred. Please try again later', 'error')
-        #     return redirect(url_for('index'))
-        
         if not username:
-            print('username not found')
             flash('An error ocurred. Please try again later', 'error')
             return redirect(url_for('index'))
-        
 
         cursor.execute('SELECT SNo FROM user WHERE username=%s', (username,))
         db.commit()
         S_No = cursor.fetchone()
         print('SNo:',S_No)
         if not S_No:
-            print('SNo not found')
             flash('An error ocurred. Please try again later', 'error')
             # return redirect(url_for('index'))
         SNo = S_No[0]
         if not SNo:
-            print('SNo not found')
             flash('An error ocurred. Please try again later', 'error')
             # return redirect(url_for('index'))
 
@@ -337,12 +297,9 @@ def MyBookingsUser():
             db.commit()
             data = cursor.fetchall()
             data_list = [[dashboard[0], dashboard[1], dashboard[2], dashboard[3], dashboard[4], dashboard[5], dashboard[6], dashboard[7], dashboard[8], dashboard[9], dashboard[10], dashboard[11], dashboard[12], dashboard[13]] for dashboard in data]
-            print('past booking: ', data_list)
             if not data_list:
                 flash('No past bookings', 'success')
         except mysql.connector.Error as e:
-            print(e)
-            print('fetch query wale except mai gaya')
             db.rollback()
             flash('An error occurred. Please try again later', 'error')
             return redirect(url_for('index'))
@@ -366,16 +323,14 @@ def MyBookingsUser():
                     WHERE 
                         u.SNo = %s AND (b.Date > CURDATE() OR (b.Date = CURDATE() AND b.TimeTo > CURTIME()))ORDER BY DATE DESC;
             '''
-            print('SNo: ', SNo)
             cursor.execute(fetch_current,(SNo,))
             data = cursor.fetchall()
             datalist = [[booking[0], booking[1], booking[2], booking[3], booking[4], booking[5], booking[6], booking[7], booking[8], booking[9]] for booking in data]
-            print('current Booking', datalist)
+
             if not datalist:
                 flash('No future bookings', 'success')
         except mysql.connector.Error as e:
             db.rollback()
-            print(e)
             flash('An error occured.Please try again later','error')
         
 
@@ -388,21 +343,17 @@ def MyBookingsUser():
 @requires_role('user')
 def dashboard():
     username = session.get('username')
-    print('username', username)
     if request.method == 'GET':
         try:
-            print('try mai gaya')
             fetch_query = '''
                  SELECT u.username, o.name, o.contact, o.address  
                  from user u  
                  inner join owner o on o.SNo = u.SNo  
                  where username=%s
             '''
-            print('fetch query k niche')
             cursor.execute(fetch_query,(username,))
             db.commit()
             data = cursor.fetchone()
-            print('data ke niche')
             print(data)
             username = data[0]
             name = data[1]
@@ -410,11 +361,9 @@ def dashboard():
             address = data[3]
             print(data)
             if data is None:
-                print('Data in admin dashboard is None')
                 flash('Error fetching your data','error')
                 return redirect(url_for('index'))
         except mysql.connector.Error as e:
-            print('except k andar')
             db.rollback()
             flash('An error occured. Please try after sometime','error')
             return redirect(url_for('index'))
@@ -432,7 +381,6 @@ def dashboard():
             return redirect(url_for('auth.dashboard'))
 
         try:
-            print('fetch query wale try mau')
             fetch_query = 'SELECT * FROM vehicle v INNER JOIN user u on u.SNo=v.SNo WHERE u.SNo=%s AND u.username=%s'
             cursor.execute(fetch_query, (SNo, username,))
             db.commit()
@@ -440,8 +388,6 @@ def dashboard():
             vehicleList = [[vehicle[0], vehicle[1], vehicle[2], vehicle[3], vehicle[4]] for vehicle in vehicles]
 
         except mysql.connector.Error as e:
-            print('fetch query wale except mai gaya')
-            print(e)
             db.rollback()
             flash('Server returned a null response. Please try again later','error')
             return redirect(url_for('index'))

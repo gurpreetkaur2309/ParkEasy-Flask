@@ -30,7 +30,6 @@ def inject_user():
     username = session.get('username')
     SNo = session.get('SNo')
     return dict(username=username)
-app.config['UPLOADS'] = "/Users/yashvaishnav/Downloads/CAR DETAILS FROM CAR DEKHO.csv"
 
 
 def configure_scheduler():

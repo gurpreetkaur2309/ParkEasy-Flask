@@ -29,32 +29,23 @@ def display():
 @payment.route('/payment/add', methods=['GET', 'POST'])
 @login_required
 def add_data():
-    print('add_data ke andar')
     VehicleID = request.args.get('VehicleID')
-    print('VehicleID in get method: ', VehicleID)
     if request.method == 'POST':
-        print('post method k andar')
         PaymentID = session.get('BSlotID')
-        print('paymentID', PaymentID)
         VehicleID = request.form.get('VehicleID')
-        print('VehicleID in post: ', VehicleID)
         mode = request.form['mode']
-        print('mode', mode)
         cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=%s', (VehicleID,))
         db.commit()
         SNo = cursor.fetchone()
-        print('sno in payment', SNo)
         if not SNo:
-            flash('S_No nahi mil raha bhai','error')
+            flash('An error occurred. Please try again later.','error')
             return redirect(url_for('payment.add_data', VehicleID=VehicleID, PaymentID=PaymentID))
 
         S_No = SNo[0]
-        print(f"VehicleID: {VehicleID}, PaymentID: {PaymentID}, mode: {mode}, S_No: {S_No}")
         if not S_No:
             flash('S_No nahi mil raha bhai','error')
             return redirect(url_for('payment.add_data', VehicleID=VehicleID, PaymentID=PaymentID))
         try:
-            print('fetchdata wale try mai gaya')
             fetchData = '''
                 SELECT v.VehicleType, b.duration FROM vehicle v 
                 JOIN bookingslot b ON v.SNo = b.SNo
@@ -62,37 +53,32 @@ def add_data():
                 '''
             cursor.execute(fetchData, (S_No, VehicleID,))
             v_data = cursor.fetchone();
-            print(v_data)
             if not v_data:
-                flash('v_data not found','error')
+                flash('An error occurred. Please try again later.','error')
                 return redirect(url_for('payment.add_data', PaymentID=PaymentID, VehicleID=VehicleID))
         
             VehicleType = v_data[0]
             duration = v_data[1]
             Duration = int(duration)
-            print(Duration, ': duration')
-            print(VehicleType, ': VehicleType')
             rate = 0
-            print('rate=0 k upar')
+
             if VehicleType == 'car':
-                print('car k andar')
                 rate = 13
+
             elif VehicleType == '2-Wheeler':
-                print('2-wheeler k andar')
                 rate = 8
+
             elif VehicleType == 'Heavy-Vehicle':
-                print('heavy-vehicle k andar')
                 rate = 15
+
             elif VehicleType == 'Luxury-Vehicle':
-                print('luxury vehicle k andar')
                 rate = 18
 
             TotalPrice = rate * Duration 
             TotalPrice = float(TotalPrice)
             session['TotalPrice'] = TotalPrice
-            print(TotalPrice, 'TotalPrice')
+
         except mysql.connector.Error as e:
-            print('fetchdata wale except mai gaya')
             db.rollback()
             print(e)
             flash('Error adding data', 'error')
@@ -106,15 +92,12 @@ def add_data():
             cursor.execute(update_query, (TotalPrice, mode, S_No, VehicleID, PaymentID,))
             db.commit()
         except mysql.connector.Error as e:
-            print('update query wale except ke andar')
-
             db.rollback()
             print(e)
             flash('Error adding your data','error')
             return redirect(url_for('payment.add_data', VehicleID=VehicleID, PaymentID=PaymentID, SNo=SNo))
        
         try:
-            print('fetch query wale try ke andar')
             fetch_query = '''
                 SELECT v.VehicleID, v.VehicleType, v.VehicleNumber, 
                        b.Date, b.TimeFrom, b.TimeTo, b.duration, 
@@ -133,10 +116,8 @@ def add_data():
             '''
             cursor.execute(fetch_query, (SNo))
             data = cursor.fetchone()
-            print('user data: ', data)
             if data is None:
-                print('No data')
-                flash('No data found', 'error')
+                flash('An error occurred. Please try again later', 'error')
                 return redirect(url_for('payment.add_data', VehicleID=VehicleID, SNo=SNo, BSlotID=BSlotID))
 
             VehicleID = data[0]
@@ -152,14 +133,8 @@ def add_data():
             contact = data[10]
             TotalPrice = data[11]
             mode = data[12]
-            print('sare data k niche ')
-            
-        
-            print('allotment table mai jane wala data')
-            print(f"VehicleID: {VehicleID}, SNo: {SNo}, username: {username}, date: {date}, TimeFrom: {TimeFrom}, TimeTo: {TimeTo}, duration: {duration}, name: {name}, contact: {contact}, TotalPrice: {TotalPrice}, mode: {mode}, VehicleType: {VehicleType}, VehicleNumber: {VehicleNumber}")                        
+                           
             try:
-                print('insert query wale try ke andar')
-                print(f"VehicleID")
                 insert_query = '''
                     INSERT INTO allotment(VehicleID, SNo, username, date, TimeFrom, TimeTo, duration, name, contact, TotalPrice, mode, VehicleType, VehicleNumber) 
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)                '''
@@ -173,7 +148,6 @@ def add_data():
                 #     return redirect(url_for('index'))
 
             except mysql.connector.Error as e:
-                print('insert query wale allotment ke andar')
                 print(e)
                 flash('Error adding allotment', 'error')
                 return redirect(url_for('payment.add_data'))
@@ -182,7 +156,6 @@ def add_data():
             # return render_template('add/payment.html',duration=duration, TotalPrice=TotalPrice, PaymentID=PaymentID)
 
         except mysql.connector.Error as e:
-            print('fetch query wale except ke andar')
             print(e)
             db.rollback()
             flash('Error processing your payment', 'error')
@@ -275,7 +248,6 @@ def Generate_Receipt(PaymentID):
                 return redirect(url_for('vehicle.add_data',SNo=data[0]))
         elif session['role'] == 'admin':
             if data[5] == 0.0:
-                print('Amount in payment is 0.0')
                 flash('An error occured. Please try again', 'error')
                 return redirect(url_for('vehicle.AdminVehicle'))
         else:

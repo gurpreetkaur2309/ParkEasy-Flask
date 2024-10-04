@@ -46,7 +46,6 @@ def history():
 
 def clearExpiredBookings():
     try:
-        print('clearExpiredBookings wale try mai gaya')
         current_date = date.today()
         current_time = datetime.now().time()
         print('current date: ', current_date)
@@ -74,13 +73,8 @@ def clearExpiredBookings():
 @login_required
 def add_data():
     vid = session.get('VehicleID')
-    print('Session wali vehicleID', vid)
-    print('bookingslot wale add_data mai gaya')
-    print(session['username'])
     VehicleID = request.args.get('VehicleID')
     session['VehicleID'] = VehicleID
-    print('VehicleID: ', VehicleID)
-    print('vacantslots k upar')
     VacantSlots = '''
             SELECT b.BSlotID FROM bookingslot b 
             WHERE b.TimeFrom = "00:00:00" and b.TimeTo = "00:00:00" and b.duration= '';
@@ -89,26 +83,17 @@ def add_data():
     db.commit()
     BSlotID = cursor.fetchone()[0]
     session['BSlotID'] = BSlotID
-    print('vacantslots k niche')
-    print('BSlotID: ', BSlotID)
 
-    
-    print('post method k upar')
     if request.method == 'POST':
         VehicleID = request.form.get('VehicleID')
-        print('post method k andar')
 
-        print('VehicleID in post method', VehicleID)
         if not VehicleID:
-            print('if not vehicleID mai gaya')
             # flash('An error occurred. Please try again later','error')
             return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, BSlotID=BSlotID))
         
-        print('BSlotID: ', BSlotID)
         date = request.form['date']
         TimeFrom = request.form['TimeFrom']
         duration = request.form['duration']
-        print('Sno from vehicle k upar')
         cursor.execute('SELECT SNo FROM vehicle WHERE VehicleID=%s', (VehicleID,))
         db.commit()
         SNo = cursor.fetchone()
@@ -129,7 +114,6 @@ def add_data():
             return  redirect(url_for('bookingslot.add_data', VehicleID=VehicleID, SNo=SNo))
         print(SNo, 'SNo in bookingslot')
         if not date:
-            print('if not date mai gaya')
             flash('Date is not valid','error')
             return redirect(url_for('bookingslot.add_data',VehicleID=VehicleID, SNo=SNo))
         if not TimeFrom:
@@ -139,13 +123,11 @@ def add_data():
             flash('Please enter duration to continue','error')
             return redirect(url_for('bookingslot.add_data',VehicleID=VehicleID, SNo=SNo))
         if not SNo:
-            print('not s no.')
-            flash('S_No nahi mil raha bhai','error')
+            flash('An error occurred. Please try again later','error')
             return redirect(url_for('bookingslot.add_data',VehicleID=VehicleID, SNo=SNo))  
         if not BSlotID:
             flash('Error fetching your BSlotID','error')
-            return redirect(url_for('bookingslot.add',VehicleID=VehicleID, SNo=SNo))  
-        print('sare if not k niche') 
+            return redirect(url_for('bookingslot.add',VehicleID=VehicleID, SNo=SNo))   
         try:
             durationStr = int(duration)
         except ValueError as ve:
@@ -156,11 +138,8 @@ def add_data():
         timeFrom_dt = datetime.strptime(TimeFrom, TimeFormat)
         timeTo_dt = timeFrom_dt + timedelta(hours=durationStr)
         TimeTo = timeTo_dt.strftime(TimeFormat)
-        print('VehicleID: ', VehicleID)
 
-        print('update query wale try k upar')
         try:
-            print('check booking wale try mai gaya')
             check_booking_query = '''
                 SELECT * FROM bookingslot
                 WHERE VehicleID=%s AND date=%s AND (TimeFrom < %s) AND (TimeTo > %s)
@@ -168,15 +147,11 @@ def add_data():
             cursor.execute(check_booking_query, (VehicleID, date, TimeFrom, TimeTo,))
             db.commit()
             check_booking = cursor.fetchone()
-            print('check booking: ', check_booking)
             if check_booking is not None:
-                print('check booking wale if mai gaya')
                 flash('You already have a booking with this vehicle in the time frame', 'error')
                 return redirect(url_for('index'))
             if check_booking is None:
-                print('check booking wale else mai gaya')
                 try:
-                    print('update query wale try k andar')
                     update_query = '''
                         UPDATE bookingslot
                         SET date=%s, duration=%s, TimeFrom=%s, TimeTo=%s, SNo=%s, VehicleID=%s
@@ -190,14 +165,10 @@ def add_data():
                     #end
                     return redirect(url_for('payment.add_data', VehicleID=VehicleID, SNo=S_No))
                 except  mysql.connector.Error as e:
-                    print('update query wale except k andar')
-                    print(e)
                     db.rollback()
                     flash('Error adding data')
                     return render_template('add/bookingslot.html')
         except mysql.connector.Error as e:
-            print('check booking wale except mai gaya')
-            print(e)
             db.rollback()
             flash('Server failed','error')
             return redirect(url_for('index'))
@@ -207,14 +178,11 @@ def add_data():
     S = cursor.fetchone()
     db.commit()
     if S == None:
-        print('if not S k andar')
         # flash('An error occured. Please try again later.', 'error')
         return redirect(url_for('bookingslot.add_data', VehicleID=VehicleID))
     SNo = S[0]
 
     SID = session.get('incrementedSNo')
-    print('Final render_template k upar')
-    
     return render_template('add/bookingslot.html', SNo = S[0],VehicleID=VehicleID, BSlotID=BSlotID)
 
 
