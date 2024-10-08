@@ -5,6 +5,8 @@ from auth import login_required
 from datetime import datetime, time
 from utils import requires_role
 import pdb
+import pdfkit
+
 
 payment = Blueprint('payment', __name__)
 
@@ -284,6 +286,7 @@ def Generate_Receipt(PaymentID):
         db.rollback()
         flash('Error generating receipt', 'error')
         return redirect(url_for('payment.display'))
+    
 
     try:
         username = session.get('username')

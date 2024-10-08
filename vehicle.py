@@ -620,7 +620,11 @@ def MyBookingsUser():
         SNo = S_No[0]
         cursor.execute('SELECT VehicleID from vehicle where SNo=%s', (SNo,))
         db.commit()
-        VehicleID
+        VID = cursor.fetchone()
+        VehicleID = VID[0]
+        print("VehicleID:", VehicleID)
+
+
         if not SNo:
             flash('An error ocurred. Please try again later', 'error')
             # return redirect(url_for('index'))
@@ -659,9 +663,9 @@ def MyBookingsUser():
                     INNER JOIN bookingslot b ON o.SNo = b.SNo
                     INNER JOIN user u ON o.SNo = u.SNo
                     WHERE 
-                        u.SNo = %s AND b.VehicleID=%s AND (b.Date > CURDATE() OR (b.Date = CURDATE() AND b.TimeTo > CURTIME()))ORDER BY DATE DESC;
+                        o.SNo = %s AND b.VehicleID=%s AND (b.Date > CURDATE() OR (b.Date = CURDATE() AND b.TimeTo > CURTIME()))ORDER BY DATE DESC;
             '''
-            cursor.execute(fetch_current,(SNo,))
+            cursor.execute(fetch_current,(SNo,VehicleID,))
             data = cursor.fetchall()
             datalist = [[booking[0], booking[1], booking[2], booking[3], booking[4], booking[5], booking[6], booking[7], booking[8], booking[9]] for booking in data]
             print('datalist: ', datalist)
