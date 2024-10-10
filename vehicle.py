@@ -518,8 +518,10 @@ def add_vehicle():
             db.commit()
             print('')
             if action == 'book_slot':
+                print('book_Slot mai gaya')
                 return redirect(url_for('bookingslot.add_data',VehicleID=VehicleID, SNo=SNo))
-            else:
+            elif action == 'save_vehicle':
+                print('save_vehicle mai gaya')
                 flash('Vehicle saved successfully')
                 return redirect(url_for('auth.dashboard'))
         except mysql.connector.Error as e:
