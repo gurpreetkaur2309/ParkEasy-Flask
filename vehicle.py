@@ -605,7 +605,7 @@ def delete_data(VehicleID):
 def MyBookingsUser():
     if request.method == 'GET':
         username = session.get('username')
-        
+        print('username in mybookingsuser', username)
         if not username:
             flash('An error ocurred. Please try again later', 'error')
             return redirect(url_for('index'))
@@ -622,7 +622,8 @@ def MyBookingsUser():
         db.commit()
         VID = cursor.fetchone()
         VehicleID = VID[0]
-        print("VehicleID:", VehicleID)
+
+        print("VehicleID in mybookingsuser:", VehicleID)
 
 
         if not SNo:
@@ -632,9 +633,9 @@ def MyBookingsUser():
 
         try:
             fetch_query = '''
-                SELECT * from allotment WHERE username=%s AND TimeTo>curtime()
+                SELECT * from allotment WHERE username=%s AND TimeTo<curtime() AND VehicleID=%s
             '''
-            cursor.execute(fetch_query,(username,))
+            cursor.execute(fetch_query,(username,VehicleID))
             db.commit()
             data = cursor.fetchall()
             data_list = [[dashboard[0], dashboard[1], dashboard[2], dashboard[3], dashboard[4], dashboard[5], dashboard[6], dashboard[7], dashboard[8], dashboard[9], dashboard[10], dashboard[11], dashboard[12], dashboard[13]] for dashboard in data]
@@ -642,7 +643,9 @@ def MyBookingsUser():
             if not data_list:
                 flash('No past bookings', 'success')
         except mysql.connector.Error as e:
+            print('fetch past wale except mai')
             db.rollback()
+            print(e)
             flash('An error occurred. Please try again later', 'error')
             return redirect(url_for('index'))
         try:
@@ -672,6 +675,8 @@ def MyBookingsUser():
             if not datalist:
                 flash('No future bookings', 'success')
         except mysql.connector.Error as e:
+            print('fetch current wale except mai')
+            print(e)
             db.rollback()
             flash('An error occured.Please try again later','error')
         
