@@ -624,6 +624,10 @@ def MyBookingsUser():
         db.commit()
         VID = cursor.fetchone()
         VehicleID = VID[0]
+        if not VID:
+            flash('No current bookings')
+        if not VehicleID:
+            flash('No current bookings')
 
         print("VehicleID in mybookingsuser:", VehicleID)
 
@@ -635,9 +639,9 @@ def MyBookingsUser():
 
         try:
             fetch_query = '''
-                SELECT * from allotment WHERE username=%s AND TimeTo<curtime() AND VehicleID=%s
+                SELECT * from allotment WHERE username=%s AND TimeTo<curtime()
             '''
-            cursor.execute(fetch_query,(username,VehicleID))
+            cursor.execute(fetch_query,(username,))
             db.commit()
             data = cursor.fetchall()
             data_list = [[dashboard[0], dashboard[1], dashboard[2], dashboard[3], dashboard[4], dashboard[5], dashboard[6], dashboard[7], dashboard[8], dashboard[9], dashboard[10], dashboard[11], dashboard[12], dashboard[13]] for dashboard in data]
@@ -650,9 +654,11 @@ def MyBookingsUser():
             print(e)
             flash('An error occurred. Please try again later', 'error')
             return redirect(url_for('index'))
+        print('VehicleID on top of try: ', VehicleID)
         try:
+            print('VehicleID on inside try: ', VehicleID)
             fetch_current = '''
-                SELECT 
+                SELECT  
                         o.name, 
                         o.contact, 
                         v.VehicleType, 
@@ -668,10 +674,11 @@ def MyBookingsUser():
                     INNER JOIN bookingslot b ON o.SNo = b.SNo
                     INNER JOIN user u ON o.SNo = u.SNo
                     WHERE 
-                        o.SNo = %s AND b.VehicleID=%s AND (b.Date > CURDATE() OR (b.Date = CURDATE() AND b.TimeTo > CURTIME()))ORDER BY DATE DESC;
+                        o.SNo = %s AND (b.Date > CURDATE() OR (b.Date = CURDATE() AND b.TimeTo > CURTIME()))ORDER BY DATE DESC;
             '''
-            cursor.execute(fetch_current,(SNo,VehicleID,))
+            cursor.execute(fetch_current,(SNo,))
             data = cursor.fetchall()
+            print('current data: ',data)
             datalist = [[booking[0], booking[1], booking[2], booking[3], booking[4], booking[5], booking[6], booking[7], booking[8], booking[9]] for booking in data]
             print('datalist: ', datalist)
             if not datalist:
