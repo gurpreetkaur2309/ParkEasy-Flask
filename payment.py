@@ -79,6 +79,9 @@ def add_data():
             TotalPrice = rate * Duration 
             TotalPrice = float(TotalPrice)
             session['TotalPrice'] = TotalPrice
+            if TotalPrice == 0.0:
+                flash('There was a server failure. Please book the slot agian', 'error')
+                return redirect(url_for('vehicle.ChooseVehicle'))
 
         except mysql.connector.Error as e:
             db.rollback()
@@ -263,6 +266,9 @@ def Generate_Receipt(PaymentID):
         Mode = data[6]
         TimeFrom = data[7]
         TimeTo = data[8]
+        if Price == 0.0:
+            flash('There was a server failure. Please book the slot agian', 'error')
+            return redirect(url_for('vehicle.ChooseVehicle'))
 
         if TimeFrom is None or TimeTo is None:
             flash('Booking slot time data is missing', 'error')

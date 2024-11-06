@@ -139,11 +139,19 @@ def add_data():
         TimeTo = timeTo_dt.strftime(TimeFormat)
         print('VehicleID: ', VehicleID)
         try:
+            print('TimeFrom', timeFrom_dt)
+            print('TimeTo', timeTo_dt   )
             check_booking_query = '''
                 SELECT * FROM bookingslot
-                WHERE VehicleID=%s AND date=%s AND (TimeFrom < %s) AND (TimeTo > %s)
+    WHERE VehicleID = %s AND date = %s 
+    AND (
+            (TimeFrom < %s AND TimeTo > %s) OR  
+            (TimeFrom > %s AND TimeFrom < %s) OR 
+            (TimeTo > %s AND TimeTo < %s) OR     
+            (TimeFrom <= %s AND TimeTo >= %s) 
+    )
             '''
-            cursor.execute(check_booking_query, (VehicleID, date, TimeFrom, TimeTo,))
+            cursor.execute(check_booking_query, (VehicleID, date, TimeFrom, TimeTo, TimeFrom, TimeTo, TimeFrom, TimeTo,TimeFrom, TimeTo))
             db.commit()
             check_booking = cursor.fetchone()
             print('check_booking: ', check_booking)

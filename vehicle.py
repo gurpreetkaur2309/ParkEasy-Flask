@@ -674,9 +674,9 @@ def MyBookingsUser():
                     INNER JOIN bookingslot b ON o.SNo = b.SNo
                     INNER JOIN user u ON o.SNo = u.SNo
                     WHERE 
-                        o.SNo = %s AND (b.Date > CURDATE() OR (b.Date = CURDATE() AND b.TimeTo > CURTIME()))ORDER BY DATE DESC;
+                        o.SNo = %s AND b.VehicleID=%s AND (b.Date > CURDATE() OR (b.Date = CURDATE() AND b.TimeTo > CURTIME()))ORDER BY DATE DESC;
             '''
-            cursor.execute(fetch_current,(SNo,))
+            cursor.execute(fetch_current,(SNo,VehicleID))
             data = cursor.fetchall()
             print('current data: ',data)
             datalist = [[booking[0], booking[1], booking[2], booking[3], booking[4], booking[5], booking[6], booking[7], booking[8], booking[9]] for booking in data]
