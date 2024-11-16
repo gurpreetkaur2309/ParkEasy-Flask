@@ -74,7 +74,7 @@
                             {% elif session['role'] == 'admin' %}
                                 <a href="{{ url_for('auth.admin_dashboard') }}" class="btn btn-primary">Dashboard</a>
                             {% else %}
-                                <a href="{{url_for('auth.MyBookingsUser')}}" class="btn btn-primary">Dashboard</a>
+                                <a href="{{url_for('vehicle.MyBookingsUser')}}" class="btn btn-primary">Dashboard</a>
                             {% endif %}
 
                         </div>
